@@ -1,0 +1,654 @@
+<!-- ============================================================
+     STUDENT LUXE — "Atlas" Browse-All-Cities
+     Paste into a Squarespace Code Block (not Markdown).
+     Fonts (baskerville-display-pt / dm-sans / adobe-garamond-pro)
+     are already loaded site-wide by the header injection.
+
+     PALETTE: ivory paper by default (matches the nav). To go dark,
+     swap the token block marked  ▸ DARK FLIP  below.
+     Set the Squarespace section background to transparent/light.
+     ============================================================ -->
+
+<style>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TOKENS ━━ */
+.atlas{
+  /* ▸ IVORY (default) */
+  --pg-bg:transparent;
+  --paper:#FBF8F1;
+  --paper-glass:rgba(251,248,241,.82);
+  --ink:#0d1a2e;
+  --muted:rgba(13,26,46,.52);
+  --hair:rgba(13,26,46,.12);
+  --gold:#B8966E;
+  --gold-deep:#8B6E4E;
+  --gold-wash:rgba(184,150,110,.10);
+  --gold-line:rgba(184,150,110,.42);
+  --tile-ink:#ffffff;                 /* text on photos */
+  --shadow-bar:0 1px 2px rgba(13,26,46,.05), 0 12px 34px rgba(13,26,46,.08);
+
+  /* ▸ DARK FLIP — uncomment to switch the whole page to navy
+  --paper:#101d31;
+  --paper-glass:rgba(16,29,49,.82);
+  --ink:#f4f0e6;
+  --muted:rgba(244,240,230,.55);
+  --hair:rgba(244,240,230,.14);
+  --gold:#C9A876;
+  --gold-deep:#D4B896;
+  --gold-wash:rgba(184,150,110,.14);
+  --gold-line:rgba(184,150,110,.5);
+  */
+
+  --serif:'baskerville-display-pt', Georgia, 'Times New Roman', serif;
+  --sans:'dm-sans', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --gara:'adobe-garamond-pro', Georgia, serif;
+  --ease:cubic-bezier(.22,.8,.28,1);
+  --nav-clear:104px;                  /* clearance for the sticky site nav when the Return pill scrolls back */
+  --col-min:210px;
+}
+
+.atlas{
+  background:var(--pg-bg);
+  padding:8px 24px 96px;
+  font-family:var(--sans);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+.atlas *{ box-sizing:border-box; }
+
+/* ── HEADER ── */
+.atlas-head{ max-width:1180px; margin:0 auto 22px; }
+.atlas-pill{
+  display:inline-block; margin-bottom:16px;
+  padding:6px 16px; border-radius:100px;
+  background:var(--gold-wash); border:.5px solid var(--gold-line);
+  font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep);
+}
+.atlas-title{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(34px,5.4vw,60px); line-height:1.0; letter-spacing:-.06em;
+  margin:0; color:var(--ink);
+}
+.atlas-title em{ font-style:italic; color:var(--gold); }
+.atlas-sub{
+  font-family:var(--sans); font-size:clamp(14px,2vw,16px); line-height:1.6; letter-spacing:.01em;
+  color:var(--muted); margin:14px 0 0; max-width:70ch;
+}
+
+/* ── STICKY CONTROL BAR ── */
+/* Not sticky — it scrolls away, and a fixed "Return to filter" pill brings the
+   user back (see .atlas-return). Deliberately no backdrop-filter anywhere. */
+.atlas-bar{
+  max-width:1180px; margin:0 auto 14px;
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:12px 14px;
+  background:var(--paper);
+  border:1px solid var(--hair); border-radius:16px;
+  box-shadow:var(--shadow-bar);
+  scroll-margin-top:var(--nav-clear);   /* Return-to-filter lands below the sticky site nav */
+}
+
+/* ── "Return to filter" pill — appears once the bar scrolls out of view.
+   Bottom-centre on desktop, bottom-left on mobile (clears the enquiry widget). */
+/* Mirrors the floating "Make an enquiry" button (radius 8px, DM Sans .12em,
+   13px/26px pad, icon-left) so the two sit as a matched pair at the same height
+   — navy here vs gold there marks this as the secondary action. */
+.atlas-return{
+  position:fixed; z-index:50; bottom:24px; left:50%;
+  transform:translateX(-50%) translateY(10px);
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 26px; border-radius:8px;
+  background:var(--ink); color:var(--paper); border:none;
+  font-family:var(--sans); font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:500;
+  box-shadow:0 8px 28px rgba(13,26,46,.28);
+  cursor:pointer; opacity:0; pointer-events:none;
+  transition:opacity .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.atlas-return.show{ opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
+.atlas-return:hover{ box-shadow:0 12px 36px rgba(13,26,46,.4); }
+.atlas-return svg{ width:16px; height:16px; }
+/* Mirror the enquiry button's exact insets so they stay level at every width:
+   24px down to 400px, then 16px below (it switches at max-width:400px, not 640). */
+@media (max-width:640px){
+  .atlas-return{ left:24px; bottom:24px; transform:translateX(0) translateY(10px); }
+  .atlas-return.show{ transform:translateX(0) translateY(0); }
+}
+@media (max-width:400px){
+  .atlas-return{ left:16px; bottom:16px; }
+}
+
+/* search */
+.atlas-search-wrap{ position:relative; flex:1 1 240px; min-width:200px; }
+.atlas-search{
+  width:100%; padding:11px 36px 11px 40px;
+  background:rgba(255,255,255,.55); color:var(--ink);
+  border:1px solid var(--hair); border-radius:10px;
+  font-family:var(--sans); font-size:16px; outline:none;   /* 16px stops iOS auto-zoom on focus */
+  transition:border-color .2s, background .2s;
+  -webkit-appearance:none; appearance:none;
+}
+.atlas-search::placeholder{ color:var(--muted); }
+.atlas-search:focus{ border-color:var(--gold); background:rgba(255,255,255,.85); }
+.atlas-search-icon{
+  position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  color:var(--gold); pointer-events:none; display:flex;
+}
+.atlas-search-icon svg{ width:16px; height:16px; }
+.atlas-search-clear{
+  position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  width:22px; height:22px; border:none; border-radius:50%;
+  background:rgba(197,48,38,.12); color:#C53026; cursor:pointer;
+  display:none; align-items:center; justify-content:center; font-size:14px; line-height:1;
+}
+.atlas-search-clear:hover{ background:#C53026; color:#fff; }
+
+.atlas-ac{
+  position:absolute; top:calc(100% + 6px); left:0; width:100%;
+  background:var(--paper); border:1px solid var(--hair); border-radius:12px;
+  box-shadow:var(--shadow-bar); overflow:hidden; z-index:60; display:none;
+}
+.atlas-ac.open{ display:block; }
+.atlas-ac-item{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:10px 16px; cursor:pointer; transition:background .12s;
+}
+.atlas-ac-item:hover, .atlas-ac-item.foc{ background:var(--gold); }
+.atlas-ac-item:hover .atlas-ac-name, .atlas-ac-item.foc .atlas-ac-name,
+.atlas-ac-item:hover .atlas-ac-co, .atlas-ac-item.foc .atlas-ac-co{ color:#fff; }
+.atlas-ac-name{ font-size:14px; color:var(--ink); }
+.atlas-ac-name mark{ background:none; color:var(--gold-deep); font-weight:600; }
+.atlas-ac-co{ font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.atlas-ac-empty{ padding:12px 16px; font-family:var(--gara); font-style:italic; color:var(--muted); font-size:13px; }
+
+/* region tabs */
+.atlas-tabs{ display:flex; gap:6px; flex-wrap:wrap; }
+.atlas-tab{
+  display:inline-flex; align-items:center; gap:7px;
+  padding:9px 15px; border-radius:100px; cursor:pointer; user-select:none;
+  border:1px solid var(--hair); background:rgba(255,255,255,.4);
+  font-family:var(--sans); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);
+  transition:background .2s, color .2s, border-color .2s;
+}
+.atlas-tab:hover{ border-color:var(--gold-line); }
+.atlas-tab.on{ background:var(--ink); border-color:var(--ink); color:#fff; }
+.atlas-tab-n{
+  font-size:10px; padding:1px 6px; border-radius:100px;
+  background:var(--gold-wash); color:var(--gold-deep); letter-spacing:.04em;
+}
+.atlas-tab.on .atlas-tab-n{ background:rgba(255,255,255,.18); color:#fff; }
+
+/* region dropdown (mobile only) + sort */
+.atlas-region{ display:none; align-items:center; gap:8px; }   /* shown on mobile, replaces the pills */
+.atlas-sort{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+.atlas-region label, .atlas-sort label{ font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.atlas-region select, .atlas-sort select{
+  font-family:var(--sans); font-size:12px; color:var(--ink);
+  padding:8px 28px 8px 12px; border:1px solid var(--hair); border-radius:9px;
+  background:rgba(255,255,255,.5) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238B6E4E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+  -webkit-appearance:none; appearance:none; cursor:pointer; outline:none;
+}
+.atlas-region select:focus, .atlas-sort select:focus{ border-color:var(--gold); }
+
+/* count line */
+.atlas-count{
+  max-width:1180px; margin:0 auto 14px; padding:0 2px;
+  font-size:12px; letter-spacing:.02em; color:var(--muted);
+}
+.atlas-count b{ color:var(--ink); font-weight:600; }
+
+/* ── GRID ── */
+.atlas-grid{
+  max-width:1180px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(var(--col-min),1fr));
+  gap:10px;
+}
+.atlas-group{
+  grid-column:1 / -1;
+  display:flex; align-items:center; gap:14px;
+  margin:14px 2px 0;
+}
+.atlas-group:first-child{ margin-top:0; }
+.atlas-group-label{ font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-deep); white-space:nowrap; }
+.atlas-group-n{ font-size:11px; color:var(--muted); }
+.atlas-group-rule{ flex:1; height:1px; background:var(--hair); }
+
+/* ── TILE ── */
+/* No translateZ(0)/will-change on the base tile — that would promote every one
+   of 40+ tiles to its own GPU layer and blow iOS's compositor memory during a
+   fast scroll. Compositing is applied only transiently, during FLIP/hover. */
+.atlas-tile{
+  position:relative; display:block; overflow:hidden;
+  aspect-ratio:4/5; border-radius:12px;
+  border:.5px solid var(--gold-line);
+  text-decoration:none; cursor:pointer;
+  background-color:#1e2228;
+  transition:border-color .35s var(--ease), box-shadow .35s var(--ease);
+}
+.atlas-tile:hover{ border-color:var(--gold); box-shadow:0 12px 30px rgba(13,26,46,.16); }
+.atlas-tile.coming{ cursor:default; }
+
+.atlas-bg{
+  position:absolute; inset:0; width:100%; height:100%; display:block;
+  object-fit:cover; object-position:center;
+  transition:transform .6s var(--ease);
+}
+.atlas-tile:hover .atlas-bg{ transform:scale(1.06); }
+.atlas-tile.coming .atlas-bg{ filter:saturate(.12) brightness(.6); }
+.atlas-ov{
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(10,16,26,.86) 0%, rgba(13,26,46,.20) 52%, transparent 100%);
+}
+.atlas-goldwash{ position:absolute; inset:0; background:linear-gradient(to top, var(--gold-wash) 0%, transparent 44%); pointer-events:none; }
+
+.atlas-info{ position:absolute; left:0; right:0; bottom:0; padding:16px 18px; transition:transform .32s var(--ease); }
+.atlas-tile:hover .atlas-info{ transform:translateY(-4px); }
+.atlas-eyebrow{ font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:rgba(212,184,150,.85); margin-bottom:5px; }
+.atlas-name{ font-family:var(--serif); font-weight:400; font-size:27px; line-height:1; letter-spacing:-.03em; color:var(--tile-ink); }
+.atlas-tag{
+  display:inline-block; margin-top:9px; padding:3px 10px; border-radius:4px;
+  background:rgba(184,150,110,.24); border:.5px solid rgba(184,150,110,.55);
+  font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:#E7CDA3;
+}
+.atlas-arrow{
+  position:absolute; top:14px; right:14px; width:30px; height:30px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  border:.5px solid rgba(184,150,110,0); color:rgba(184,150,110,0);
+  transition:border-color .3s var(--ease), color .3s var(--ease), transform .3s var(--ease);
+}
+.atlas-arrow svg{ width:14px; height:14px; }
+.atlas-tile:hover .atlas-arrow{ border-color:var(--gold-line); color:#E7CDA3; transform:translateX(2px); }
+
+/* coming soon */
+.atlas-coming-wrap{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
+.atlas-coming-city{ font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:rgba(212,184,150,.55); }
+.atlas-coming-label{ font-family:var(--gara); font-style:italic; font-size:15px; color:rgba(212,184,150,.62); }
+
+/* empty */
+.atlas-empty{
+  display:none; max-width:1180px; margin:24px auto 0; text-align:center;
+  padding:56px 24px; font-family:var(--gara); font-style:italic; font-size:15px; color:var(--muted);
+}
+
+/* motion primitives — deliberately NO persistent will-change (see note above) */
+.atlas-reveal{ opacity:0; transform:translateY(14px); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:900px){ .atlas{ --col-min:180px; } .atlas-sort{ margin-left:0; } }
+@media (max-width:640px){
+  .atlas{ padding:8px 16px 72px; --col-min:150px; }
+  .atlas-bar{ border-radius:14px; }
+  .atlas-tabs{ display:none; }          /* mobile: pills swap for the region dropdown */
+  .atlas-region{ display:flex; }
+  .atlas-sort{ margin-left:0; }         /* both dropdowns sit together under one "Sort" label */
+  .atlas-sort label{ display:none; }
+  .atlas-name{ font-size:22px; }
+  .atlas-tile{ aspect-ratio:3/4; }
+}
+@media (prefers-reduced-motion:reduce){
+  .atlas-bg, .atlas-info, .atlas-arrow, .atlas-tile{ transition:none !important; }
+  .atlas-reveal{ opacity:1; transform:none; }
+}
+</style>
+
+<section class="atlas" id="atlas">
+
+  <div class="atlas-head">
+    <h1 class="atlas-title">Browse every Luxe city,<br><em>find your home.</em></h1>
+    <p class="atlas-sub">Fully serviced luxury student residences across the UK, Europe and the US — with more cities joining all the time. Search, filter or scan the map below.</p>
+  </div>
+
+  <div class="atlas-bar">
+    <div class="atlas-search-wrap">
+      <span class="atlas-search-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.4" stroke="currentColor" stroke-width="1.7"/><line x1="16.2" y1="16.2" x2="20.5" y2="20.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+      <input type="text" id="atlasSearch" class="atlas-search" placeholder="Search 30+ cities…" autocomplete="off" spellcheck="false">
+      <button class="atlas-search-clear" id="atlasClear" aria-label="Clear search">&#215;</button>
+      <div class="atlas-ac" id="atlasAc"></div>
+    </div>
+    <div class="atlas-tabs" id="atlasTabs"></div>
+    <div class="atlas-region">
+      <label>Sort</label>
+      <select id="atlasRegion" aria-label="Region"></select>
+    </div>
+    <div class="atlas-sort">
+      <label for="atlasSort">Sort</label>
+      <select id="atlasSort">
+        <option value="region">By region</option>
+        <option value="az">A–Z</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="atlas-count" id="atlasCount"></div>
+  <div class="atlas-grid" id="atlasGrid"></div>
+  <div class="atlas-empty" id="atlasEmpty">No cities match that search yet — try another name.</div>
+
+  <button class="atlas-return" id="atlasReturn" type="button" aria-label="Return to top of page">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Return
+  </button>
+
+</section>
+
+<script>
+(function(){
+
+/* ╔════════════════════════════════════════════════════════════╗
+   ║  CITY CONFIG — edit here only. Add a city = add one line.   ║
+   ║  region: 'uk' | 'europe' | 'us'  (add regions in REGIONS)   ║
+   ║  coming:true = muted "coming soon" tile, not clickable      ║
+   ║  tag: optional gold badge.  imgPos: bg-position override.   ║
+   ╚════════════════════════════════════════════════════════════╝ */
+
+var REGIONS = [
+  { key:'uk',     label:'UK',     full:'United Kingdom' },
+  { key:'europe', label:'Europe', full:'Europe' },
+  { key:'us',     label:'USA',    full:'United States' }
+];
+
+var CITIES = [
+  /* UK */
+  { name:'London', country:'United Kingdom', region:'uk', href:'/luxury-student-apartments-london', imgPos:'center 30%', imgColor:'#2a2420',
+    image:'https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/7f2de2fd-678f-45ec-be64-98dca05850f9/lincolns-inn-2bed-08-9.jpg' },
+  { name:'Edinburgh', country:'Scotland', region:'uk', href:'/private-student-accommodation-edinburgh', imgColor:'#1e2420',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/198d2391-930c-4a22-8d68-d9cb7e595c67/Edinburgh-luxury-student-accommodation-1.jpg' },
+  { name:'Manchester', country:'England', region:'uk', href:'/student-apartments-manchester', imgColor:'#2a2824',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/d9260ec9-41d7-49a2-90c3-a9e60c043224/Manchester-private-student-accommodation-3.jpeg' },
+  { name:'Cambridge', country:'England', region:'uk', href:'/cambridge-student-apartments', imgColor:'#1e2420',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/4b027e5d-09d4-4850-8f73-3340926729ab/cambridge-student-apartments--41-2.jpg' },
+  { name:'Bristol', country:'England', region:'uk', href:'/private-student-apartments-bristol', imgColor:'#201e1a',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/ad7b10bc-8eaa-4b20-9555-7d2c556354cc/Bristol%2B1%2Bbed%2B2.jpeg' },
+  { name:'Glasgow', country:'Scotland', region:'uk', href:'/private-student-accommodation-glasgow', imgColor:'#1a1e22',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/f71e6cb2-44fb-44b9-9f63-07b0e538af48/luxury-student-apartments-glasgow-5.jpeg' },
+  { name:'Liverpool', country:'England', region:'uk', href:'/student-apartments-liverpool', imgColor:'#1e2028',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1753881181446-LKXLH787TAL3I84PO30N/the-portmere-1bed-16.jpg' },
+  { name:'Oxford', country:'England', region:'uk', href:'/oxford-luxury-student-accommodation', imgColor:'#1e201e',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1747920605381-AVKJHAY3B31Q2OI9RC2O/summertown-residences-2bed-13.jpg' },
+
+  /* EUROPE */
+  { name:'Paris', country:'France', region:'europe', href:'/student-apartments-paris', imgPos:'center center', imgColor:'#1e2228',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1752829523105-A0SWHZ18U2K4P72YF0LQ/pere-lachaise-2bed-10.jpeg' },
+  { name:'Milan', country:'Italy', region:'europe', href:'/luxury-student-apartments-milan', imgColor:'#22201e',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1741018984854-1TL291I62C2IKRN1N78M/milano-corso-living-studio-3.jpeg' },
+  { name:'Amsterdam', country:'Netherlands', region:'europe', href:'/apartments-to-rent-amsterdam', imgColor:'#1e2228',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/742f97c4-5784-4296-ba16-0130fb613563/amsterdam-student-accommodation-3.jpg' },
+  { name:'Barcelona', country:'Spain', region:'europe', href:'/student-apartments-barcelona', imgColor:'#241e1a',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/57f3840a-50bc-46cf-a216-c576ae01232c/barcelona-student-accommodation-2-1.jpeg' },
+  { name:'Madrid', country:'Spain', region:'europe', href:'/luxury-student-apartments-madrid', imgColor:'#221e1e',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1732551182468-N6RCUABFHM4RZJL1GHZV/unsplash-image-iVmUXothgGY.jpg' },
+  { name:'Lisbon', country:'Portugal', region:'europe', href:'/student-accommodation-lisbon', imgColor:'#241e18',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/e3dea361-0488-43fe-a149-0a6eabd459f5/Lisbon-luxury-student-accommodation-010.jpg' },
+  { name:'Helsinki', country:'Finland', region:'europe', href:'/student-apartments-helsinki', imgColor:'#241e18',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/6349da49-0d16-46c4-aac3-a6635ab68438/bulevardi-suites-1bed-4.jpg' },
+  { name:'Florence', country:'Italy', region:'europe', href:'/student-apartments-florence', imgColor:'#22201a', coming:true },
+  { name:'Rome', country:'Italy', region:'europe', href:'/student-apartments-rome', imgColor:'#1e2228', coming:true },
+
+  /* USA */
+  { name:'New York', country:'United States', region:'us', href:'/student-apartments-new-york', imgPos:'center center', imgColor:'#252020',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/3551d486-a9ca-4646-a5d2-aed05455e253/columbus-residences-2bed-18.jpg' },
+  { name:'Boston', country:'United States', region:'us', href:'/student-apartments-boston', imgColor:'#201e28',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/e6d5fe59-9565-4438-ae31-3fcdb7dcc8aa/boston-student-apartments-7.jpeg' },
+  { name:'Chicago', country:'United States', region:'us', href:'/chicago-student-apartments', imgColor:'#1e2228',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/cae0952d-1cc8-44e2-ab13-44932a267491/st-claire-suites-facilities-2.jpeg' },
+  { name:'Washington DC', country:'United States', region:'us', href:'/washington-dc-apartments-to-rent', imgColor:'#1e2020',
+    image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1761732966526-466FWXVP05SAUOLJOT8S/union-residences-upscaled-1bed-4.jpg' },
+  { name:'Philadelphia', country:'United States', region:'us', href:'/student-apartments-philadelphia', imgColor:'#201e1e', coming:true }
+];
+
+/* ── build slugs ── */
+CITIES.forEach(function(c){ c.slug = c.name.toLowerCase().replace(/[^a-z0-9]+/g,'-'); });
+
+var grid    = document.getElementById('atlasGrid');
+var tabsEl  = document.getElementById('atlasTabs');
+var countEl = document.getElementById('atlasCount');
+var emptyEl = document.getElementById('atlasEmpty');
+var search  = document.getElementById('atlasSearch');
+var clearBtn= document.getElementById('atlasClear');
+var acBox   = document.getElementById('atlasAc');
+var sortSel = document.getElementById('atlasSort');
+
+var state = { region:'all', q:'', sort:'region', firstPaint:true };
+var tileEls = {};
+var ARR = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ── region filter: pills (desktop) + dropdown (mobile), one source of truth ── */
+var regionSel = document.getElementById('atlasRegion');
+function regionCount(key){ return CITIES.filter(function(c){ return c.region===key; }).length; }
+function regionList(){
+  return [{ key:'all', label:'All cities', n:CITIES.length }].concat(REGIONS.map(function(r){
+    return { key:r.key, label:r.label, n:regionCount(r.key) };
+  }));
+}
+function setRegion(key){
+  state.region = key;
+  if(state.q){ clearSearch(true); }
+  tabsEl.querySelectorAll('.atlas-tab').forEach(function(t){ t.classList.toggle('on', t.getAttribute('data-region')===key); });
+  if(regionSel) regionSel.value = key;
+  layout();
+}
+function buildRegions(){
+  var list = regionList();
+  // desktop pills
+  tabsEl.innerHTML = list.map(function(t){
+    return '<div class="atlas-tab'+(t.key===state.region?' on':'')+'" data-region="'+t.key+'">'+
+      (t.key==='all'?'All':t.label)+' <span class="atlas-tab-n">'+t.n+'</span></div>';
+  }).join('');
+  tabsEl.querySelectorAll('.atlas-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){ setRegion(tab.getAttribute('data-region')); });
+  });
+  // mobile dropdown
+  if(regionSel){
+    regionSel.innerHTML = list.map(function(t){
+      return '<option value="'+t.key+'">'+t.label+' ('+t.n+')</option>';
+    }).join('');
+    regionSel.value = state.region;
+    regionSel.addEventListener('change', function(){ setRegion(this.value); });
+  }
+}
+
+/* ── tile factory (built once, reused for FLIP) ── */
+function buildTile(c){
+  var el = document.createElement(c.coming ? 'div' : 'a');
+  el.className = 'atlas-tile atlas-reveal' + (c.coming ? ' coming' : '');
+  el.setAttribute('data-slug', c.slug);
+  el.style.backgroundColor = c.imgColor || '#1e2228';   // fallback while lazy img loads
+  if(!c.coming) el.href = c.href;
+
+  /* 750w is ample for a tile at 2x DPR, and loading="lazy" means only the tiles
+     near the viewport ever decode — the memory fix for 40+ cities on iOS. */
+  var img = c.image ? c.image.split('?')[0] + '?format=750w' : '';
+  var bgLayer = img
+    ? '<img class="atlas-bg" src="'+img+'" alt="'+c.name+'" loading="lazy" decoding="async" '+
+      'style="object-position:'+(c.imgPos||'center')+'">'
+    : '';
+
+  var inner = c.coming
+    ? '<div class="atlas-coming-wrap"><div class="atlas-coming-city">'+c.name+'</div>'+
+        '<div class="atlas-coming-label">Coming soon</div></div>'
+    : '<div class="atlas-arrow">'+ARR+'</div>'+
+      '<div class="atlas-info"><div class="atlas-eyebrow">'+c.country+'</div>'+
+        '<div class="atlas-name">'+c.name+'</div>'+
+        (c.tag ? '<div class="atlas-tag">'+c.tag+'</div>' : '')+
+      '</div>';
+
+  el.innerHTML = bgLayer + '<div class="atlas-ov"></div>'+
+                 '<div class="atlas-goldwash"></div>'+inner;
+  return el;
+}
+function tile(c){ if(!tileEls[c.slug]) tileEls[c.slug] = buildTile(c); return tileEls[c.slug]; }
+
+function groupHeader(r, n){
+  var d = document.createElement('div');
+  d.className = 'atlas-group';
+  d.innerHTML = '<span class="atlas-group-label">'+r.full+'</span>'+
+                '<span class="atlas-group-n">'+n+'</span>'+
+                '<span class="atlas-group-rule"></span>';
+  return d;
+}
+
+/* ── compute the ordered visible sequence ── */
+function visibleCities(){
+  var list = CITIES.slice();
+  if(state.q){
+    var q = state.q.toLowerCase();
+    return list.filter(function(c){
+      return c.name.toLowerCase().indexOf(q)>-1 || c.country.toLowerCase().indexOf(q)>-1;
+    });
+  }
+  if(state.region!=='all') list = list.filter(function(c){ return c.region===state.region; });
+  return list;
+}
+function azSort(a,b){ return a.name.localeCompare(b.name); }
+
+function render(){
+  var q = state.q;
+  var grouped = !q && state.region==='all' && state.sort==='region';
+
+  // detach everything (tile els persist in tileEls map)
+  grid.innerHTML = '';
+  var total = 0;
+
+  if(grouped){
+    REGIONS.forEach(function(r){
+      var cs = CITIES.filter(function(c){ return c.region===r.key; });
+      if(state.sort==='az') cs.sort(azSort);
+      if(!cs.length) return;
+      grid.appendChild(groupHeader(r, cs.length));
+      cs.forEach(function(c){ grid.appendChild(tile(c)); total++; });
+    });
+  } else {
+    var cs = visibleCities();
+    if(state.sort==='az' || q) cs.sort(azSort);
+    cs.forEach(function(c){ grid.appendChild(tile(c)); total++; });
+  }
+  return total;
+}
+
+/* ── FLIP layout: measure → render → invert → play ── */
+function layout(){
+  var first = {};
+  grid.querySelectorAll('.atlas-tile').forEach(function(t){
+    first[t.getAttribute('data-slug')] = t.getBoundingClientRect();
+  });
+
+  var total = render();
+
+  // count + empty state
+  emptyEl.style.display = total ? 'none' : 'block';
+  var scope = state.q ? 'matching “'+state.q+'”'
+            : state.region==='all' ? 'across all regions'
+            : 'in '+ (REGIONS.filter(function(r){return r.key===state.region;})[0]||{}).full;
+  countEl.innerHTML = total ? 'Showing <b>'+total+'</b> '+(total===1?'city':'cities')+' '+scope+'.' : '';
+
+  if(state.firstPaint){
+    // staggered reveal on first paint
+    var i=0;
+    grid.querySelectorAll('.atlas-tile').forEach(function(t){
+      t.style.transitionDelay = (i*0.045)+'s';
+      requestAnimationFrame(function(){ t.classList.remove('atlas-reveal'); });
+      i++;
+    });
+    setTimeout(function(){
+      grid.querySelectorAll('.atlas-tile').forEach(function(t){ t.style.transitionDelay=''; });
+    }, 700);
+    state.firstPaint = false;
+    return;
+  }
+
+  // FLIP the tiles that persisted; fade-rise the fresh ones
+  grid.querySelectorAll('.atlas-tile').forEach(function(t){
+    t.classList.remove('atlas-reveal');
+    var slug = t.getAttribute('data-slug');
+    var f = first[slug];
+    var l = t.getBoundingClientRect();
+    if(f){
+      var dx = f.left - l.left, dy = f.top - l.top;
+      if(dx || dy){
+        t.style.transition = 'none';
+        t.style.transform = 'translate('+dx+'px,'+dy+'px)';
+        requestAnimationFrame(function(){
+          t.style.transition = 'transform .52s var(--ease), border-color .35s, box-shadow .35s';
+          t.style.transform = '';
+        });
+      }
+    } else {
+      t.style.transition = 'none'; t.style.opacity = '0'; t.style.transform = 'translateY(14px)';
+      requestAnimationFrame(function(){
+        t.style.transition = 'transform .5s var(--ease), opacity .5s var(--ease)';
+        t.style.opacity = ''; t.style.transform = '';
+      });
+    }
+  });
+}
+
+/* ── search + autocomplete ── */
+function highlight(str, q){
+  var i = str.toLowerCase().indexOf(q.toLowerCase());
+  if(i<0) return str;
+  return str.slice(0,i)+'<mark>'+str.slice(i,i+q.length)+'</mark>'+str.slice(i+q.length);
+}
+var acFoc = -1;
+function buildAc(q){
+  acBox.innerHTML=''; acFoc=-1;
+  if(!q.trim()){ acBox.classList.remove('open'); return; }
+  var res = CITIES.filter(function(c){
+    return !c.coming && (c.name.toLowerCase().indexOf(q.toLowerCase())>-1 || c.country.toLowerCase().indexOf(q.toLowerCase())>-1);
+  }).slice(0,7);
+  if(!res.length){ acBox.innerHTML='<div class="atlas-ac-empty">No cities found</div>'; acBox.classList.add('open'); return; }
+  res.forEach(function(r,i){
+    var it = document.createElement('div');
+    it.className='atlas-ac-item'; it.setAttribute('data-i',i);
+    it.innerHTML='<span class="atlas-ac-name">'+highlight(r.name,q)+'</span><span class="atlas-ac-co">'+r.country+'</span>';
+    it.addEventListener('mousedown', function(e){ e.preventDefault(); pickCity(r); });
+    acBox.appendChild(it);
+  });
+  acBox._res=res; acBox.classList.add('open');
+}
+function pickCity(c){
+  if(!c.coming){ window.location.href = c.href; return; }
+}
+function clearSearch(keepFocus){
+  search.value=''; state.q=''; acBox.classList.remove('open');
+  clearBtn.style.display='none';
+  if(!keepFocus) layout();
+}
+
+search.addEventListener('input', function(){
+  state.q = this.value.trim();
+  clearBtn.style.display = this.value ? 'flex' : 'none';
+  buildAc(this.value);
+  layout();
+});
+search.addEventListener('keydown', function(e){
+  var items = acBox.querySelectorAll('.atlas-ac-item');
+  if(!items.length) return;
+  if(e.key==='ArrowDown'){ e.preventDefault(); acFoc=Math.min(acFoc+1,items.length-1); items.forEach(function(el,i){ el.classList.toggle('foc',i===acFoc); }); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); acFoc=Math.max(acFoc-1,0); items.forEach(function(el,i){ el.classList.toggle('foc',i===acFoc); }); }
+  else if(e.key==='Enter' && acFoc>-1 && acBox._res){ e.preventDefault(); pickCity(acBox._res[acFoc]); }
+  else if(e.key==='Escape'){ acBox.classList.remove('open'); }
+});
+search.addEventListener('blur', function(){ setTimeout(function(){ acBox.classList.remove('open'); }, 150); });
+clearBtn.addEventListener('click', function(){ clearSearch(); search.focus(); });
+sortSel.addEventListener('change', function(){ state.sort=this.value; layout(); });
+window.addEventListener('resize', (function(){ var t; return function(){ clearTimeout(t); t=setTimeout(layout,140); }; })());
+
+/* ── "Return to filter" pill — shown via IntersectionObserver (no scroll
+   handler, so it never adds per-frame work during a fast iOS scroll) ── */
+var bar = document.querySelector('.atlas-bar');
+var ret = document.getElementById('atlasReturn');
+if(bar && ret && 'IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(entries){
+    ret.classList.toggle('show', !entries[0].isIntersecting);
+  }, { rootMargin:'-80px 0px 0px 0px', threshold:0 });
+  io.observe(bar);
+}
+if(ret){
+  ret.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+}
+
+/* ── init ── */
+buildRegions();
+layout();
+
+})();
+</script>
