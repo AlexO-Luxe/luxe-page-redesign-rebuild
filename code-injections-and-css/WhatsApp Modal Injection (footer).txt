@@ -184,6 +184,7 @@
     var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
     if (!a) return;
     var href = a.getAttribute('href') || '';
+    if (a.hasAttribute('data-slwa-skip')) return;
     if (!/wa\.me\/|api\.whatsapp\.com|whatsapp\.com\/send|^whatsapp:/i.test(href)) return;
     e.preventDefault();
     e.stopPropagation();
