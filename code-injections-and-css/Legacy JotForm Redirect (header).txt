@@ -1,0 +1,149 @@
+<!-- Student Luxe, legacy JotForm link redirect (temporary, remove once no JotForm URLs remain in site content) -->
+<!-- PASTE INTO: Settings > Advanced > Code Injection > HEADER (not footer). -->
+<!-- Header placement matters: the click interceptor must be armed before Squarespace renders any content. -->
+<script>
+(function () {
+  'use strict';
+
+  var FORM_URL = 'https://www.studentluxe.co.uk/reservations';
+
+  // Valid city values on the /reservations form. Anything not in this list is
+  // dropped rather than passed through, so the dropdown never gets a value it
+  // cannot select.
+  var CITIES = ['amsterdam','barcelona','birmingham','boston','brighton','bristol','cambridge','chicago','dublin','durham','edinburgh','florence','glasgow','helsinki','lisbon','liverpool','london','madrid','manchester','milan','new-york','nottingham','paris','philadelphia','porto','rome','valencia','washington'];
+
+  function normCity(v) {
+    if (!v) return '';
+    var s = String(v).trim().toLowerCase().replace(/\s+/g, '-');
+    if (s === 'nyc' || s === 'new-york-city') s = 'new-york';
+    return CITIES.indexOf(s) !== -1 ? s : '';
+  }
+
+  // JotForm sends a free-text room type ("Studio", "Deluxe Studio", "2 Bed").
+  // The /reservations apt values are studio | 1bed | 2bed | 3bed | 4bed | flexible.
+  function normAptType(v) {
+    if (!v) return '';
+    var s = String(v).toLowerCase();
+    if (s.indexOf('studio') !== -1) return 'studio';
+    var m = s.match(/(\d)\s*-?\s*bed/);
+    if (m) return (m[1] >= '1' && m[1] <= '4') ? m[1] + 'bed' : 'flexible';
+    if (/\bone\b/.test(s))   return '1bed';
+    if (/\btwo\b/.test(s))   return '2bed';
+    if (/\bthree\b/.test(s)) return '3bed';
+    if (/\bfour\b/.test(s))  return '4bed';
+    return '';
+  }
+
+  function isJotform(href) {
+    return typeof href === 'string' && href.toLowerCase().indexOf('jotform.com') !== -1;
+  }
+
+  // Map an old JotForm URL to the equivalent /reservations URL.
+  // The param names deliberately do NOT pass through, they collide:
+  //   JotForm apartmentOr / apt  = apartment NAME  -> /reservations ref
+  //   JotForm type               = ROOM type       -> /reservations apt
+  //   JotForm chooseA            = city            -> /reservations city
+  //   JotForm search             = intent blurb    -> dropped
+  // A passthrough would put "Deluxe Studio" into type (expects A or B) and an
+  // apartment name into apt (expects studio/1bed), breaking the prefill.
+  function mapUrl(href) {
+    var params = null;
+    var qi = href.indexOf('?');
+    if (qi !== -1) {
+      try { params = new URLSearchParams(href.slice(qi + 1)); } catch (e) { params = null; }
+    }
+    var get = function (k) { return params ? (params.get(k) || '') : ''; };
+
+    var refName = (get('apartmentOr') || get('apt') || '').trim();
+    var city    = normCity(get('chooseA') || get('city'));
+    var aptType = normAptType(get('type') || get('roomType'));
+
+    // An apartment name means the guest wants that specific place: type A.
+    // No name means the generic "send me options" journey: type B.
+    var out = refName
+      ? ['type=A', 'ref=' + encodeURIComponent(refName)]
+      : ['type=B'];
+    if (city)    out.push('city=' + encodeURIComponent(city));
+    if (aptType) out.push('apt=' + encodeURIComponent(aptType));
+
+    return FORM_URL + '?' + out.join('&');
+  }
+
+  // Pass 1: rewrite every JotForm link currently in the DOM.
+  // Iterates all anchors rather than using a[href*="jotform"] because CSS
+  // attribute selectors are case sensitive and some links use JotForm.com.
+  function rewriteAll() {
+    var links;
+    try { links = document.querySelectorAll('a[href]'); } catch (e) { return; }
+    for (var i = 0; i < links.length; i++) {
+      var href = links[i].getAttribute('href');
+      if (!isJotform(href)) continue;
+      links[i].setAttribute('href', mapUrl(href));
+      links[i].removeAttribute('target');
+      links[i].removeAttribute('rel');
+    }
+    var forms;
+    try { forms = document.querySelectorAll('form[action]'); } catch (e) { return; }
+    for (var j = 0; j < forms.length; j++) {
+      var action = forms[j].getAttribute('action');
+      if (isJotform(action)) forms[j].setAttribute('action', mapUrl(action));
+    }
+  }
+
+  // Pass 2: capture-phase click interceptor. This is the guarantee, and the
+  // part the old code lacked. It resolves the link at click time, so it works
+  // even when the anchor was rendered a moment ago by Squarespace's own JS, or
+  // when a re-render (mobile menu, breakpoint change) restored the original
+  // href from the header's data-current-styles JSON after pass 1 ran.
+  document.addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && el !== document) {
+      if (el.tagName === 'A') {
+        var href = el.getAttribute('href');
+        if (isJotform(href)) {
+          var target = mapUrl(href);
+          // Let modified clicks (new tab/window) behave natively, just fix the
+          // destination first rather than hijacking them.
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
+            el.setAttribute('href', target);
+            el.removeAttribute('target');
+            return;
+          }
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = target;
+        }
+        return;
+      }
+      el = el.parentNode;
+    }
+  }, true);
+
+  // Pass 3: keep rewriting as Squarespace renders and re-renders content.
+  // Debounced so a busy page does not rescan on every mutation.
+  function startObserver() {
+    if (!window.MutationObserver || !document.body) return;
+    var pending = false;
+    var mo = new MutationObserver(function () {
+      if (pending) return;
+      pending = true;
+      setTimeout(function () { pending = false; rewriteAll(); }, 50);
+    });
+    mo.observe(document.body, {
+      childList: true, subtree: true,
+      attributes: true, attributeFilter: ['href', 'action']
+    });
+  }
+
+  function init() { rewriteAll(); startObserver(); }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  // Catch anything that renders after DOMContentLoaded.
+  window.addEventListener('load', rewriteAll);
+})();
+</script>
+<!-- End legacy JotForm link redirect -->

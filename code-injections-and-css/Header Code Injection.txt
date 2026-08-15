@@ -1,0 +1,2304 @@
+<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="45c877a8-9a20-4049-9094-45ded009fd5f" data-blockingmode="auto" type="text/javascript"></script>
+<!-- Cookiebot to Google Consent Mode bridge. Fires on page load with the
+     visitor's stored consent and again whenever they accept or decline. -->
+<script>
+  window.addEventListener('CookiebotOnConsentReady', function () {
+    if (!(window.Cookiebot && window.Cookiebot.consent)) return;
+    var c = window.Cookiebot.consent;
+    gtag('consent', 'update', {
+      'ad_storage': c.marketing ? 'granted' : 'denied',
+      'ad_user_data': c.marketing ? 'granted' : 'denied',
+      'ad_personalization': c.marketing ? 'granted' : 'denied',
+      'analytics_storage': c.statistics ? 'granted' : 'denied',
+      'functionality_storage': c.preferences ? 'granted' : 'denied',
+      'personalization_storage': c.preferences ? 'granted' : 'denied',
+      'security_storage': 'granted'
+    });
+  });
+</script>
+<!-- Google Consent Mode v2 default state. Must load before any Google tag. -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'denied',
+    'functionality_storage': 'denied',
+    'personalization_storage': 'denied',
+    'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+</script>
+<!-- Google tag (gtag.js) — Google Ads AW-687004665 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-687004665"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-687004665');
+</script>
+<!-- End Google tag -->
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- This Script is the exclusive property of Website Speedy, Copyright © 2026. All rights reserved. -->
+<script rel="preload" type='text/javascript' src="https://websitespeedycdn7.b-cdn.net/speedyscripts/ecmrx_13754/ecmrx_13754_1.js"></script>
+
+<link rel="preconnect" href="https://images.squarespace-cdn.com">
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+<link rel="dns-prefetch" href="https://connect.facebook.net">
+
+<script type='text/javascript' src="https://websitespeedycdn7.b-cdn.net/speedyscripts/ecmrx_13754/ecmrx_13754_2.js"></script>
+<script  type='text/javascript' src="https://websitespeedycdn7.b-cdn.net/speedyscripts/ecmrx_13754/ecmrx_13754_3.js"></script>
+
+
+<script>
+window.addEventListener('load', function () {
+
+  var s1 = document.createElement('script');
+  s1.src = 'https://websitespeedycdn7.b-cdn.net/speedyscripts/ecmrx_13754/ecmrx_13754_3.js';
+  s1.defer = true;
+  document.body.appendChild(s1);
+
+  var s2 = document.createElement('script');
+  s2.src = 'https://websitespeedycdn7.b-cdn.net/speedyscripts/ecmrx_13754/ecmrx_13754_2.js';
+  s2.defer = true;
+  document.body.appendChild(s2);
+
+});
+</script>
+
+<!-- This Script is the exclusive property of Website Speedy, Copyright © 2026. All rights reserved. -->
+
+
+<!-- ════════════════════════════════════════════════════════════════════════════
+     STUDENT LUXE — CUSTOM HEADER  (Aperture / Browse Directory edition)
+     ────────────────────────────────────────────────────────────────────────────
+     INSTALL (Squarespace):
+       Settings → Advanced → Code Injection → HEADER.
+       Find your existing block delimited by:  "Student Luxe — Custom Header"
+       and REPLACE THAT BLOCK ONLY with everything below (this comment + the
+       single <style> + the single <script>).
+
+       LEAVE EVERY OTHER HEADER BLOCK UNTOUCHED, e.g.:
+         • Google Consent Mode v2
+         • gtag.js / Google Analytics
+         • Google Tag Manager (GTM)
+         • UTM cookie-capture
+         • WhatsApp number swap / click tracking
+         • Microsoft Clarity
+       This block builds the floating nav and hides Squarespace's native header.
+       The WhatsApp link is rendered as <a href="https://wa.me/442030070017">
+       so your existing WhatsApp-swap/tracking script still binds to it.
+
+     EDITING:
+       All links/labels live in the CONFIG object at the very top of the <script>.
+       Change a URL there and the whole header + noscript fallback updates.
+       No build step. Pure vanilla JS. No external resources.
+     ════════════════════════════════════════════════════════════════════════════ -->
+
+<style>
+/* ════════════════════════════════════════════════════════════════
+   APERTURE — Browse Directory header for Student·Luxe
+   Everything scoped under #sl-ap and !important-guarded where it must
+   beat the Squarespace theme.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Hide Squarespace's native header chrome (match the existing injection). */
+[data-test="header-inner"],
+.header-announcement-bar-wrapper .header,
+#header .header-inner,
+.sqs-announcement-bar-dropzone ~ #header{ /* defensive selectors */ }
+[data-test="header-inner"]{ display:none !important; }
+#header .header-inner{ display:none !important; }
+.header-display-desktop,
+.header-display-mobile{ /* let theme keep its wrappers but our header floats above */ }
+
+/* Hide the LEGACY Student Luxe custom header so a single-page test (or the
+   transition period) never shows two headers stacked. Harmless once the old
+   site-wide block is removed — those elements simply won't exist. */
+#slHeader, .sl-header, .sl-drawer, .sl-drawer-overlay, .sl-city-bar{ display:none !important; }
+
+/* Safety belt — keep the cookie-consent banner above the header, whatever CMP
+   renders it (Cookiebot + Squarespace's native banner both covered). */
+#CybotCookiebotDialog,
+#CybotCookiebotDialogBodyUnderlay,
+#CookiebotWidget,
+.sqs-cookie-banner-v2,
+[data-test="cookie-banner"]{ z-index:2147483647 !important; }
+
+#sl-ap{
+  /* palette — light inversion */
+  --sl-ivory:#F4F0E6;
+  --sl-paper:#FBF8F1;
+  --sl-glass:rgba(251,248,241,.72);
+  --sl-glass-strong:rgba(251,248,241,.86);
+  --sl-ink:#0a0a0a;
+  --sl-muted:rgba(10,10,10,.46);
+  --sl-muted-2:rgba(10,10,10,.62);
+  --sl-hair:rgba(10,10,10,.10);
+  --sl-hair-soft:rgba(10,10,10,.06);
+  --sl-gold:#B8966E;
+  --sl-gold-hover:#a07d5a;
+  --sl-gold-wash:rgba(184,150,110,.10);
+  --sl-gold-wash-2:rgba(184,150,110,.16);
+  --sl-bevel:inset 0 1px 0 rgba(255,255,255,.6);
+
+  /* type stacks — Typekit names first (brand already loads these) */
+  --sl-serif:'baskerville-display-pt', Georgia, 'Times New Roman', Times, serif;
+  --sl-sans:'dm-sans', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --sl-body-serif:'adobe-garamond-pro', Georgia, serif;
+
+  --sl-shadow-cap:0 1px 2px rgba(10,10,10,.04), 0 8px 24px rgba(10,10,10,.07), 0 24px 60px rgba(10,10,10,.07);
+  --sl-shadow-cap-tight:0 2px 6px rgba(10,10,10,.10), 0 14px 40px rgba(10,10,10,.16), 0 30px 80px rgba(10,10,10,.12);
+  --sl-shadow-console:0 1px 0 rgba(255,255,255,.6) inset, 0 20px 50px rgba(10,10,10,.10), 0 50px 120px rgba(10,10,10,.16);
+
+  --sl-ease-spring:cubic-bezier(.16,1,.3,1);
+  --sl-ease-soft:cubic-bezier(.4,0,.2,1);
+
+  /* respect a Squarespace announcement-bar height if present */
+  --sl-topgap: var(--sqs-announcement-bar-height, 0px);
+
+  /* STICKY HEADER: the bar sits in normal flow at the top of <body> and pins
+     to the top on scroll (content flows beneath it — no overlap). */
+  display:block;
+  position:sticky;
+  top:var(--sl-topgap);
+  z-index:2147483646;
+}
+
+#sl-ap *{ box-sizing:border-box; }
+#sl-ap a{ color:inherit; text-decoration:none; }
+#sl-ap button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+#sl-ap ::selection{ background:var(--sl-gold-wash-2); color:var(--sl-ink); }
+
+/* ───────── warm rack-focus veil (dims the page when a panel opens) ───────── */
+#sl-ap .sl-ap-veil{
+  position:fixed; inset:0; z-index:2147483640;
+  background:radial-gradient(120% 100% at 50% -10%, rgba(251,248,241,.42), rgba(251,248,241,.74) 70%, rgba(244,240,230,.86));
+  opacity:0; pointer-events:none;
+  transition:opacity .3s var(--sl-ease-soft);
+}
+body.sl-ap-open #sl-ap .sl-ap-veil{ opacity:1; pointer-events:auto; }
+
+/* the page itself softens (rack focus) — we blur the Squarespace canvas wrapper */
+body.sl-ap-open #siteWrapper,
+body.sl-ap-open #page,
+body.sl-ap-open .sqs-announcement-bar-dropzone{
+  transition:filter .42s var(--sl-ease-soft), transform .42s var(--sl-ease-soft) !important;
+}
+body.sl-ap-open.sl-ap-rack #siteWrapper,
+body.sl-ap-open.sl-ap-rack #page{
+  filter:blur(8px) saturate(.85) brightness(1.06) !important;
+}
+
+/* ───────────────────────────── STICKY BAR ───────────────────────────── */
+#sl-ap .sl-ap-cap{
+  position:relative;               /* in normal flow inside the sticky #sl-ap */
+  width:100%;
+  height:64px;
+  border-radius:0;                 /* full-width bar, flush to the top */
+  padding:8px max(20px, calc((100% - 1240px) / 2));  /* full-bleed bg, content centred in a 1240 band */
+  z-index:2147483647;   /* sticky bar sits ABOVE the directory so its hover dropdowns are never hidden behind it */
+  display:flex; align-items:center; gap:6px;
+  font-family:var(--sl-sans);
+  background:var(--sl-glass-strong);
+  -webkit-backdrop-filter:blur(22px) saturate(1.4);
+  backdrop-filter:blur(22px) saturate(1.4);
+  border-bottom:1px solid var(--sl-hair);
+  box-shadow:var(--sl-bevel), 0 6px 24px rgba(10,10,10,.05);
+  transition:box-shadow .42s var(--sl-ease-soft), height .3s var(--sl-ease-soft);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  #sl-ap .sl-ap-cap{ background:var(--sl-paper); }
+}
+#sl-ap .sl-ap-cap.sl-ap-tight{
+  box-shadow:var(--sl-bevel), 0 6px 22px rgba(10,10,10,.13);
+}
+
+/* wordmark with bronze interpunct lens-dot */
+#sl-ap .sl-ap-wordmark{
+  font-family:var(--sl-serif);
+  font-size:18px; letter-spacing:-.01em; font-weight:400;
+  padding:0 14px 0 12px; white-space:nowrap;
+  display:flex; align-items:center; color:var(--sl-ink);
+}
+#sl-ap .sl-ap-dot{
+  display:inline-block; width:6px; height:6px; border-radius:50%;
+  background:var(--sl-gold); margin:0 4px; position:relative; top:-3px;
+}
+/* logo image variant of the wordmark */
+#sl-ap .sl-ap-wordmark-logo{ padding:0 14px 0 12px; }
+#sl-ap .sl-ap-logo-img{
+  height:var(--sl-logo-h,24px); width:auto; display:block;
+  transition:height .42s var(--sl-ease-spring);
+}
+/* white source logo -> solid black for the light header (toggle via CONFIG.brand.logo.invertToBlack) */
+#sl-ap .sl-ap-logo-invert{ filter:brightness(0); }
+
+#sl-ap .sl-ap-nav{ display:flex; align-items:center; gap:2px; margin-left:4px; }
+#sl-ap .sl-ap-navwrap{ position:relative; }
+#sl-ap .sl-ap-navlink{
+  font-size:12.5px; letter-spacing:.02em; color:var(--sl-muted-2);
+  padding:9px 13px; border-radius:9px; position:relative;
+  transition:color .2s var(--sl-ease-soft), background .2s var(--sl-ease-soft);
+  white-space:nowrap;
+}
+#sl-ap .sl-ap-navlink:hover{ color:var(--sl-ink); background:var(--sl-hair-soft); }
+#sl-ap .sl-ap-navlink.sl-ap-has-panel::after{
+  content:""; position:absolute; left:13px; right:13px; bottom:5px; height:1px;
+  background:var(--sl-gold); transform:scaleX(0); transform-origin:left;
+  transition:transform .26s var(--sl-ease-spring);
+}
+#sl-ap .sl-ap-navwrap:hover .sl-ap-navlink.sl-ap-has-panel::after,
+#sl-ap .sl-ap-navwrap:focus-within .sl-ap-navlink.sl-ap-has-panel::after{ transform:scaleX(1); }
+#sl-ap .sl-ap-navlink:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+
+#sl-ap .sl-ap-spacer{ flex:1; }
+
+/* the lens-dot glyph (used by the curtain eyebrow) */
+#sl-ap .sl-ap-lens{
+  width:9px; height:9px; border-radius:50%;
+  border:1.5px solid var(--sl-gold); flex:none; position:relative;
+}
+#sl-ap .sl-ap-lens::after{
+  content:""; position:absolute; top:50%; left:50%; width:3px; height:3px;
+  background:var(--sl-gold); border-radius:50%; transform:translate(-50%,-50%);
+}
+/* WhatsApp glass icon-button */
+#sl-ap .sl-ap-icon{
+  width:44px; height:44px; flex:none; border-radius:11px;
+  display:grid; place-items:center;
+  background:rgba(255,255,255,.42); border:1px solid var(--sl-hair);
+  box-shadow:var(--sl-bevel); color:var(--sl-muted-2);
+  transition:background .2s, color .2s, border-color .2s, transform .2s var(--sl-ease-spring);
+}
+#sl-ap .sl-ap-icon:hover{ background:rgba(255,255,255,.7); color:var(--sl-ink); transform:translateY(-1px); }
+#sl-ap .sl-ap-icon:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+#sl-ap .sl-ap-icon svg{ width:20px; height:20px; }
+
+/* desktop socials as text, same font as the nav links */
+#sl-ap .sl-ap-socialtext{ display:flex; align-items:center; gap:4px; flex:none; }
+#sl-ap .sl-ap-socialtext a{
+  font-size:12.5px; letter-spacing:.02em; color:var(--sl-muted-2);
+  padding:9px 10px; border-radius:9px;
+  transition:color .2s var(--sl-ease-soft), background .2s var(--sl-ease-soft);
+}
+#sl-ap .sl-ap-socialtext a:hover{ color:var(--sl-ink); background:rgba(255,255,255,.55); }
+#sl-ap .sl-ap-socialtext a:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+
+/* the ONE pure-ink CTA */
+#sl-ap .sl-ap-cta{
+  height:44px; flex:none; padding:0 20px; border-radius:11px;
+  background:var(--sl-ink); color:#F6F2E8;
+  font-size:12.5px; letter-spacing:.02em; font-weight:500;
+  display:flex; align-items:center; white-space:nowrap;
+  box-shadow:0 4px 14px rgba(10,10,10,.22);
+  transition:transform .2s var(--sl-ease-spring), box-shadow .2s, background .2s;
+}
+#sl-ap .sl-ap-cta:hover{ transform:translateY(-1px); box-shadow:0 8px 22px rgba(10,10,10,.3); background:#181818; }
+#sl-ap .sl-ap-cta:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:3px; }
+
+/* ───────── primary nav hover dropdowns (Why Luxe / About / Reservations) ───────── */
+#sl-ap .sl-ap-drop{
+  position:absolute; top:calc(100% + 14px); left:-8px;
+  width:300px;
+  background:var(--sl-glass-strong);
+  -webkit-backdrop-filter:blur(24px) saturate(1.4);
+  backdrop-filter:blur(24px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:16px; box-shadow:var(--sl-shadow-console);
+  padding:12px; opacity:0; visibility:hidden;
+  transform:translateY(-6px) scale(.99); transform-origin:top left;
+  transition:opacity .22s var(--sl-ease-soft), transform .26s var(--sl-ease-spring), visibility 0s linear .26s;
+  z-index:2147483645;
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  #sl-ap .sl-ap-drop{ background:var(--sl-paper); }
+}
+#sl-ap .sl-ap-navwrap:hover .sl-ap-drop,
+#sl-ap .sl-ap-navwrap:focus-within .sl-ap-drop{
+  opacity:1; visibility:visible; transform:translateY(0) scale(1);
+  transition:opacity .22s var(--sl-ease-soft), transform .26s var(--sl-ease-spring), visibility 0s;
+}
+#sl-ap .sl-ap-drop-label{
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--sl-gold); font-weight:600; padding:6px 10px 8px;
+}
+#sl-ap .sl-ap-drop a{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:9px 10px; border-radius:10px; font-size:13.5px; color:var(--sl-ink);
+  transition:background .16s var(--sl-ease-soft);
+}
+#sl-ap .sl-ap-drop a:hover{ background:var(--sl-gold-wash); color:var(--sl-gold-hover); }
+
+/* ───────────────────────── RESIDENCES DIRECTORY DRAWER ───────────────────────── */
+#sl-ap .sl-ap-dir{
+  position:fixed;
+  top:calc(64px + var(--sl-topgap));
+  left:50%;
+  transform:translateX(-50%) translateY(8px) scale(.985);
+  width:min(1100px, calc(100% - 32px));
+  max-height:calc(100vh - 84px - var(--sl-topgap));
+  z-index:2147483646;   /* below the bar (cap 647) so the bar's hover dropdowns sit on top; above the veil */
+  font-family:var(--sl-sans);
+  background:var(--sl-glass-strong);
+  -webkit-backdrop-filter:blur(28px) saturate(1.5);
+  backdrop-filter:blur(28px) saturate(1.5);
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:20px; box-shadow:var(--sl-shadow-console);
+  opacity:0; visibility:hidden; pointer-events:none;
+  display:flex; flex-direction:column; overflow:hidden;
+  transition:opacity .26s var(--sl-ease-soft), transform .32s var(--sl-ease-spring), visibility 0s linear .32s;
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  #sl-ap .sl-ap-dir{ background:var(--sl-paper); }
+}
+body.sl-ap-dir-open #sl-ap .sl-ap-dir{
+  opacity:1; visibility:visible; pointer-events:auto;
+  transform:translateX(-50%) translateY(0) scale(1);
+  transition:opacity .26s var(--sl-ease-soft), transform .32s var(--sl-ease-spring), visibility 0s;
+}
+
+#sl-ap .sl-ap-dir-head{
+  display:flex; align-items:center; gap:14px;
+  padding:18px 22px; border-bottom:1px solid var(--sl-hair); flex:none;
+}
+#sl-ap .sl-ap-dir-lens{
+  width:13px; height:13px; border-radius:50%;
+  border:2px solid var(--sl-gold); flex:none; position:relative;
+}
+#sl-ap .sl-ap-dir-lens::after{
+  content:""; position:absolute; top:50%; left:50%; width:4px; height:4px;
+  background:var(--sl-gold); border-radius:50%; transform:translate(-50%,-50%);
+}
+#sl-ap .sl-ap-dir-title{
+  flex:1; font-family:var(--sl-serif); font-size:19px; letter-spacing:-.005em; color:var(--sl-ink);
+}
+#sl-ap .sl-ap-esc-float{
+  position:absolute; top:14px; right:16px; z-index:2;
+}
+#sl-ap .sl-ap-esc{
+  font-size:10.5px; letter-spacing:.02em; color:var(--sl-muted-2);
+  border:1px solid var(--sl-hair); background:rgba(251,248,241,.7);
+  border-radius:7px; padding:5px 9px; box-shadow:var(--sl-bevel); flex:none;
+}
+#sl-ap .sl-ap-esc:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+
+/* two-state body: at rest ONLY the city grid; selecting a city slides the
+   facet sidebar open (grid-template-columns animates in modern browsers;
+   older ones simply snap — still fully functional) */
+#sl-ap .sl-ap-dir-body{
+  display:grid; grid-template-columns:1fr 0fr; gap:0;
+  overflow:hidden; min-height:0;
+  transition:grid-template-columns .45s var(--sl-ease-spring);
+}
+#sl-ap .sl-ap-dir.sl-ap-city-open .sl-ap-dir-body{ grid-template-columns:1.05fr 1fr; }
+/* shrunk grid: fewer, wider tiles so names never truncate; browse control redundant once open */
+#sl-ap .sl-ap-dir.sl-ap-city-open .sl-ap-citygrid{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+#sl-ap .sl-ap-dir.sl-ap-city-open .sl-ap-browsebtn{ display:none; }
+#sl-ap .sl-ap-col{ padding:20px 22px 24px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+#sl-ap .sl-ap-col-right{
+  padding:0; min-width:0; overflow:hidden;
+  opacity:0; visibility:hidden;
+  /* max-height clamps to 0 the moment the slide finishes, so leftover facet
+     content can't prop the panel open (white space under the grid) */
+  max-height:0;
+  transition:opacity .3s var(--sl-ease-soft), visibility 0s linear .45s, max-height 0s linear .45s;
+}
+#sl-ap .sl-ap-dir.sl-ap-city-open .sl-ap-col-right{
+  opacity:1; visibility:visible; border-left:1px solid var(--sl-hair);
+  max-height:none;
+  transition:opacity .35s var(--sl-ease-soft) .12s, visibility 0s, max-height 0s;
+}
+/* inner keeps its shape while the column slides open */
+#sl-ap .sl-ap-rightinner{ padding:20px 22px 24px; min-width:400px; overflow-y:auto; max-height:100%; }
+#sl-ap .sl-ap-collabel{
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--sl-gold); font-weight:600; margin:0 0 14px;
+}
+#sl-ap .sl-ap-collabel.sl-ap-mt{ margin-top:24px; }
+
+/* city cards — a uniform compact grid, 4 per row (7 cities + View All = 2 rows;
+   grows to 3 rows automatically as more cities launch) */
+#sl-ap .sl-ap-citygrid{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  gap:9px;
+}
+#sl-ap .sl-ap-citygrid > *{ min-width:0; }
+/* full-bleed image tiles — all cells the same size as the View All card,
+   city name overlaid on a soft dark bottom gradient */
+#sl-ap .sl-ap-cityrow{
+  display:block; height:118px; border-radius:14px; overflow:hidden;
+  position:relative; outline:none; cursor:pointer; width:100%;
+  box-shadow:var(--sl-bevel), 0 1px 4px rgba(10,10,10,.10);
+  transition:transform .18s var(--sl-ease-spring), box-shadow .18s var(--sl-ease-soft);
+}
+#sl-ap .sl-ap-cityrow:hover{ transform:translateY(-2px); box-shadow:var(--sl-bevel), 0 6px 18px rgba(10,10,10,.14); }
+#sl-ap .sl-ap-cityrow.sl-ap-active{ box-shadow:inset 0 0 0 2px var(--sl-gold), 0 4px 14px rgba(10,10,10,.12); }
+#sl-ap .sl-ap-cityrow:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+#sl-ap .sl-ap-thumb{
+  position:absolute; inset:0; width:100%; height:100%;
+}
+#sl-ap .sl-ap-cityshade{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(10,10,10,0) 42%, rgba(10,10,10,.64) 100%);
+}
+/* the "View all" card — same footprint, quiet hairline style */
+#sl-ap .sl-ap-cityall{
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  border:1px dashed rgba(184,150,110,.45); border-radius:14px;
+  font-size:13.5px; font-weight:500; color:var(--sl-muted-2);
+  transition:color .14s ease, border-color .14s ease, background .14s ease;
+}
+#sl-ap .sl-ap-cityall:hover{ color:var(--sl-ink); border-color:var(--sl-gold); background:rgba(255,255,255,.4); }
+#sl-ap .sl-ap-cityall:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+#sl-ap .t-london{background:radial-gradient(70% 80% at 30% 20%,#e7d3ad,transparent),linear-gradient(135deg,#c9ac80,#8f6f49);}
+#sl-ap .t-new-york{background:radial-gradient(70% 80% at 30% 20%,#dcc7a3,transparent),linear-gradient(135deg,#b89a6f,#7d6242);}
+#sl-ap .t-paris{background:radial-gradient(70% 80% at 30% 20%,#ecdcbb,transparent),linear-gradient(135deg,#cdb285,#9b7d54);}
+#sl-ap .t-madrid{background:radial-gradient(70% 80% at 30% 20%,#ead4ab,transparent),linear-gradient(135deg,#c6a574,#9c7445);}
+#sl-ap .t-cambridge{background:radial-gradient(70% 80% at 30% 20%,#e2d2ae,transparent),linear-gradient(135deg,#bfa67e,#88714c);}
+#sl-ap .t-milan{background:radial-gradient(70% 80% at 30% 20%,#e8d5ac,transparent),linear-gradient(135deg,#c9aa78,#a07a4d);}
+#sl-ap .t-edinburgh{background:radial-gradient(70% 80% at 30% 20%,#d4bf99,transparent),linear-gradient(135deg,#ac8f66,#6f5839);}
+#sl-ap .sl-ap-cityname{
+  position:absolute; left:13px; right:12px; bottom:10px;
+  font-size:14.5px; color:#fff; font-weight:600; letter-spacing:.005em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  text-shadow:0 1px 8px rgba(10,10,10,.45);
+  pointer-events:none;
+}
+
+/* the grid cell wraps the image link + the optional browse control */
+#sl-ap .sl-ap-citycell{
+  position:relative; min-width:0; border-radius:14px;
+  transition:opacity .25s var(--sl-ease-soft), filter .25s var(--sl-ease-soft);
+}
+
+/* gold "Browse options" corner control (only on cities with facet pages) */
+#sl-ap .sl-ap-browsebtn{
+  position:absolute; right:8px; bottom:8px; z-index:3;
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--sl-sans); font-size:10.5px; font-weight:600; letter-spacing:.03em;
+  color:#fff; cursor:pointer;
+  background:rgba(10,10,10,.46); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  border:1px solid rgba(249,235,191,.3); border-radius:100px; padding:6px 12px;
+  transition:background .16s var(--sl-ease-soft), border-color .16s var(--sl-ease-soft), transform .16s var(--sl-ease-spring);
+}
+#sl-ap .sl-ap-browsebtn:hover{ background:rgba(10,10,10,.66); border-color:rgba(249,235,191,.7); transform:translateY(-1px); }
+#sl-ap .sl-ap-browsebtn:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+#sl-ap .sl-ap-browsebtn-arr{ color:#EBC98E; font-size:13px; font-weight:700; }
+#sl-ap .sl-ap-browsebtn svg{ width:13px; height:13px; color:#EBC98E; flex:none; }
+
+/* ── FOCUS EFFECT — dim the other tiles when one is hovered or active ── */
+#sl-ap .sl-ap-cityall{ transition:opacity .25s var(--sl-ease-soft), border-color .14s, color .14s, background .14s; }
+/* active (a city is selected + sidebar open) */
+#sl-ap .sl-ap-citygrid.sl-ap-has-active .sl-ap-citycell:not(.sl-ap-cell-active),
+#sl-ap .sl-ap-citygrid.sl-ap-has-active .sl-ap-cityall{ opacity:.42; }
+/* hover (pointer devices) — fade the siblings, keep the hovered one bright */
+@media (hover:hover){
+  #sl-ap .sl-ap-citygrid:has(a:hover, button:hover) > *{ opacity:.42; }
+  #sl-ap .sl-ap-citygrid:has(a:hover, button:hover) > *:hover,
+  #sl-ap .sl-ap-citygrid:has(a:hover, button:hover) > *:has(:hover){ opacity:1; }
+}
+#sl-ap .sl-ap-opentag{
+  position:absolute; top:8px; right:8px;
+  font-size:9.5px; letter-spacing:.04em; color:#fff; font-weight:600;
+  background:rgba(10,10,10,.38); border-radius:100px; padding:2px 7px;
+  backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+  opacity:0; transform:translateX(-4px);
+  transition:opacity .16s ease, transform .16s var(--sl-ease-spring);
+}
+#sl-ap .sl-ap-cityrow.sl-ap-active .sl-ap-opentag{ opacity:1; transform:translateX(0); }
+
+/* right column chips + links */
+#sl-ap .sl-ap-chiprow{ display:flex; flex-wrap:wrap; gap:8px; }
+#sl-ap .sl-ap-chip{
+  font-size:12.5px; color:var(--sl-muted-2);
+  border:1px solid var(--sl-hair); border-radius:9px;
+  padding:8px 12px; background:rgba(255,255,255,.32);
+  box-shadow:var(--sl-bevel); transition:all .14s var(--sl-ease-soft);
+}
+#sl-ap .sl-ap-chip:hover{ border-color:rgba(184,150,110,.5); color:var(--sl-ink); background:rgba(255,255,255,.6); }
+#sl-ap .sl-ap-chip:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:1px; border-color:var(--sl-gold); }
+#sl-ap .sl-ap-dir-allcity{
+  display:inline-flex; align-items:center; gap:6px; margin-top:18px;
+  font-size:13px; color:var(--sl-ink); font-weight:500;
+}
+#sl-ap .sl-ap-dir-allcity:hover{ color:var(--sl-gold-hover); }
+/* sidebar header — big city name + its quote */
+#sl-ap .sl-ap-dir-head2{
+  display:flex; align-items:flex-start; gap:26px;
+  padding-right:52px;   /* clear the floating esc chip */
+  margin:0 0 14px;
+}
+#sl-ap .sl-ap-dir-cityname{
+  font-family:var(--sl-serif); font-weight:400; font-size:40px; line-height:.95;
+  letter-spacing:-.02em; color:var(--sl-ink); flex:none; margin:0;
+}
+#sl-ap .sl-ap-dir-quote{
+  font-family:var(--sl-body-serif); font-style:italic; font-size:14px; line-height:1.5;
+  color:var(--sl-muted-2); flex:1; min-width:0; margin:5px 0 0;
+}
+#sl-ap .sl-ap-dir-quoteattr{ color:var(--sl-muted); }
+#sl-ap .sl-ap-dir-blurb{
+  font-family:var(--sl-body-serif); font-size:15.5px; line-height:1.5;
+  color:#3a342c; margin:14px 0 2px; max-width:46ch;
+}
+/* the big solid-gold "View all {City} apartments" button */
+#sl-ap .sl-ap-dir-viewcity{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:15px 20px; border-radius:10px;
+  background:var(--sl-gold); border:1px solid var(--sl-gold);
+  font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#fff;
+  transition:background .16s var(--sl-ease-soft);
+}
+#sl-ap .sl-ap-dir-viewcity:hover{ background:var(--sl-gold-hover); border-color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-dir-viewcity:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+#sl-ap .sl-ap-dir-viewcity span{ color:#fff; }
+
+#sl-ap .sl-ap-dir-foot{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 22px; border-top:1px solid var(--sl-hair); flex:none;
+  background:rgba(251,248,241,.4);
+}
+#sl-ap .sl-ap-foot-hint{ font-size:11px; letter-spacing:.02em; color:var(--sl-muted); }
+#sl-ap .sl-ap-foot-all{ font-size:12.5px; color:var(--sl-ink); font-weight:500; }
+#sl-ap .sl-ap-foot-all:hover{ color:var(--sl-gold-hover); }
+
+/* ════════════════════════════════════════════════════════════════
+   MOBILE — "LENS CURTAIN"  (ported from mobile-lens-curtain.html)
+   The bronze lens-dot trigger irises open; a near-opaque ivory curtain
+   DESCENDS from under the capsule via clip-path inset(0 0 100% 0)→inset(0).
+   Classes are mobile-only (sl-ap-trigger / sl-ap-curtain / sl-ap-card …)
+   and never collide with the desktop directory classes.
+   ════════════════════════════════════════════════════════════════ */
+/* focus-trap containers are parked focus targets — suppress their UA ring */
+#sl-ap .sl-ap-curtain:focus, #sl-ap .sl-ap-dir:focus{ outline:none !important; }
+
+/* live viewport height — recomputed on resize for the iOS URL-bar */
+#sl-ap{ --sl-vh:100dvh; }
+
+/* THE LENS-DOT TRIGGER (⊙) — lives in the capsule, mobile-only */
+#sl-ap .sl-ap-trigger{
+  display:none;
+  width:44px; height:44px; flex:none; border-radius:12px;
+  place-items:center; position:relative;
+  background:rgba(255,255,255,.42); border:1px solid var(--sl-hair);
+  box-shadow:var(--sl-bevel);
+  transition:background .2s var(--sl-ease-soft), border-color .2s var(--sl-ease-soft);
+  -webkit-tap-highlight-color:transparent;
+}
+#sl-ap .sl-ap-trigger:hover{ background:rgba(255,255,255,.66); border-color:rgba(184,150,110,.45); }
+#sl-ap .sl-ap-trigger:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+#sl-ap .sl-ap-trigger:active{ transform:scale(.96); }
+#sl-ap .sl-ap-trigger svg{ width:24px; height:24px; display:block; overflow:visible; }
+/* hamburger — three bronze rules that fold into an ✕ when the curtain opens */
+#sl-ap .sl-ap-bl{
+  stroke:var(--sl-gold); stroke-width:1.7; stroke-linecap:round;
+  transform-box:fill-box; transform-origin:center;
+  transition:transform .3s var(--sl-ease-spring), opacity .18s var(--sl-ease-soft), stroke .2s ease;
+}
+body.sl-ap-curtain-open #sl-ap .sl-ap-bl{ stroke:var(--sl-ink); }
+body.sl-ap-curtain-open #sl-ap .sl-ap-bl-top{ transform:translateY(4.5px) rotate(45deg); }
+body.sl-ap-curtain-open #sl-ap .sl-ap-bl-mid{ opacity:0; transform:scaleX(.2); }
+body.sl-ap-curtain-open #sl-ap .sl-ap-bl-bot{ transform:translateY(-4.5px) rotate(-45deg); }
+body.sl-ap-curtain-open #sl-ap .sl-ap-trigger{ background:rgba(255,255,255,.7); border-color:rgba(184,150,110,.55); }
+
+/* THE CURTAIN — fixed top:0, full width, 100dvh; develops down */
+#sl-ap .sl-ap-curtain{
+  position:fixed; top:0; left:0; right:0;
+  height:100dvh; height:var(--sl-vh);
+  z-index:2147483645;
+  font-family:var(--sl-sans);
+  background:var(--sl-glass-strong);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);
+  backdrop-filter:blur(14px) saturate(1.3);
+  border-bottom:1px solid rgba(255,255,255,.4);
+  display:none; flex-direction:column; overflow:hidden;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transform:translateY(-12px);
+  transition:opacity .3s var(--sl-ease-soft), transform .42s var(--sl-ease-spring), visibility 0s linear .42s;
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  #sl-ap .sl-ap-curtain{ background:var(--sl-paper); }
+}
+@supports (clip-path:inset(0 0 100% 0)){
+  #sl-ap .sl-ap-curtain{
+    transform:none;
+    clip-path:inset(0 0 100% 0);
+    transition:clip-path .42s var(--sl-ease-spring), opacity .3s var(--sl-ease-soft), visibility 0s linear .42s;
+  }
+  body.sl-ap-curtain-open #sl-ap .sl-ap-curtain{ clip-path:inset(0 0 0 0); }
+}
+body.sl-ap-curtain-open #sl-ap .sl-ap-curtain{
+  opacity:1; visibility:visible; pointer-events:auto; transform:none;
+  transition:clip-path .42s var(--sl-ease-spring), opacity .3s var(--sl-ease-soft), transform .42s var(--sl-ease-spring), visibility 0s;
+}
+/* fast, GPU-cheap close — no clip-path retract, veil already dropped */
+body.sl-ap-closing #sl-ap .sl-ap-curtain{
+  clip-path:none !important; transform:none !important;
+  transition:opacity .22s var(--sl-ease-soft), visibility 0s linear .22s !important;
+}
+body.sl-ap-closing #sl-ap .sl-ap-dev{ transition:opacity .12s linear !important; transition-delay:0s !important; }
+#sl-ap .sl-ap-curtain-scroll{
+  flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding:calc(78px + env(safe-area-inset-top)) 22px 18px;
+}
+
+/* the three develop groups — opacity-only, staged. NO translateY: a moving tap
+   target makes iOS cancel the first tap (touch-down and -up land on different
+   spots), which is why "Our Apartments" needed two taps on first open. */
+#sl-ap .sl-ap-dev{
+  opacity:0;
+  transition:opacity .36s var(--sl-ease-soft);
+}
+body.sl-ap-developed #sl-ap .sl-ap-dev{ opacity:1; }
+body.sl-ap-developed #sl-ap .sl-ap-dev-1{ transition-delay:.06s; }
+body.sl-ap-developed #sl-ap .sl-ap-dev-2{ transition-delay:.15s; }
+body.sl-ap-developed #sl-ap .sl-ap-dev-3{ transition-delay:.24s; }
+
+/* eyebrow */
+#sl-ap .sl-ap-eyebrow{
+  display:flex; align-items:center; gap:9px;
+  font-family:var(--sl-serif); font-weight:400;
+  font-size:18px; letter-spacing:-.005em; color:var(--sl-ink);
+  margin:0 0 6px;
+}
+#sl-ap .sl-ap-eyebrow .sl-ap-lens{
+  width:9px; height:9px; border-radius:50%;
+  border:1.5px solid var(--sl-gold); flex:none; position:relative;
+}
+#sl-ap .sl-ap-eyebrow .sl-ap-lens::after{
+  content:""; position:absolute; top:50%; left:50%; width:3px; height:3px;
+  background:var(--sl-gold); border-radius:50%; transform:translate(-50%,-50%);
+}
+#sl-ap .sl-ap-eyebrow-rule{ height:1px; background:var(--sl-hair); margin:14px 0 4px; }
+
+/* PRIMARY SECTIONS — four large serif rows */
+#sl-ap .sl-ap-prim{ display:flex; flex-direction:column; }
+#sl-ap .sl-ap-prow{ border-bottom:1px solid var(--sl-hair-soft); }
+/* summary stays display:block — iOS Safari needs two taps to toggle a
+   <summary> that is itself a flex container, so the flex lives on .sl-ap-sum */
+#sl-ap .sl-ap-prow > summary{
+  font-family:var(--sl-serif); font-weight:400;
+  font-size:27px; letter-spacing:-.01em; color:var(--sl-ink);
+  display:block; list-style:none; cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+#sl-ap .sl-ap-prow > summary .sl-ap-sum{
+  min-height:56px; padding:11px 2px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+#sl-ap .sl-ap-prow > summary::-webkit-details-marker{ display:none; }
+#sl-ap .sl-ap-prow > summary .sl-ap-pm{
+  font-family:var(--sl-sans); font-size:0; color:var(--sl-muted); font-weight:300;
+  width:22px; text-align:center; flex:none; transition:color .15s ease;
+}
+#sl-ap .sl-ap-prow > summary .sl-ap-pm::before{ content:'+'; font-size:20px; }
+#sl-ap .sl-ap-prow[open] > summary .sl-ap-pm{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-prow[open] > summary .sl-ap-pm::before{ content:'−'; }
+#sl-ap .sl-ap-prow > summary:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:-2px; border-radius:8px; }
+#sl-ap .sl-ap-prow > summary:active{ color:var(--sl-gold-hover); }
+
+/* direct-link primary rows (Reviews / Life at Luxe) — same serif row, an arrow instead of +/– */
+#sl-ap .sl-ap-prow-link{
+  font-family:var(--sl-serif); font-weight:400;
+  font-size:27px; letter-spacing:-.01em; color:var(--sl-ink);
+  min-height:56px; padding:11px 2px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  border-bottom:1px solid var(--sl-hair-soft);
+  -webkit-tap-highlight-color:transparent;
+}
+#sl-ap .sl-ap-prow-link .sl-ap-arr{
+  font-family:var(--sl-sans); font-size:18px; color:var(--sl-muted);
+  width:22px; text-align:center; flex:none;
+}
+#sl-ap .sl-ap-prow-link:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-prow-link:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:-2px; border-radius:8px; }
+
+/* socials — quiet text row under the last menu item */
+#sl-ap .sl-ap-curtain-social{
+  display:flex; align-items:center; gap:26px;
+  padding:20px 2px calc(28px + env(safe-area-inset-bottom));
+}
+#sl-ap .sl-ap-curtain-social a{
+  font-family:var(--sl-sans); font-size:13px; letter-spacing:.04em;
+  color:var(--sl-muted-2); min-height:44px; display:inline-flex; align-items:center;
+}
+#sl-ap .sl-ap-curtain-social a:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-curtain-social a:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; border-radius:6px; }
+
+#sl-ap .sl-ap-plinks{ display:flex; flex-direction:column; padding:0 2px 12px; }
+#sl-ap .sl-ap-plinks a{
+  font-family:var(--sl-sans); font-size:15px; color:var(--sl-muted-2);
+  padding:11px 4px; border-bottom:1px solid var(--sl-hair-soft);
+  display:flex; align-items:center; justify-content:space-between;
+  transition:color .14s var(--sl-ease-soft);
+}
+#sl-ap .sl-ap-plinks a:last-child{ border-bottom:none; }
+#sl-ap .sl-ap-plinks a:hover,#sl-ap .sl-ap-plinks a:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-plinks a:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:-2px; border-radius:7px; }
+#sl-ap .sl-ap-plinks a .sl-ap-arr{ color:var(--sl-gold); opacity:.6; font-size:13px; }
+
+/* ── CITY PANELS — a roomy second layer that slides in over the menu ── */
+#sl-ap .sl-ap-citypanel{
+  position:absolute; inset:0; z-index:3;
+  background:var(--sl-paper);
+  padding:calc(78px + var(--sl-topgap)) 20px calc(30px + env(safe-area-inset-bottom));
+  overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+  transform:translateX(100%); visibility:hidden;
+  transition:transform .38s var(--sl-ease-spring), visibility 0s linear .38s;
+}
+#sl-ap .sl-ap-citypanel.sl-ap-panel-open{
+  transform:translateX(0); visibility:visible;
+  transition:transform .38s var(--sl-ease-spring), visibility 0s;
+}
+#sl-ap .sl-ap-panel-back{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--sl-sans); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--sl-muted-2); min-height:44px; padding:0 4px; margin-bottom:4px;
+  -webkit-tap-highlight-color:transparent;
+}
+#sl-ap .sl-ap-panel-back:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-panel-back:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; border-radius:8px; }
+#sl-ap .sl-ap-panel-mesh{
+  height:96px; border-radius:12px;
+  box-shadow:var(--sl-bevel), 0 2px 8px rgba(10,10,10,.08);
+}
+#sl-ap .sl-ap-panel-name{
+  font-family:var(--sl-serif); font-weight:400; margin:16px 2px 0;
+  font-size:clamp(30px,8vw,36px); letter-spacing:-.01em; line-height:1.05; color:var(--sl-ink);
+}
+#sl-ap .sl-ap-panel-desc{
+  font-family:var(--sl-sans); font-size:12.5px; color:var(--sl-muted);
+  margin:5px 2px 0;
+}
+#sl-ap .sl-ap-panel-browse{
+  display:inline-flex; align-items:center; gap:6px; margin:14px 2px 6px;
+  font-family:var(--sl-sans); font-size:14px; font-weight:500; color:var(--sl-ink);
+  text-decoration:underline; text-underline-offset:4px; text-decoration-color:rgba(184,150,110,.55);
+  min-height:44px;
+}
+#sl-ap .sl-ap-panel-browse:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-panel-rows{ display:flex; flex-direction:column; }
+#sl-ap .sl-ap-panel-rows a{
+  font-family:var(--sl-sans); font-size:15px; color:var(--sl-muted-2);
+  padding:12px 4px; border-bottom:1px solid var(--sl-hair-soft);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  min-height:44px;
+}
+#sl-ap .sl-ap-panel-rows a:last-child{ border-bottom:none; }
+#sl-ap .sl-ap-panel-rows a:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-panel-rows a:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:-2px; border-radius:7px; }
+#sl-ap .sl-ap-panel-rows a .sl-ap-arr{ color:var(--sl-gold); opacity:.6; font-size:13px; flex:none; }
+/* neighbourhoods — two tidy columns of short names */
+#sl-ap .sl-ap-panel-rows-2{
+  display:grid; grid-template-columns:1fr 1fr; column-gap:18px;
+}
+#sl-ap .sl-ap-panel-rows-2 a{ justify-content:flex-start; }
+
+/* THE CITY DECK — full-bleed "contact-sheet" cards stacked */
+#sl-ap .sl-ap-deck{ display:flex; flex-direction:column; gap:9px; padding:6px 0 4px; }
+#sl-ap .sl-ap-card{ position:relative; }
+#sl-ap .sl-ap-card-row{
+  display:flex; align-items:stretch; gap:0;
+  border-radius:14px; overflow:hidden;
+  border:1px solid var(--sl-hair);
+  box-shadow:var(--sl-bevel), 0 1px 3px rgba(10,10,10,.05);
+  background:rgba(255,255,255,.3);
+  transition:border-color .16s var(--sl-ease-soft), box-shadow .16s var(--sl-ease-soft);
+}
+#sl-ap .sl-ap-card-row:hover{ border-color:rgba(184,150,110,.4); box-shadow:var(--sl-bevel), 0 4px 14px rgba(10,10,10,.08); }
+#sl-ap .sl-ap-card.sl-ap-flagship .sl-ap-card-row{ border-color:rgba(184,150,110,.34); }
+#sl-ap .sl-ap-card-body{
+  flex:1; min-width:0; display:flex; align-items:center; gap:0;
+  position:relative; min-height:76px;
+  -webkit-tap-highlight-color:transparent;
+}
+#sl-ap .sl-ap-card.sl-ap-flagship .sl-ap-card-body{ min-height:96px; }
+#sl-ap .sl-ap-card-body:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:-3px; border-radius:11px; }
+#sl-ap .sl-ap-card-mesh{ width:104px; flex:none; align-self:stretch; position:relative; }
+#sl-ap .sl-ap-card.sl-ap-flagship .sl-ap-card-mesh{ width:120px; }
+#sl-ap .sl-ap-card-mesh::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(90deg, rgba(251,248,241,0) 55%, rgba(251,248,241,.55) 100%);
+}
+#sl-ap .sl-ap-card-meta{ flex:1; min-width:0; padding:0 14px; }
+#sl-ap .sl-ap-card-name{
+  font-family:var(--sl-serif); font-weight:400;
+  font-size:21px; letter-spacing:-.01em; line-height:1.05; color:var(--sl-ink);
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+}
+#sl-ap .sl-ap-card.sl-ap-flagship .sl-ap-card-name{ font-size:23px; }
+#sl-ap .sl-ap-card-pill{
+  font-family:var(--sl-sans);
+  font-size:8.5px; letter-spacing:.14em; font-weight:700; text-transform:uppercase;
+  color:var(--sl-gold-hover); border:1px solid rgba(184,150,110,.5);
+  border-radius:5px; padding:2px 5px; position:relative; top:-1px;
+}
+#sl-ap .sl-ap-card-desc{
+  font-family:var(--sl-sans); font-size:11.5px; line-height:1.35; color:var(--sl-muted);
+  margin-top:5px; overflow:hidden; text-overflow:ellipsis;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+}
+#sl-ap .sl-ap-card-go{
+  font-family:var(--sl-sans); font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--sl-gold-hover); font-weight:600; margin-top:6px;
+  display:inline-flex; align-items:center; gap:5px; opacity:.85;
+  text-decoration:none; align-self:flex-start;
+}
+#sl-ap a.sl-ap-card-go:active{ opacity:1; }
+/* "Browse by" pill over the image (browse cities only) — mobile twin of the desktop corner control */
+#sl-ap .sl-ap-card-browse{
+  position:absolute; left:10px; bottom:10px; z-index:3;
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:var(--sl-sans); font-size:10.5px; font-weight:600; letter-spacing:.02em;
+  color:#fff; cursor:pointer;
+  background:rgba(10,10,10,.5); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  border:1px solid rgba(249,235,191,.32); border-radius:100px; padding:6px 11px;
+  -webkit-tap-highlight-color:transparent;
+}
+#sl-ap .sl-ap-card-browse:active{ background:rgba(10,10,10,.7); }
+#sl-ap .sl-ap-card-browse:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+/* browse card (London): image links to city page; two actions sit under the descriptor */
+#sl-ap .sl-ap-card-imglink{
+  width:104px; flex:none; align-self:stretch; position:relative; overflow:hidden;
+  display:block; -webkit-tap-highlight-color:transparent;
+}
+#sl-ap .sl-ap-card-imglink .sl-ap-card-mesh{ position:absolute; inset:0; width:100%; }
+#sl-ap .sl-ap-card-imglink:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:-3px; }
+#sl-ap .sl-ap-card-meta-browse{ display:flex; flex-direction:column; justify-content:center; padding:12px 14px; }
+#sl-ap .sl-ap-card-act{
+  display:inline-flex; align-items:center; gap:6px; align-self:flex-start;
+  font-family:var(--sl-sans); font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:600;
+  border-radius:100px; padding:7px 13px; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  border:1px solid transparent; line-height:1;
+}
+#sl-ap .sl-ap-card-act-filter{ margin-top:9px; background:transparent; color:var(--sl-ink); border-color:rgba(184,150,110,.5); }
+#sl-ap .sl-ap-card-act-filter:active{ border-color:var(--sl-gold); }
+#sl-ap .sl-ap-card-act-filter svg{ width:13px; height:13px; color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-card-act:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+/* trailing ⊙ EXPAND control */
+#sl-ap .sl-ap-card-exp{
+  width:52px; flex:none; align-self:stretch;
+  display:grid; place-items:center; position:relative;
+  border-left:1px solid var(--sl-hair);
+  background:rgba(184,150,110,.06);
+  -webkit-tap-highlight-color:transparent;
+  transition:background .16s var(--sl-ease-soft);
+  list-style:none; cursor:pointer;
+}
+#sl-ap .sl-ap-card-exp::-webkit-details-marker{ display:none; }
+#sl-ap .sl-ap-card-exp:hover{ background:rgba(184,150,110,.13); }
+#sl-ap .sl-ap-card-exp:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:-3px; border-radius:0 11px 11px 0; }
+#sl-ap .sl-ap-card-exp svg{ width:20px; height:20px; display:block; transition:transform .26s var(--sl-ease-spring); }
+#sl-ap .sl-ap-card-exp .sl-ap-exp-ring{ fill:none; stroke:var(--sl-gold); stroke-width:1.5; }
+#sl-ap .sl-ap-card-exp .sl-ap-exp-dot{ fill:var(--sl-gold); transition:transform .2s var(--sl-ease-soft), opacity .2s ease; transform-box:fill-box; transform-origin:center; }
+#sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp svg{ transform:rotate(45deg); }
+#sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp .sl-ap-exp-dot{ transform:scale(.01); opacity:0; }
+#sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp{ background:rgba(184,150,110,.16); }
+
+/* expanded facets panel (rendered inside a native <details>) */
+#sl-ap .sl-ap-facets{ overflow:hidden; padding:0 2px; }
+#sl-ap .sl-ap-facets-inner{ padding:14px 4px 8px; }
+#sl-ap .sl-ap-flabel{
+  font-family:var(--sl-sans);
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--sl-gold); font-weight:600; margin:0 0 9px;
+}
+#sl-ap .sl-ap-flabel.sl-ap-mt{ margin-top:18px; }
+#sl-ap .sl-ap-facets .sl-ap-chiprow{ display:flex; flex-wrap:wrap; gap:7px; }
+#sl-ap .sl-ap-facets .sl-ap-chip{
+  font-family:var(--sl-sans); font-size:12.5px; color:var(--sl-muted-2);
+  border:1px solid var(--sl-gold); border-radius:9px;
+  padding:7px 12px; background:rgba(255,255,255,.32);
+  box-shadow:var(--sl-bevel);
+  transition:color .14s var(--sl-ease-soft), background .14s var(--sl-ease-soft);
+}
+#sl-ap .sl-ap-facets .sl-ap-chip:hover,#sl-ap .sl-ap-facets .sl-ap-chip:active{ color:var(--sl-gold-hover); background:var(--sl-gold-wash); }
+#sl-ap .sl-ap-facets .sl-ap-chip:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+#sl-ap .sl-ap-flinks{ display:flex; flex-wrap:wrap; gap:2px 18px; }
+#sl-ap .sl-ap-flinks a{
+  font-family:var(--sl-sans); font-size:14px; color:var(--sl-muted-2);
+  padding:7px 0; line-height:1.2;
+  transition:color .14s var(--sl-ease-soft);
+}
+#sl-ap .sl-ap-flinks a:hover,#sl-ap .sl-ap-flinks a:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-flinks a:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; border-radius:5px; }
+#sl-ap .sl-ap-browseall{
+  display:inline-flex; align-items:center; gap:6px; margin-top:16px;
+  font-family:var(--sl-sans); font-size:13.5px; color:var(--sl-ink); font-weight:500;
+}
+#sl-ap .sl-ap-browseall:hover,#sl-ap .sl-ap-browseall:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-browseall:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; border-radius:6px; }
+
+/* "View all cities →" at the deck's end */
+#sl-ap .sl-ap-viewall{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:12px; padding:14px;
+  font-family:var(--sl-sans); font-size:13.5px; color:var(--sl-ink); font-weight:500;
+  border:1px solid var(--sl-hair); border-radius:12px;
+  background:rgba(255,255,255,.28); box-shadow:var(--sl-bevel);
+}
+#sl-ap .sl-ap-viewall:hover,#sl-ap .sl-ap-viewall:active{ color:var(--sl-gold-hover); border-color:rgba(184,150,110,.4); }
+#sl-ap .sl-ap-viewall:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; }
+
+/* STICKY FOOT RAIL — pinned to the curtain bottom; never scrolls */
+#sl-ap .sl-ap-foot{
+  flex:none;
+  padding:13px 22px calc(13px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--sl-hair);
+  background:rgba(251,248,241,.62);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+}
+#sl-ap .sl-ap-foot .sl-ap-cta{
+  width:100%; height:52px; border-radius:13px;
+  background:var(--sl-ink); color:#F6F2E8;
+  font-family:var(--sl-sans); font-size:14px; letter-spacing:.02em; font-weight:500;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 18px rgba(10,10,10,.24);
+  transition:background .2s, box-shadow .2s, transform .15s var(--sl-ease-spring);
+}
+#sl-ap .sl-ap-foot .sl-ap-cta:hover{ background:#181818; box-shadow:0 8px 22px rgba(10,10,10,.3); }
+#sl-ap .sl-ap-foot .sl-ap-cta:active{ transform:translateY(1px); }
+#sl-ap .sl-ap-foot .sl-ap-cta:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:3px; }
+#sl-ap .sl-ap-foot-contact{
+  display:block; text-align:center; margin-top:9px;
+  font-family:var(--sl-sans); font-size:13px; color:var(--sl-muted-2);
+  text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(184,150,110,.5);
+}
+#sl-ap .sl-ap-foot-contact:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-foot-second{ display:flex; align-items:center; justify-content:space-between; margin-top:12px; }
+#sl-ap .sl-ap-foot-wa{
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--sl-sans); font-size:13px; color:var(--sl-muted-2);
+}
+#sl-ap .sl-ap-foot-wa svg{ width:18px; height:18px; color:var(--sl-gold); }
+#sl-ap .sl-ap-foot-wa:hover,#sl-ap .sl-ap-foot-wa:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-foot-wa:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; border-radius:7px; }
+#sl-ap .sl-ap-foot-social{ display:flex; gap:13px; }
+#sl-ap .sl-ap-foot-social a{
+  font-family:var(--sl-sans); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--sl-muted-2); font-weight:500;
+}
+#sl-ap .sl-ap-foot-social a:hover,#sl-ap .sl-ap-foot-social a:active{ color:var(--sl-gold-hover); }
+#sl-ap .sl-ap-foot-social a:focus-visible{ outline:2px solid var(--sl-gold); outline-offset:2px; border-radius:5px; }
+
+/* the page softens (rack focus) when the curtain opens — mobile path */
+body.sl-ap-open.sl-ap-rack #siteWrapper,
+body.sl-ap-open.sl-ap-rack #page{ /* blur applied via the shared desktop rule above */ }
+
+/* ───────────────────────────── RESPONSIVE ───────────────────────────── */
+/* six nav items — tighten spacing before the mobile breakpoint */
+@media (max-width:1180px){
+  #sl-ap .sl-ap-navlink{ padding:9px 9px; font-size:12px; }
+  #sl-ap .sl-ap-nav{ gap:0; }
+  #sl-ap .sl-ap-wordmark{ padding-right:8px; }
+}
+@media (max-width:880px){
+  /* desktop pieces off */
+  #sl-ap .sl-ap-nav,
+  #sl-ap .sl-ap-icon,
+  #sl-ap .sl-ap-socialtext,
+  #sl-ap .sl-ap-cta{ display:none; }
+  #sl-ap .sl-ap-dir{ display:none !important; }
+
+  /* the Lens Curtain on */
+  #sl-ap .sl-ap-trigger{ display:grid; margin-left:auto; }
+  #sl-ap .sl-ap-curtain{ display:flex; }
+
+  #sl-ap .sl-ap-cap{
+    height:56px;
+    width:100%; border-radius:0; padding:7px 16px; gap:8px;
+  }
+  #sl-ap .sl-ap-cap.sl-ap-tight{ transform:none; }
+  #sl-ap .sl-ap-wordmark{ font-size:16px; padding-left:8px; flex:none; }
+  #sl-ap .sl-ap-wordmark-logo{ padding-left:8px; }
+  #sl-ap .sl-ap-logo-img{ height:var(--sl-logo-h-m,20px); }
+  #sl-ap .sl-ap-spacer{ display:none; }
+
+  /* reduced blur on mobile for perf */
+  #sl-ap .sl-ap-cap{ -webkit-backdrop-filter:blur(16px) saturate(1.3); backdrop-filter:blur(16px) saturate(1.3); }
+}
+@media (min-width:881px){
+  #sl-ap .sl-ap-trigger, #sl-ap .sl-ap-curtain{ display:none !important; }
+}
+
+/* reduced motion → cross-fade only, no iris/rack-focus */
+@media (prefers-reduced-motion:reduce){
+  #sl-ap .sl-ap-dir{ transition:opacity .18s linear, visibility 0s !important; transform:translateX(-50%) !important; }
+  body.sl-ap-dir-open #sl-ap .sl-ap-dir{ transform:translateX(-50%) !important; }
+  body.sl-ap-open.sl-ap-rack #siteWrapper,
+  body.sl-ap-open.sl-ap-rack #page{ filter:none !important; }
+  #sl-ap .sl-ap-cap, #sl-ap .sl-ap-drop, #sl-ap .sl-ap-cityrow, #sl-ap .sl-ap-chip, #sl-ap .sl-ap-opentag{
+    transition:opacity .15s linear !important; animation:none !important;
+  }
+  #sl-ap .sl-ap-cap.sl-ap-tight{ transform:none !important; }
+
+  /* ── Lens Curtain reduced-motion: ~180ms cross-fade, no page blur ── */
+  #sl-ap .sl-ap-curtain{
+    clip-path:none !important; transform:none !important;
+    transition:opacity .18s linear, visibility 0s !important;
+  }
+  body.sl-ap-curtain-open #sl-ap .sl-ap-curtain{ clip-path:none !important; }
+  #sl-ap .sl-ap-dev{ transition:opacity .18s linear !important; transform:none !important; }
+  body.sl-ap-developed #sl-ap .sl-ap-dev{ transform:none !important; }
+  body.sl-ap-developed #sl-ap .sl-ap-dev-1,
+  body.sl-ap-developed #sl-ap .sl-ap-dev-2,
+  body.sl-ap-developed #sl-ap .sl-ap-dev-3{ transition-delay:0s !important; }
+  #sl-ap .sl-ap-bl{ transition:opacity .15s linear, stroke .15s linear !important; }
+  body.sl-ap-curtain-open #sl-ap .sl-ap-bl-top{ transform:translateY(4.5px) rotate(45deg); }
+  body.sl-ap-curtain-open #sl-ap .sl-ap-bl-bot{ transform:translateY(-4.5px) rotate(-45deg); }
+  /* city panels: no slide — instant cross-fade */
+  #sl-ap .sl-ap-citypanel{ transform:none !important; opacity:0; transition:opacity .15s linear, visibility 0s linear .15s !important; }
+  #sl-ap .sl-ap-citypanel.sl-ap-panel-open{ opacity:1; transition:opacity .15s linear, visibility 0s !important; }
+  /* desktop facet sidebar: snap open, no column animation */
+  #sl-ap .sl-ap-dir-body{ transition:none !important; }
+  #sl-ap .sl-ap-col-right{ transition:opacity .15s linear, visibility 0s !important; }
+  #sl-ap .sl-ap-card-exp svg{ transition:none !important; }
+  #sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp svg{ transform:none !important; }
+  #sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp .sl-ap-exp-dot{ transform:none !important; }
+}
+
+/* noscript fallback nav — a real, crawlable menu when JS is off */
+#sl-ap-noscript{
+  position:relative; z-index:2147483646;
+  font-family:var(--sl-serif,'baskerville-display-pt',Georgia,serif);
+  background:#FBF8F1; border-bottom:1px solid rgba(10,10,10,.10);
+  padding:14px 20px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 18px;
+}
+#sl-ap-noscript .sl-ap-ns-brand{ font-size:18px; color:#0a0a0a; margin-right:auto; }
+#sl-ap-noscript a{ color:#0a0a0a; text-decoration:none; font-size:13px; }
+#sl-ap-noscript a:hover{ color:#a07d5a; }
+#sl-ap-noscript .sl-ap-ns-row{ width:100%; display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12px; color:rgba(10,10,10,.62); }
+</style>
+
+<script>
+(function(){
+  "use strict";
+
+  /* Squarespace injects this in <head>, so document.body may not exist yet.
+     Defer the whole build until the DOM is ready. */
+  function __slApBoot(){
+
+  /* ════════════════════════════════════════════════════════════════
+     CONFIG — single source of truth. EDIT LINKS HERE.
+     Every label/href below renders into real <a href> anchors.
+     ════════════════════════════════════════════════════════════════ */
+  var CONFIG = {
+    brand:{
+      name:'Student Luxe',
+      wordmark:['Student','Luxe'],     // text fallback if the logo image is absent/fails
+      logo:{
+        // Your real logo (white PNG). On the light header we flip it to black.
+        src:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/b4112f3c-4153-4544-b7bd-2c93282a68a2/Logo+White+website.png?format=1500w',
+        invertToBlack:true,            // source is white -> render solid black. Set false once you supply a black logo.
+        height:24,                     // logo height (px) on desktop
+        heightMobile:20                // logo height (px) on mobile
+      },
+      home:'/',
+      allCities:'/find-an-apartment',  // "View all cities"
+      cta:{ label:'Apartment Enquiries', href:'/reservations' },
+      contact:{ label:'General contact', href:'/reservations#speak-to-us' },
+      residencesLabel:'Our Apartments',   // the nav label for the city directory
+      whatsapp:'https://wa.me/442030070017',
+      socials:{
+        instagram:'https://www.instagram.com/student_luxe',
+        tiktok:'https://www.tiktok.com/@studentluxe',
+        youtube:'https://www.youtube.com/@studentluxe'
+      }
+    },
+
+    /* primary nav — items with `links` open a dropdown (desktop hover / mobile
+       accordion); items with `href` are plain top-level links. This list
+       renders AFTER Home and Our Apartments, so the full order is:
+       Home · Our Apartments · About · Why Luxe · Our Reviews · Life at Luxe · Reservations */
+    primaryNav:[
+      { label:'About', links:[
+        ['Meet our Team','/meet-the-team'],
+        ['Our Story','/about-us'],
+        ['FAQs','/faqs'],
+        ['Partnerships','/partnerships'],
+        ['Careers','/careers-at-luxe']
+      ]},
+      { label:'Why Luxe', links:[
+        ['All-Inclusive Living','/services'],
+        ['Guest Experience','/guest-experience-team'],
+        ['Us vs. Other Rentals','/luxe-vs-renting']
+      ]},
+      { label:'Our Reviews', href:'/our-reviews' },
+      { label:'Life at Luxe', href:'/journal' },
+      { label:'Reservations', links:[
+        ['Apartment Enquiries','/reservations'],
+        ['General Contact','/reservations#speak-to-us'],
+        ['Group Bookings','/group-bookings'],
+        ['How it Works','/booking-process']
+      ]}
+    ],
+
+    /* amenity facet labels (shared) — slug used to build each city's amenity URL */
+    amenities:[
+      ['With Reception','reception'],
+      ['Allows Pets','pets'],
+      ['Outdoor Space','outdoor'],
+      ['Air Conditioned','aircon'],
+      ['Gym','gym']
+    ],
+
+    /* CITIES — uniform cards, London first. Helpers below build facet URLs. */
+    cities:[
+      {
+        slug:'london', name:'London', browse:true,
+        quote:"'When a man is tired of London, he is tired of life'", quoteAttr:'Dr. Samuel Johnson, 1777',
+        blurb:"Filter your search for luxury student accommodation in London \u2014 the world\u2019s best student city.",   // has real uni/area pages → shows "Browse options" + sidebar
+        descriptor:'From Mayfair to Fitzrovia',
+        sub:'Studios→4-bed', count:'',
+        /* real photo — shown on the city tile, mobile card and city panel.
+           Add an `image` to any city and it appears everywhere automatically. */
+        image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/f810a164-d25b-4d2d-8a25-3c19e7ca1e8f/belgravia-heights-2bed-deluxe-12.jpeg?format=1000w',
+        page:'/luxury-student-apartments-london',
+        // London: query-string facets appended to its city page
+        types:[
+          ['Studios','/luxury-student-apartments-london?type=studio'],
+          ['1 Bedroom','/luxury-student-apartments-london?type=1bed'],
+          ['2 Bedrooms','/luxury-student-apartments-london?type=2bed'],
+          ['3 Bedrooms','/luxury-student-apartments-london?type=3bed'],
+          ['4 Bedrooms','/luxury-student-apartments-london?type=4bed']
+        ],
+        amenityBase:'/luxury-student-apartments-london?amenity=', // + slug
+        universities:[
+          ['UCL','/apartments-near-ucl'],
+          ["King's College London",'/kings-college-london-accommodation'],
+          ['LSE','/lse-accommodation'],
+          ['Imperial College','/imperial-college-london-accommodation'],
+          ['Queen Mary','/queen-mary-university-of-london-accommodation'],
+          ['City University','/city-university-of-london-accommodation'],
+          ['SOAS','/soas-accommodation'],
+          ["Regent's University",'/regents-university-london-accommodation']
+        ],
+        neighbourhoods:[
+          ['Mayfair','/mayfair-student-accommodation'],
+          ['Covent Garden','/covent-garden-student-accommodation'],
+          ['Fitzrovia','/student-accommodation-fitzrovia'],
+          ['Holborn','/holborn-student-accommodation'],
+          ['Kensington','/kensington-student-accommodation'],
+          ['Knightsbridge','/knightsbridge-student-accommodation'],
+          ['Notting Hill','/student-accommodation-notting-hill'],
+          ['Marylebone','/marylebone-student-accommodation'],
+          ['Soho','/student-accommodation-soho'],
+          ["King's Cross",'/student-apartments-kings-cross']
+        ]
+      },
+      {
+        slug:'new-york', name:'New York',
+        quote:"'New York is not a city. It's a world.'", quoteAttr:'Ric Burns',
+        descriptor:'Greenwich Village to Brooklyn',
+        sub:'Studios→3-bed', count:'',
+        image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/102919c5-c50a-4c61-9909-caab93e80bcc/manhattanville-heights-facilities-17.jpg?format=1000w',
+        page:'/student-apartments-new-york',
+        types:[
+          ['Studios','/new-york-student-apartments/studios'],
+          ['1 Bedroom','/new-york-student-apartments/1-bedroom'],
+          ['2 Bedrooms','/new-york-student-apartments/2-bedroom'],
+          ['3 Bedrooms','/new-york-student-apartments/3-bedroom']
+        ],
+        amenityBase:'/new-york-student-apartments?amenity=',
+        universities:[ ['NYU','#'], ['Columbia','#'], ['The New School','#'], ['Fordham','#'] ],
+        neighbourhoods:[ ['Greenwich Village','#'], ['Midtown','#'], ['Brooklyn','#'], ['Upper East Side','#'] ]
+      },
+      {
+        slug:'paris', name:'Paris',
+        quote:"'Paris is always a good idea'", quoteAttr:'Audrey Hepburn',
+        descriptor:'Le Marais to Saint-Germain',
+        sub:'Studios→3-bed', count:'',
+        image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1738171720459-UTH6USS5XI83OWWD3PN5/paris-amphitheatre-residences-1.jpeg?format=1000w',
+        page:'/student-apartments-paris',
+        types:[
+          ['Studios','/paris-student-apartments/studios'],
+          ['1 Bedroom','/paris-student-apartments/1-bedroom'],
+          ['2 Bedrooms','/paris-student-apartments/2-bedroom'],
+          ['3 Bedrooms','/paris-student-apartments/3-bedroom']
+        ],
+        amenityBase:'/paris-student-apartments?amenity=',
+        universities:[ ['Sciences Po','#'], ['Sorbonne','#'], ['HEC Paris','#'], ['Paris-Dauphine','#'] ],
+        neighbourhoods:[ ['Le Marais','#'], ['Latin Quarter','#'], ['Saint-Germain','#'], ['Champs-Élysées','#'] ]
+      },
+      {
+        slug:'madrid', name:'Madrid',
+        quote:"'The city that never sleeps, and never wants to.'", quoteAttr:'Ernest Hemingway',
+        descriptor:'Salamanca to Chamberí',
+        sub:'Studios→3-bed', count:'',
+        image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1729173561841-W4526O6HPWODQ5XH10WG/sol-ana-suites-studio-1.jpeg?format=1000w',
+        page:'/luxury-student-apartments-madrid',
+        types:[
+          ['Studios','/madrid-student-apartments/studios'],
+          ['1 Bedroom','/madrid-student-apartments/1-bedroom'],
+          ['2 Bedrooms','/madrid-student-apartments/2-bedroom'],
+          ['3 Bedrooms','/madrid-student-apartments/3-bedroom']
+        ],
+        amenityBase:'/madrid-student-apartments?amenity=',
+        universities:[ ['IE University','#'], ['Complutense','#'], ['Universidad Autónoma','#'], ['Comillas ICAI','#'] ],
+        neighbourhoods:[ ['Salamanca','#'], ['Chamberí','#'], ['Chueca','#'], ['Retiro','#'] ]
+      },
+      {
+        slug:'cambridge', name:'Cambridge',
+        quote:"'The pursuit of knowledge, in surroundings worthy of it'", quoteAttr:'Student Luxe',
+        descriptor:'Moments from the colleges',
+        sub:'Studios→3-bed', count:'',
+        image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/898f3e70-31e6-4726-87f0-3adf5112de81/the-five-acres-1bed-3.jpg?format=1000w',
+        page:'/cambridge-student-apartments',
+        types:[
+          ['Studios','/cambridge-student-apartments/studios'],
+          ['1 Bedroom','/cambridge-student-apartments/1-bedroom'],
+          ['2 Bedrooms','/cambridge-student-apartments/2-bedroom'],
+          ['3 Bedrooms','/cambridge-student-apartments/3-bedroom']
+        ],
+        amenityBase:'/cambridge-student-apartments?amenity=',
+        universities:[ ['University of Cambridge','#'], ['Judge Business School','#'], ['Anglia Ruskin','#'], ['Homerton College','#'] ],
+        neighbourhoods:[ ['City Centre','#'], ['Newnham','#'], ['Trumpington','#'], ['Mill Road','#'] ]
+      },
+      {
+        slug:'milan', name:'Milan',
+        quote:"'The most glamorous city in Europe'", quoteAttr:'Giorgio Armani',
+        descriptor:'Brera to Porta Nuova',
+        sub:'Studios→3-bed', count:'',
+        image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/54d0d138-86ba-4f56-8f38-54e0b743c4a3/Sempione-Residences-studio-1.JPG?format=1000w',
+        page:'/luxury-student-apartments-milan',
+        types:[
+          ['Studios','/milan-student-apartments/studios'],
+          ['1 Bedroom','/milan-student-apartments/1-bedroom'],
+          ['2 Bedrooms','/milan-student-apartments/2-bedroom'],
+          ['3 Bedrooms','/milan-student-apartments/3-bedroom']
+        ],
+        amenityBase:'/milan-student-apartments?amenity=',
+        universities:[ ['Bocconi','#'], ['Politecnico di Milano','#'], ['NABA','#'], ['Istituto Marangoni','#'] ],
+        neighbourhoods:[ ['Brera','#'], ['Navigli','#'], ['Porta Nuova','#'], ['Città Studi','#'] ]
+      },
+      {
+        slug:'edinburgh', name:'Edinburgh',
+        quote:"'A city of extraordinary beauty and intellectual distinction'", quoteAttr:'Robert Louis Stevenson',
+        descriptor:'Old Town to Stockbridge',
+        sub:'Studios→3-bed', count:'',
+        image:'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/47efb97f-27b1-4e0c-919e-e0c970d701e2/queen-street-gardens-2bed-7.jpeg?format=1000w',
+        page:'/private-student-accommodation-edinburgh',
+        types:[
+          ['Studios','/edinburgh-student-apartments/studios'],
+          ['1 Bedroom','/edinburgh-student-apartments/1-bedroom'],
+          ['2 Bedrooms','/edinburgh-student-apartments/2-bedroom'],
+          ['3 Bedrooms','/edinburgh-student-apartments/3-bedroom']
+        ],
+        amenityBase:'/edinburgh-student-apartments?amenity=',
+        universities:[ ['University of Edinburgh','#'], ['Edinburgh Napier','#'], ['Heriot-Watt','#'], ['Queen Margaret','#'] ],
+        neighbourhoods:[ ['Old Town','#'], ['New Town','#'], ['Stockbridge','#'], ['Marchmont','#'] ]
+      }
+    ]
+  };
+
+  /* ════════════════════════════════════════════════════════════════
+     small DOM helpers
+     ════════════════════════════════════════════════════════════════ */
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, kids){
+    var n = document.createElement(tag);
+    if(attrs){ for(var k in attrs){ if(attrs.hasOwnProperty(k)){
+      if(k === 'class') n.className = attrs[k];
+      else if(k === 'html') n.innerHTML = attrs[k];
+      else if(k === 'text') n.textContent = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    }}}
+    if(kids){ (Array.isArray(kids)?kids:[kids]).forEach(function(c){
+      if(c == null) return;
+      n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    }); }
+    return n;
+  }
+  function a(href, cls, kids, attrs){
+    attrs = attrs || {}; attrs['class'] = cls; attrs.href = href;
+    return el('a', attrs, kids);
+  }
+  /* paint a city photo onto a swatch element (mesh gradient stays as the
+     fallback if the image is missing or fails to load) */
+  function cityBg(elm, city){
+    if(city.image){
+      elm.style.backgroundImage = 'url("'+city.image+'"), linear-gradient(135deg,#c9ac80,#8f6f49)';
+      elm.style.backgroundSize = 'cover';
+      elm.style.backgroundPosition = 'center';
+    }
+    return elm;
+  }
+  function amenityLinks(city){
+    return CONFIG.amenities.map(function(am){
+      return [am[0], city.amenityBase + am[1]];
+    });
+  }
+  /* brand social marks (24x24, currentColor — same paths as the site's legacy header) */
+  function socialSvg(kind){
+    var s = document.createElementNS(SVG_NS,'svg');
+    s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('fill','currentColor'); s.setAttribute('aria-hidden','true');
+    if(kind === 'instagram'){
+      s.innerHTML = '<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>';
+    } else if(kind === 'tiktok'){
+      s.innerHTML = '<path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>';
+    } else {
+      s.innerHTML = '<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>';
+    }
+    return s;
+  }
+  function waSvg(){
+    var s = document.createElementNS(SVG_NS,'svg');
+    s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('fill','none'); s.setAttribute('aria-hidden','true');
+    s.innerHTML = '<path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.4A10 10 0 1 0 12 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.5 7.8c.3-.2.6-.1.8.3l.7 1.5c.1.3.1.5-.1.7l-.5.6c-.1.2-.1.3 0 .5.5 1 1.3 1.8 2.3 2.3.2.1.3.1.5 0l.6-.5c.2-.2.4-.2.7-.1l1.5.7c.4.2.5.5.3.8-.5 1-1.5 1.6-2.6 1.4-2.6-.4-4.7-2.5-5.1-5.1-.2-1.1.4-2.1 1.4-2.6Z" fill="currentColor"/>';
+    return s;
+  }
+  /* the trigger glyph — a clean three-line hamburger that morphs into an ✕ on open */
+  function lensGlyph(){
+    var s = document.createElementNS(SVG_NS,'svg');
+    s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('aria-hidden','true'); s.setAttribute('focusable','false');
+    s.innerHTML =
+      '<g class="sl-ap-burger">'+
+        '<line class="sl-ap-bl sl-ap-bl-top" x1="3.5" y1="7.5" x2="20.5" y2="7.5"/>'+
+        '<line class="sl-ap-bl sl-ap-bl-mid" x1="3.5" y1="12"  x2="20.5" y2="12"/>'+
+        '<line class="sl-ap-bl sl-ap-bl-bot" x1="3.5" y1="16.5" x2="20.5" y2="16.5"/>'+
+      '</g>';
+    return s;
+  }
+  /* magnifying-glass icon for the "Filter search" control */
+  function searchGlyph(){
+    var s = document.createElementNS(SVG_NS,'svg');
+    s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('fill','none'); s.setAttribute('aria-hidden','true'); s.setAttribute('focusable','false');
+    s.innerHTML = '<circle cx="11" cy="11" r="6.4" stroke="currentColor" stroke-width="1.7"/><line x1="16.2" y1="16.2" x2="20.5" y2="20.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>';
+    return s;
+  }
+  /* the trailing-⊙ expand glyph — a visibly distinct precision control */
+  function expGlyph(){
+    var s = document.createElementNS(SVG_NS,'svg');
+    s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('aria-hidden','true'); s.setAttribute('focusable','false');
+    s.innerHTML =
+      '<circle class="sl-ap-exp-ring" cx="12" cy="12" r="8.5"/>'+
+      '<circle class="sl-ap-exp-dot" cx="12" cy="12" r="2.1"/>';
+    return s;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     BUILD: wordmark
+     ════════════════════════════════════════════════════════════════ */
+  function buildWordmark(){
+    var L = CONFIG.brand.logo;
+    if(L && L.src){
+      var img = el('img', {
+        'class':'sl-ap-logo-img' + (L.invertToBlack ? ' sl-ap-logo-invert' : ''),
+        src:L.src, alt:CONFIG.brand.name, decoding:'async', loading:'eager'
+      });
+      if(L.height) img.style.setProperty('--sl-logo-h', L.height + 'px');
+      if(L.heightMobile) img.style.setProperty('--sl-logo-h-m', L.heightMobile + 'px');
+      var link = a(CONFIG.brand.home, 'sl-ap-wordmark sl-ap-wordmark-logo', [ img ], { 'aria-label':CONFIG.brand.name + ' home' });
+      // graceful fallback to the text wordmark if the image ever fails to load
+      img.addEventListener('error', function(){
+        link.className = 'sl-ap-wordmark';
+        link.innerHTML = '';
+        link.appendChild(document.createTextNode(CONFIG.brand.wordmark[0]));
+        link.appendChild(el('span',{ 'class':'sl-ap-dot','aria-hidden':'true' }));
+        link.appendChild(document.createTextNode(CONFIG.brand.wordmark[1]));
+      });
+      return link;
+    }
+    return a(CONFIG.brand.home, 'sl-ap-wordmark', [
+      CONFIG.brand.wordmark[0],
+      el('span',{ 'class':'sl-ap-dot','aria-hidden':'true' }),
+      CONFIG.brand.wordmark[1]
+    ], { 'aria-label':CONFIG.brand.name + ' home' });
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     BUILD: residences directory drawer (desktop centrepiece)
+     ════════════════════════════════════════════════════════════════ */
+  var rightCol; // updated per active city
+
+  function renderRight(city){
+    rightCol.innerHTML = '';
+
+    // header — big city name + its quote
+    rightCol.appendChild(el('div',{ 'class':'sl-ap-dir-head2' },[
+      el('h3',{ 'class':'sl-ap-dir-cityname' }, city.name),
+      city.quote ? el('p',{ 'class':'sl-ap-dir-quote' },[
+        city.quote,
+        city.quoteAttr ? el('span',{ 'class':'sl-ap-dir-quoteattr' }, ' — '+city.quoteAttr) : null
+      ]) : null
+    ]));
+
+    // the big gold "View all" option
+    rightCol.appendChild(a(city.page,'sl-ap-dir-viewcity',[
+      'View all '+city.name+' apartments ',
+      el('span',{'aria-hidden':'true'},'→')
+    ]));
+
+    // filter blurb
+    rightCol.appendChild(el('p',{ 'class':'sl-ap-dir-blurb' },
+      city.blurb || ('Filter your search for luxury student apartments in '+city.name+'.')));
+
+    rightCol.appendChild(el('p',{ 'class':'sl-ap-collabel sl-ap-mt' }, 'Apartment types'));
+    var typeRow = el('div',{ 'class':'sl-ap-chiprow' });
+    city.types.forEach(function(t){ typeRow.appendChild(a(t[1],'sl-ap-chip',[t[0]])); });
+    rightCol.appendChild(typeRow);
+
+    rightCol.appendChild(el('p',{ 'class':'sl-ap-collabel sl-ap-mt' }, 'Near a university'));
+    var uniRow = el('div',{ 'class':'sl-ap-chiprow' });
+    city.universities.forEach(function(u){ uniRow.appendChild(a(u[1],'sl-ap-chip',[u[0]])); });
+    rightCol.appendChild(uniRow);
+
+    rightCol.appendChild(el('p',{ 'class':'sl-ap-collabel sl-ap-mt' }, 'Neighbourhoods'));
+    var nbRow = el('div',{ 'class':'sl-ap-chiprow' });
+    city.neighbourhoods.forEach(function(n){ nbRow.appendChild(a(n[1],'sl-ap-chip',[n[0]])); });
+    rightCol.appendChild(nbRow);
+  }
+
+  var cityRowEls = [], browseBtnEls = [];
+  var gridReturnArmed = false;   // set once the pointer has left the grid for the sidebar
+  function setActiveCity(idx){
+    cityRowEls.forEach(function(r,i){ r.classList.toggle('sl-ap-active', i === idx); });
+    browseBtnEls.forEach(function(bb,i){ if(bb) bb.setAttribute('aria-expanded', i === idx ? 'true':'false'); });
+    // dim the non-selected tiles
+    var grid = document.querySelector('#sl-ap .sl-ap-citygrid');
+    if(grid) grid.classList.add('sl-ap-has-active');
+    cityListMarkActive(idx);
+    renderRight(CONFIG.cities[idx]);
+    var d = document.getElementById('sl-ap-dir');
+    if(d) d.classList.add('sl-ap-city-open');
+    gridReturnArmed = false;   // pointer is still on the grid from the click
+  }
+  function cityListMarkActive(idx){
+    cityRowEls.forEach(function(r,i){
+      var cell = r.parentElement;
+      if(cell) cell.classList.toggle('sl-ap-cell-active', i === idx);
+    });
+  }
+  /* hovering back over the (shrunk) city grid expands it and hides the sidebar */
+  function clearActiveCity(){
+    cityRowEls.forEach(function(r){ r.classList.remove('sl-ap-active'); if(r.parentElement) r.parentElement.classList.remove('sl-ap-cell-active'); });
+    browseBtnEls.forEach(function(bb){ if(bb) bb.setAttribute('aria-expanded','false'); });
+    var grid = document.querySelector('#sl-ap .sl-ap-citygrid');
+    if(grid) grid.classList.remove('sl-ap-has-active');
+    var d = document.getElementById('sl-ap-dir');
+    if(d) d.classList.remove('sl-ap-city-open');
+    gridReturnArmed = false;
+  }
+
+  function buildDirectory(){
+    var dir = el('section',{
+      'class':'sl-ap-dir', id:'sl-ap-dir', role:'dialog','aria-modal':'true',
+      'aria-label':'Our Apartments — browse homes by city', tabindex:'-1'
+    });
+
+    // no head title — just a floating esc chip in the top-right corner
+    var esc = el('button',{ 'class':'sl-ap-esc sl-ap-esc-float', type:'button','aria-label':'Close directory' }, 'esc');
+    esc.addEventListener('click', closeDirectory);
+    dir.appendChild(esc);
+
+    // body — two columns
+    var leftCol = el('div',{ 'class':'sl-ap-col sl-ap-col-left' });
+
+    /* arm on leaving the grid (pointer went to the sidebar); returning to the
+       grid then expands it and hides the sidebar — but a click never insta-
+       closes what it just opened, because the pointer hasn't left yet */
+    leftCol.addEventListener('mouseleave', function(){
+      var d = document.getElementById('sl-ap-dir');
+      if(d && d.classList.contains('sl-ap-city-open')) gridReturnArmed = true;
+    });
+    leftCol.addEventListener('mouseenter', function(){
+      if(gridReturnArmed && hoverCapable && !isMobile()) clearActiveCity();
+    });
+
+    leftCol.appendChild(el('p',{ 'class':'sl-ap-collabel' }, 'Browse by city'));
+
+    var cityList = el('div',{ 'class':'sl-ap-citygrid' });
+    cityRowEls = []; browseBtnEls = [];
+    CONFIG.cities.forEach(function(city, i){
+      var cell = el('div',{ 'class':'sl-ap-citycell' });
+      var thumb = cityBg(el('span',{ 'class':'sl-ap-thumb t-'+city.slug,'aria-hidden':'true' }), city);
+
+      // the image ALWAYS links straight to the city page
+      var row = a(city.page, 'sl-ap-cityrow', [
+        thumb,
+        el('span',{ 'class':'sl-ap-cityshade','aria-hidden':'true' }),
+        el('span',{ 'class':'sl-ap-cityname' },[city.name])
+      ]);
+      cell.appendChild(row);
+
+      // cities with real facet pages get a gold "Browse options" corner control
+      // that opens the sidebar (image click still goes to the city page)
+      if(city.browse){
+        var bb = el('button',{
+          type:'button','class':'sl-ap-browsebtn',
+          'aria-haspopup':'true','aria-expanded':'false',
+          'aria-label':'Filter '+city.name+' apartments'
+        },[ searchGlyph(), 'Filter search' ]);
+        bb.addEventListener('click', function(e){ e.stopPropagation(); setActiveCity(i); });
+        cell.appendChild(bb);
+        browseBtnEls[i] = bb;
+      } else { browseBtnEls[i] = null; }
+
+      cityRowEls.push(row);
+      cityList.appendChild(cell);
+    });
+    // final card — "View all cities"
+    cityList.appendChild(a(CONFIG.brand.allCities,'sl-ap-cityall',[
+      'View all cities ', el('span',{'aria-hidden':'true'},'→')
+    ]));
+    leftCol.appendChild(cityList);
+
+    // sidebar hidden at rest — renderRight targets the inner wrapper
+    var rightOuter = el('div',{ 'class':'sl-ap-col sl-ap-col-right' });
+    rightCol = el('div',{ 'class':'sl-ap-rightinner' });
+    rightOuter.appendChild(rightCol);
+
+    dir.appendChild(el('div',{ 'class':'sl-ap-dir-body' },[ leftCol, rightOuter ]));
+
+    // foot — quiet hint only (the View-all card lives in the grid)
+    dir.appendChild(el('div',{ 'class':'sl-ap-dir-foot' },[
+      el('span',{ 'class':'sl-ap-foot-hint' }, 'Esc to close')
+    ]));
+
+    return dir;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     BUILD: primary-nav dropdowns + Residences trigger
+     ════════════════════════════════════════════════════════════════ */
+  function buildNav(){
+    var nav = el('nav',{ 'class':'sl-ap-nav','aria-label':'Primary' });
+
+    // Home — plain first link
+    var homeWrap = el('span',{ 'class':'sl-ap-navwrap' });
+    homeWrap.addEventListener('mouseenter', function(){
+      closeDirectory();
+      var ae = document.activeElement;
+      if(ae && ae.classList && ae.classList.contains('sl-ap-navlink')) ae.blur();
+    });
+    homeWrap.appendChild(a(CONFIG.brand.home, 'sl-ap-navlink', ['Home']));
+    nav.appendChild(homeWrap);
+
+    // Our Apartments → opens the directory
+    var resWrap = el('span',{ 'class':'sl-ap-navwrap' });
+    var resLink = a('#', 'sl-ap-navlink sl-ap-has-panel', [CONFIG.brand.residencesLabel], {
+      role:'button','aria-haspopup':'dialog','aria-expanded':'false','aria-controls':'sl-ap-dir'
+    });
+    resLink.addEventListener('click', function(e){
+      e.preventDefault();
+      if(body.classList.contains('sl-ap-dir-open')){ dirEl.focus(); }  // already hover-opened → move focus in
+      else openDirectory();
+    });
+    resLink.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openDirectory(); }
+    });
+    /* hover opens the directory (desktop pointer devices only); blurring a
+       click-focused sibling first so its dropdown can't hang open */
+    resWrap.addEventListener('mouseenter', function(){
+      var ae = document.activeElement;
+      if(ae && ae.classList && ae.classList.contains('sl-ap-navlink') && ae !== resLink) ae.blur();
+      if(hoverCapable && !isMobile()){ cancelDirClose(); openDirectory(true); }
+    });
+    resWrap.addEventListener('mouseleave', function(){
+      if(hoverCapable && !isMobile()) armDirClose();
+    });
+    resWrap.appendChild(resLink);
+    nav.appendChild(resWrap);
+    residencesTrigger = resLink;
+
+    // primary items — `links` → hover dropdown; `href` → plain top-level link
+    CONFIG.primaryNav.forEach(function(item){
+      var wrap = el('span',{ 'class':'sl-ap-navwrap' });
+
+      /* one menu at a time: entering/focusing another nav item dismisses the
+         Residences directory AND blurs a click-focused sibling nav link (the
+         :focus-within reveal would otherwise pin its dropdown open — "hang"). */
+      wrap.addEventListener('mouseenter', function(){
+        closeDirectory();
+        var ae = document.activeElement;
+        if(ae && ae.classList && ae.classList.contains('sl-ap-navlink') && !wrap.contains(ae)) ae.blur();
+      });
+      wrap.addEventListener('focusin', function(){ closeDirectory(); });
+
+      if(item.href){
+        // plain link — no dropdown
+        wrap.appendChild(a(item.href, 'sl-ap-navlink', [item.label]));
+        nav.appendChild(wrap);
+        return;
+      }
+
+      var link = a('#', 'sl-ap-navlink sl-ap-has-panel', [item.label], {
+        'aria-haspopup':'true','aria-expanded':'false'
+      });
+      // a mouse click must not leave the link focused (keyboard Tab still reveals via :focus-within)
+      link.addEventListener('click', function(e){ e.preventDefault(); link.blur(); });
+      var drop = el('div',{ 'class':'sl-ap-drop', role:'menu','aria-label':item.label });
+      drop.appendChild(el('p',{ 'class':'sl-ap-drop-label' }, item.label));
+      item.links.forEach(function(l){
+        drop.appendChild(a(l[1],'',[ l[0], el('span',{'aria-hidden':'true'},'→') ], { role:'menuitem' }));
+      });
+      wrap.appendChild(link); wrap.appendChild(drop);
+      nav.appendChild(wrap);
+    });
+
+    return nav;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     BUILD: mobile "Lens Curtain" — descending ivory curtain with a
+     city deck (dual affordance) + four serif rows + fixed foot rail.
+     Reads from the SHARED CONFIG (no second data copy).
+     ════════════════════════════════════════════════════════════════ */
+  var cardEls = [];          // {card, details} per city, by index
+  var curtainResidences;     // the Residences <details> in the curtain
+
+  /* ── CITY PANELS — one slide-in panel per city (roomy second layer inside
+        the curtain; always in the DOM so every link stays crawlable) ── */
+  var cityPanelEls = [];
+  var activeCityPanel = -1;
+
+  function buildCityPanel(city, i){
+    var panel = el('div',{
+      'class':'sl-ap-citypanel', id:'sl-ap-citypanel-'+city.slug,
+      role:'group','aria-label':city.name
+    });
+
+    var back = el('button',{ type:'button','class':'sl-ap-panel-back' },[
+      el('span',{ 'aria-hidden':'true' },'←'), ' All cities'
+    ]);
+    back.addEventListener('click', function(){ closeCityPanel(); });
+    panel.appendChild(back);
+
+    panel.appendChild(cityBg(el('div',{ 'class':'sl-ap-panel-mesh t-'+city.slug,'aria-hidden':'true' }), city));
+    panel.appendChild(el('h3',{ 'class':'sl-ap-panel-name' }, city.name));
+    if(city.quote){
+      panel.appendChild(el('p',{ 'class':'sl-ap-panel-quote' },[
+        city.quote, city.quoteAttr ? el('span',{ 'class':'sl-ap-dir-quoteattr' }, ' — '+city.quoteAttr) : null
+      ]));
+    }
+    panel.appendChild(el('p',{ 'class':'sl-ap-panel-desc' }, city.blurb || city.descriptor || city.sub));
+    panel.appendChild(a(city.page,'sl-ap-panel-browse',
+      [ 'View all '+city.name+' apartments ', el('span',{'aria-hidden':'true'},'→') ]));
+
+    panel.appendChild(el('p',{ 'class':'sl-ap-flabel sl-ap-mt' }, 'Apartment types'));
+    var chips = el('div',{ 'class':'sl-ap-chiprow' });
+    city.types.forEach(function(t){ chips.appendChild(a(t[1],'sl-ap-chip',[t[0]])); });
+    panel.appendChild(chips);
+
+    panel.appendChild(el('p',{ 'class':'sl-ap-flabel sl-ap-mt' }, 'Universities'));
+    var uni = el('div',{ 'class':'sl-ap-panel-rows' });
+    city.universities.forEach(function(u){
+      uni.appendChild(a(u[1],'',[ u[0], el('span',{ 'class':'sl-ap-arr','aria-hidden':'true' },'→') ]));
+    });
+    panel.appendChild(uni);
+
+    panel.appendChild(el('p',{ 'class':'sl-ap-flabel sl-ap-mt' }, 'Neighbourhoods'));
+    var nb = el('div',{ 'class':'sl-ap-panel-rows sl-ap-panel-rows-2' });
+    city.neighbourhoods.forEach(function(n){
+      nb.appendChild(a(n[1],'',[ n[0] ]));
+    });
+    panel.appendChild(nb);
+
+    return panel;
+  }
+
+  function openCityPanel(i){
+    var p = cityPanelEls[i];
+    if(!p) return;
+    activeCityPanel = i;
+    p.scrollTop = 0;
+    p.classList.add('sl-ap-panel-open');
+    if(cardEls[i]) cardEls[i].trigger.setAttribute('aria-expanded','true');
+    var back = p.querySelector('.sl-ap-panel-back');
+    if(back) requestAnimationFrame(function(){
+      /* preventScroll: focusing inside the still-sliding panel must not
+         side-scroll the curtain (it would stick shifted) */
+      try{ back.focus({ preventScroll:true }); }catch(_){ back.focus(); }
+      curtainEl.scrollLeft = 0;
+      var sc = document.getElementById('sl-ap-curtain-scroll');
+      if(sc) sc.scrollLeft = 0;
+    });
+  }
+  function closeCityPanel(){
+    if(activeCityPanel < 0) return;
+    var i = activeCityPanel;
+    var p = cityPanelEls[i];
+    activeCityPanel = -1;
+    if(p) p.classList.remove('sl-ap-panel-open');
+    if(cardEls[i]){
+      cardEls[i].trigger.setAttribute('aria-expanded','false');
+      cardEls[i].trigger.focus();
+    }
+  }
+  function resetCityPanels(){
+    activeCityPanel = -1;
+    cityPanelEls.forEach(function(p){ if(p) p.classList.remove('sl-ap-panel-open'); });
+    cardEls.forEach(function(c){ if(c.trigger && c.trigger.tagName === 'BUTTON') c.trigger.setAttribute('aria-expanded','false'); });
+  }
+
+  /* the vertical deck — one card per featured city + "View all cities →" */
+  function buildDeck(){
+    var deck = el('div',{ 'class':'sl-ap-deck sl-ap-dev sl-ap-dev-2', id:'sl-ap-deck' });
+    cardEls = [];
+
+    CONFIG.cities.forEach(function(city, i){
+      var card = el('div',{ 'class':'sl-ap-card', 'data-slug':city.slug });
+      var mesh = cityBg(el('span',{ 'class':'sl-ap-card-mesh t-'+city.slug,'aria-hidden':'true' }), city);
+
+      if(city.browse){
+        // browse cities: image → city page. Under the descriptor, the SAME
+        // "View apartments →" link every other card has, then a "Filter search"
+        // button below it that opens the facet panel.
+        var imglink = a(city.page, 'sl-ap-card-imglink', [ mesh ],
+          { 'aria-label':'View all '+city.name+' apartments', tabindex:'-1' });
+
+        var viewAll = a(city.page, 'sl-ap-card-go',
+          [ 'View apartments ', el('span',{ 'aria-hidden':'true' },'→') ]);
+
+        var filterBtn = el('button',{
+          type:'button','class':'sl-ap-card-act sl-ap-card-act-filter',
+          'aria-haspopup':'true','aria-expanded':'false',
+          'aria-label':'Filter '+city.name+' by area, university & type'
+        },[ searchGlyph(), 'Filter search' ]);
+        filterBtn.addEventListener('click', function(){ openCityPanel(i); });
+
+        var metaB = el('div',{ 'class':'sl-ap-card-meta sl-ap-card-meta-browse' },[
+          el('div',{ 'class':'sl-ap-card-name' }, [city.name]),
+          el('div',{ 'class':'sl-ap-card-desc' }, city.descriptor || city.sub),
+          viewAll,
+          filterBtn
+        ]);
+
+        card.appendChild(el('div',{ 'class':'sl-ap-card-row' },[ imglink, metaB ]));
+        cardEls.push({ card:card, trigger:filterBtn });
+      } else {
+        // every other card's image + text links straight to the city page
+        var meta = el('div',{ 'class':'sl-ap-card-meta' },[
+          el('div',{ 'class':'sl-ap-card-name' }, [city.name]),
+          el('div',{ 'class':'sl-ap-card-desc' }, city.descriptor || city.sub),
+          el('span',{ 'class':'sl-ap-card-go' },[ 'View apartments ', el('span',{'aria-hidden':'true'},'→') ])
+        ]);
+        var body = a(city.page, 'sl-ap-card-body', [ mesh, meta ], { 'aria-label':'View all '+city.name+' apartments' });
+        card.appendChild(el('div',{ 'class':'sl-ap-card-row' },[ body ]));
+        cardEls.push({ card:card, trigger:body });
+      }
+
+      deck.appendChild(card);
+    });
+
+    // "View all cities →" at the deck's end
+    deck.appendChild(a(CONFIG.brand.allCities, 'sl-ap-viewall',
+      [ 'View all cities ', el('span',{'aria-hidden':'true'},'→') ]));
+
+    return deck;
+  }
+
+  function buildCurtain(){
+    var curtain = el('section',{
+      'class':'sl-ap-curtain', id:'sl-ap-curtain', role:'dialog','aria-modal':'true',
+      'aria-label':'Menu', tabindex:'-1'
+    });
+
+    var scroll = el('div',{ 'class':'sl-ap-curtain-scroll', id:'sl-ap-curtain-scroll' });
+
+    // GROUP 1 — primary rows
+    var dev1 = el('div',{ 'class':'sl-ap-dev sl-ap-dev-1' });
+
+    var prim = el('nav',{ 'class':'sl-ap-prim','aria-label':'Primary' });
+
+    // HOME — plain first row
+    prim.appendChild(a(CONFIG.brand.home,'sl-ap-prow-link',[
+      el('span',{}, 'Home'),
+      el('span',{ 'class':'sl-ap-arr','aria-hidden':'true' }, '→')
+    ]));
+
+    // OUR APARTMENTS — collapsed by default; holds the city deck (GROUP 2)
+    var resDetails = el('details',{ 'class':'sl-ap-prow', id:'sl-ap-residences' });
+    resDetails.appendChild(el('summary',{},[
+      el('span',{ 'class':'sl-ap-sum' },[
+        el('span',{}, CONFIG.brand.residencesLabel),
+        el('span',{ 'class':'sl-ap-pm','aria-hidden':'true' }, '+')
+      ])
+    ]));
+    resDetails.appendChild(buildDeck());
+    prim.appendChild(resDetails);
+    curtainResidences = resDetails;
+
+    // remaining primary items — `href` items are plain serif rows; `links` items accordion
+    CONFIG.primaryNav.forEach(function(item){
+      if(item.href){
+        prim.appendChild(a(item.href,'sl-ap-prow-link',[
+          el('span',{}, item.label),
+          el('span',{ 'class':'sl-ap-arr','aria-hidden':'true' }, '→')
+        ]));
+        return;
+      }
+      var d = el('details',{ 'class':'sl-ap-prow' });
+      d.appendChild(el('summary',{},[
+        el('span',{ 'class':'sl-ap-sum' },[
+          el('span',{}, item.label),
+          el('span',{ 'class':'sl-ap-pm','aria-hidden':'true' }, '+')
+        ])
+      ]));
+      var links = el('div',{ 'class':'sl-ap-plinks' });
+      item.links.forEach(function(l){
+        links.appendChild(a(l[1],'',[ l[0], el('span',{ 'class':'sl-ap-arr','aria-hidden':'true' }, '→') ]));
+      });
+      d.appendChild(links);
+      prim.appendChild(d);
+    });
+
+    // socials — quiet text row under the last menu item
+    prim.appendChild(el('div',{ 'class':'sl-ap-curtain-social' },[
+      a(CONFIG.brand.socials.instagram,'',['IG'],{ 'aria-label':'Instagram', target:'_blank', rel:'noopener' }),
+      a(CONFIG.brand.socials.tiktok,'',['TikTok'],{ 'aria-label':'TikTok', target:'_blank', rel:'noopener' }),
+      a(CONFIG.brand.socials.youtube,'',['YouTube'],{ 'aria-label':'YouTube', target:'_blank', rel:'noopener' })
+    ]));
+
+    dev1.appendChild(prim);
+    scroll.appendChild(dev1);
+    curtain.appendChild(scroll);
+
+    // slide-in city panels (always in the DOM — crawlable)
+    cityPanelEls = [];
+    CONFIG.cities.forEach(function(city, i){
+      if(city.browse){
+        var p = buildCityPanel(city, i);
+        cityPanelEls[i] = p;
+        curtain.appendChild(p);
+      } else { cityPanelEls[i] = null; }
+    });
+
+    /* Deterministic accordion toggle — drive `open` ourselves rather than relying
+       on the native <summary> default, which is flaky on iOS (first-tap loss). */
+    curtain.querySelectorAll('.sl-ap-prow > summary').forEach(function(s){
+      s.addEventListener('click', function(e){
+        e.preventDefault();
+        var d = s.parentNode;
+        d.open = !d.open;
+      });
+    });
+
+    return curtain;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     BUILD: noscript fallback (real anchors for crawlers / no-JS)
+     ════════════════════════════════════════════════════════════════ */
+  function buildNoscript(){
+    var ns = el('div',{ id:'sl-ap-noscript' });
+    ns.appendChild(a(CONFIG.brand.home,'sl-ap-ns-brand',[ CONFIG.brand.wordmark.join('·') ]));
+    ns.appendChild(a(CONFIG.brand.home,'',['Home']));
+    ns.appendChild(a(CONFIG.brand.allCities,'',[CONFIG.brand.residencesLabel]));
+    CONFIG.primaryNav.forEach(function(item){ ns.appendChild(a(item.href || item.links[0][1],'',[item.label])); });
+    ns.appendChild(a(CONFIG.brand.cta.href,'',[CONFIG.brand.cta.label]));
+    ns.appendChild(a(CONFIG.brand.contact.href,'',[CONFIG.brand.contact.label]));
+    ns.appendChild(a(CONFIG.brand.whatsapp,'',['WhatsApp concierge']));
+    var row = el('div',{ 'class':'sl-ap-ns-row' });
+    CONFIG.cities.forEach(function(city){ row.appendChild(a(city.page,'',[city.name])); });
+    row.appendChild(a(CONFIG.brand.allCities,'',['View all cities →']));
+    ns.appendChild(row);
+    var nstag = document.createElement('noscript');
+    nstag.appendChild(ns);
+    return nstag;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     ASSEMBLE the header
+     ════════════════════════════════════════════════════════════════ */
+  var residencesTrigger, lensTriggerEl;
+
+  var root = el('div',{ id:'sl-ap' });
+  root.appendChild(el('div',{ 'class':'sl-ap-veil', id:'sl-ap-veil','aria-hidden':'true' }));
+
+  var cap = el('header',{ 'class':'sl-ap-cap', id:'sl-ap-cap' });
+  cap.appendChild(buildWordmark());
+  cap.appendChild(el('span',{ 'class':'sl-ap-spacer' }));   // logo | ← spacer
+  cap.appendChild(buildNav());                               // centred nav
+  cap.appendChild(el('span',{ 'class':'sl-ap-spacer' }));   // spacer → | actions
+
+  // (the "Find your home" pill was removed — the Residences nav item opens the directory)
+
+  // desktop right cluster — socials as quiet TEXT links in the nav font
+  var socialWrap = el('div',{ 'class':'sl-ap-socialtext' },[
+    a(CONFIG.brand.socials.instagram,'',['IG'],{ 'aria-label':'Instagram', target:'_blank', rel:'noopener' }),
+    a(CONFIG.brand.socials.tiktok,'',['TikTok'],{ 'aria-label':'TikTok', target:'_blank', rel:'noopener' }),
+    a(CONFIG.brand.socials.youtube,'',['YouTube'],{ 'aria-label':'YouTube', target:'_blank', rel:'noopener' })
+  ]);
+  cap.appendChild(socialWrap);
+
+  // mobile lens-dot TRIGGER — irises open / doubles as the close affordance
+  var lensTrigger = el('button',{
+    'class':'sl-ap-trigger', id:'sl-ap-trigger', type:'button',
+    'aria-haspopup':'dialog','aria-expanded':'false','aria-controls':'sl-ap-curtain',
+    'aria-label':'Open menu', title:'Open menu'
+  },[ lensGlyph() ]);
+  cap.appendChild(lensTrigger);
+  lensTriggerEl = lensTrigger;
+
+  root.appendChild(cap);
+  root.appendChild(buildDirectory());
+  root.appendChild(buildCurtain());
+
+  document.body.insertBefore(buildNoscript(), document.body.firstChild);
+  document.body.insertBefore(root, document.body.firstChild);
+
+  // no default selection — the directory opens as a pure city grid;
+  // the facet sidebar slides in on the first click
+
+  /* ════════════════════════════════════════════════════════════════
+     BEHAVIOUR — open/close, focus trap, scroll spring, hash hooks
+     ════════════════════════════════════════════════════════════════ */
+  var body = document.body;
+  var dirEl = document.getElementById('sl-ap-dir');
+  var curtainEl = document.getElementById('sl-ap-curtain');
+  var curtainScroll = document.getElementById('sl-ap-curtain-scroll');
+  var veil = document.getElementById('sl-ap-veil');
+  var capEl = document.getElementById('sl-ap-cap');
+  var pillEl = document.getElementById('sl-ap-pill');
+  var triggerEl = document.getElementById('sl-ap-trigger');
+
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function isMobile(){ return window.matchMedia('(max-width: 880px)').matches; }
+  var lastFocused = null;
+  var developTimer = null;
+  var scrollLockY = 0;
+
+  /* keep --sl-vh honest across the iOS URL-bar (100dvh recompute) */
+  function setVH(){ root.style.setProperty('--sl-vh', window.innerHeight + 'px'); }
+  setVH();
+  window.addEventListener('resize', setVH);
+  window.addEventListener('orientationchange', setVH);
+
+  function focusables(c){
+    return Array.prototype.slice.call(
+      c.querySelectorAll('a[href], button:not([disabled]), summary, input, [tabindex]:not([tabindex="-1"])')
+    ).filter(function(elm){
+      if(elm.offsetParent === null) return false;
+      // skip links inside a city panel that isn't slid in
+      var panel = elm.closest ? elm.closest('.sl-ap-citypanel') : null;
+      if(panel && !panel.classList.contains('sl-ap-panel-open')) return false;
+      // skip links in the desktop facet sidebar while it's closed
+      var right = elm.closest ? elm.closest('.sl-ap-col-right') : null;
+      if(right){
+        var d = document.getElementById('sl-ap-dir');
+        if(d && !d.classList.contains('sl-ap-city-open')) return false;
+      }
+      return true;
+    });
+  }
+
+  /* body scroll-lock (preserves scroll position; mobile-safe) */
+  function lockScroll(){
+    scrollLockY = window.scrollY || window.pageYOffset || 0;
+    body.style.position = 'fixed';
+    body.style.top = (-scrollLockY) + 'px';
+    body.style.left = '0';
+    body.style.right = '0';
+    body.style.width = '100%';
+  }
+  function unlockScroll(){
+    body.style.position = '';
+    body.style.top = '';
+    body.style.left = '';
+    body.style.right = '';
+    body.style.width = '';
+    window.scrollTo(0, scrollLockY);
+  }
+
+  /* ── DESKTOP: residences directory drawer ── */
+  function openDirectory(fromHover){
+    if(body.classList.contains('sl-ap-dir-open')) return;
+    lastFocused = document.activeElement;
+    body.classList.add('sl-ap-open','sl-ap-dir-open');
+    if(!prefersReduced) body.classList.add('sl-ap-rack');
+    if(pillEl) pillEl.setAttribute('aria-expanded','true');
+    if(residencesTrigger) residencesTrigger.setAttribute('aria-expanded','true');
+    /* only move focus into the dialog for click/keyboard opens — a hover-open must not steal focus */
+    if(!fromHover){
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ dirEl.focus(); }); });
+    }
+  }
+
+  /* hover-open plumbing: a short grace timer lets the pointer travel from the
+     nav link down into the panel (and briefly off it) without it snapping shut */
+  var dirHoverTimer = null;
+  var hoverCapable = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  function cancelDirClose(){ if(dirHoverTimer){ clearTimeout(dirHoverTimer); dirHoverTimer = null; } }
+  function armDirClose(){
+    cancelDirClose();
+    dirHoverTimer = setTimeout(function(){ closeDirectory(); }, 220);
+  }
+  /* pointer inside the panel keeps it open; leaving it arms the close */
+  dirEl.addEventListener('mouseenter', cancelDirClose);
+  dirEl.addEventListener('mouseleave', function(){
+    if(hoverCapable && !isMobile() && !dirEl.contains(document.activeElement)) armDirClose();
+  });
+  function closeDirectory(){
+    if(!body.classList.contains('sl-ap-dir-open')) return;
+    /* only pull focus back if it was inside the directory — a hover-dismiss must not yank focus */
+    var focusInside = dirEl.contains(document.activeElement);
+    body.classList.remove('sl-ap-open','sl-ap-dir-open','sl-ap-rack');
+    if(pillEl) pillEl.setAttribute('aria-expanded','false');
+    if(residencesTrigger) residencesTrigger.setAttribute('aria-expanded','false');
+    if(focusInside){
+      if(lastFocused && lastFocused.focus){ lastFocused.focus(); }
+      else if(residencesTrigger){ residencesTrigger.focus(); }
+    }
+  }
+
+  /* ── MOBILE: the Lens Curtain ── */
+  function openCurtain(){
+    if(body.classList.contains('sl-ap-curtain-open')) return;
+    lastFocused = document.activeElement;
+    lockScroll();
+    body.classList.add('sl-ap-open','sl-ap-curtain-open');
+    if(!prefersReduced) body.classList.add('sl-ap-rack');
+    triggerEl.setAttribute('aria-expanded','true');
+    triggerEl.setAttribute('aria-label','Close menu');
+    triggerEl.setAttribute('title','Close menu');
+    /* stage the develop-up — time-based & deterministic (no physics). RM: instant. */
+    if(developTimer) clearTimeout(developTimer);
+    if(prefersReduced){ body.classList.add('sl-ap-developed'); }
+    else { developTimer = setTimeout(function(){ body.classList.add('sl-ap-developed'); }, 210); }
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ curtainEl.focus(); }); });
+  }
+  function closeCurtain(){
+    if(!body.classList.contains('sl-ap-curtain-open')) return;
+    if(developTimer) clearTimeout(developTimer);
+    // drop the warm veil + page blur IMMEDIATELY (they linger otherwise → the
+    // "gold lag") and run a light opacity-only close (no clip-path re-animation)
+    body.classList.add('sl-ap-closing');
+    body.classList.remove('sl-ap-curtain-open','sl-ap-developed','sl-ap-rack','sl-ap-open');
+    triggerEl.setAttribute('aria-expanded','false');
+    triggerEl.setAttribute('aria-label','Open menu');
+    triggerEl.setAttribute('title','Open menu');
+    unlockScroll();
+    var delay = prefersReduced ? 150 : 240;
+    setTimeout(function(){
+      if(!body.classList.contains('sl-ap-curtain-open')){
+        body.classList.remove('sl-ap-closing');
+        resetCityPanels();   // reset once hidden — no visible jump
+      }
+    }, delay);
+    if(lastFocused && lastFocused.focus){ lastFocused.focus(); } else { triggerEl.focus(); }
+  }
+  function toggleCurtain(){
+    if(body.classList.contains('sl-ap-curtain-open')) closeCurtain();
+    else openCurtain();
+  }
+
+  function closeAny(){ closeDirectory(); closeCurtain(); }
+
+  // the trigger both opens and closes (open-aperture = close affordance)
+  triggerEl.addEventListener('click', function(e){ e.preventDefault(); toggleCurtain(); });
+  // veil: tap-dim to close (whichever surface is open)
+  /* clicking the dim closes the desktop directory only — the mobile curtain
+     closes ONLY via the ✕ (no accidental dismissals) */
+  veil.addEventListener('click', closeDirectory);
+
+  // Esc + focus trap
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      if(activeCityPanel >= 0){ e.preventDefault(); closeCityPanel(); return; }  // Esc steps back first
+      if(body.classList.contains('sl-ap-dir-open') || body.classList.contains('sl-ap-curtain-open')){
+        e.preventDefault(); closeAny();
+      }
+    }
+  });
+  function trap(container, isOpen){
+    container.addEventListener('keydown', function(e){
+      if(!isOpen()) return;
+      if(e.key !== 'Tab') return;
+      var f = focusables(container);
+      if(!f.length) return;
+      var first = f[0], last = f[f.length-1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    });
+  }
+  trap(dirEl, function(){ return body.classList.contains('sl-ap-dir-open'); });
+  trap(curtainEl, function(){ return body.classList.contains('sl-ap-curtain-open'); });
+
+  // arrow-roving across city rows (desktop)
+  dirEl.addEventListener('keydown', function(e){
+    if(!body.classList.contains('sl-ap-dir-open')) return;
+    var idx = cityRowEls.indexOf(document.activeElement);
+    if(e.key === 'ArrowDown'){ e.preventDefault(); var n=(idx<0?0:Math.min(idx+1,cityRowEls.length-1)); cityRowEls[n].focus(); }
+    else if(e.key === 'ArrowUp'){ e.preventDefault(); var p=(idx<0?0:Math.max(idx-1,0)); cityRowEls[p].focus(); }
+  });
+
+  /* (swipe-to-close removed — it misread menu scrolling as a dismiss gesture.
+     The curtain closes ONLY via the ✕ trigger or the Esc key.) */
+
+  // scroll spring on capsule
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      capEl.classList.toggle('sl-ap-tight', (window.scrollY||window.pageYOffset||0) > 40);
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  // close the wrong-layout panel if viewport crosses the breakpoint
+  var mq = window.matchMedia('(max-width: 880px)');
+  (mq.addEventListener ? mq.addEventListener.bind(mq,'change') : mq.addListener.bind(mq))(function(){
+    if(body.classList.contains('sl-ap-dir-open') && isMobile()){ closeDirectory(); }
+    if(body.classList.contains('sl-ap-curtain-open') && !isMobile()){ closeCurtain(); }
+  });
+
+  /* ── deterministic hash hooks for screenshots / deep-links ── */
+  /* matches #open-london / #open-paris / #open-newyork (hyphens optional) */
+  function citySlugFromHash(h){
+    var bare = h.replace(/-/g,'');
+    for(var i=0;i<CONFIG.cities.length;i++){
+      var slug = CONFIG.cities[i].slug;
+      if(h.indexOf('open-'+slug) !== -1 || bare.indexOf('open'+slug.replace(/-/g,'')) !== -1) return i;
+    }
+    return -1;
+  }
+  function applyHashHook(){
+    var h = (location.hash || '').toLowerCase();
+    if(h.indexOf('open') === -1) return;
+    var cityIdx = citySlugFromHash(h);     // #open-london / #open-paris / #open-newyork / #open-madrid
+    var idx = cityIdx >= 0 ? cityIdx : 0;  // default London flagship
+    requestAnimationFrame(function(){
+      var browsable = cityIdx >= 0 && CONFIG.cities[cityIdx].browse;
+      if(isMobile()){
+        openCurtain();
+        // a city deep-link opens its panel only if the city has facet pages
+        if(browsable){
+          if(curtainResidences && !curtainResidences.open) curtainResidences.setAttribute('open','');
+          openCityPanel(idx);
+        }
+      } else {
+        openDirectory();
+        if(browsable) setActiveCity(idx);
+      }
+    });
+  }
+  applyHashHook();
+  window.addEventListener('hashchange', applyHashHook);
+
+  } /* end __slApBoot */
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', __slApBoot); }
+  else { __slApBoot(); }
+})();
+</script>
+
+
+
+
+<!-- WhatsApp number swap + click tracking -->
+<script>
+(function() {
+
+  // ── Helper: read a cookie by name ──────────────────────────
+  function getCookie(name) {
+    var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : '';
+  }
+
+  // ── Attach tracking + number swap to all wa.me links ───────
+  function initWhatsAppTracking() {
+
+    // Selector covers both old and new number, plus any wa.me link
+    document.querySelectorAll('a[href*="wa.me"]').forEach(function(el) {
+
+      // Fix old number if present
+      if (el.href.indexOf('447514220051') > -1) {
+        el.href = el.href.replace('447514220051', '442030070017');
+      }
+
+      // Avoid double-binding
+      if (el.dataset.slWaTracked) return;
+      el.dataset.slWaTracked = '1';
+
+      el.addEventListener('click', function() {
+        try {
+          var payload = {
+            gclid:        getCookie('sl_gclid'),
+            utm_campaign: getCookie('sl_utm_campaign'),
+            utm_term:     getCookie('sl_utm_term'),
+            utm_matchtype:getCookie('sl_utm_matchtype'),
+            landing_page: getCookie('sl_landing_page'),
+            last_page:    getCookie('sl_last_page'),
+            page_path:    window.location.pathname,
+            timestamp:    new Date().toISOString()
+          };
+
+          // Fire and forget — non-blocking
+          fetch('https://luxe-lead-capture.vercel.app/api/submit-whatsapp', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(payload),
+            keepalive: true  // ensures request completes even if page unloads
+          }).catch(function() {});
+
+          // Push to dataLayer for GTM
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event:        'whatsapp_click',
+            gclid:        payload.gclid,
+            utm_campaign: payload.utm_campaign,
+            page_path:    payload.page_path
+          });
+
+        } catch(e) {}
+      });
+    });
+  }
+
+  // Run on DOM ready, and again after a short delay to catch
+  // dynamically rendered links (e.g. Squarespace lazy content)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      initWhatsAppTracking();
+      setTimeout(initWhatsAppTracking, 2000);
+    });
+  } else {
+    initWhatsAppTracking();
+    setTimeout(initWhatsAppTracking, 2000);
+  }
+
+})();
+</script>
+
+<!-- Font Awesome -->
+<script
+  async
+  defer
+  src="https://kit.fontawesome.com/6cf910e76b.js"
+  crossorigin="anonymous">
+</script>
+<!-- Google Search Console verification -->
+<meta name="google-site-verification" content="dbmy-GC8XFP69ZPJB5rb9Ju7AlsPU1-HKzdNeN0E9Qk" />
+
+<!-- Meta Pixel — noscript fallback (body injection) -->
+<!-- WM Toolkit — only loads inside Squarespace's page editor iframe -->
+<script>
+(function() {
+  if (window.top === window.self) return;
+  
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/gh/willmyerscode/toolkit@1/index.min.js';
+  s.async = true;
+  document.head.appendChild(s);
+})();
+</script>
+
+<!-- Clarity -->
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "x2a7c22ekn");
+</script>

@@ -1,0 +1,566 @@
+<!-- Student Luxe — Page path tracker -->
+<!-- Paste into: Squarespace → Settings → Advanced → Code Injection → Footer -->
+<script>
+(function() {
+  try {
+    var KEY      = 'sl_visited_paths';
+    var SRC_KEY  = 'sl_traffic_source';
+    var TS_KEY   = 'sl_page_arrived';
+    var MAX_PAGES = 10;
+    var path     = window.location.pathname.replace(/\/$/, '') || '/';
+
+    // Skip asset paths
+    if (/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|pdf)$/i.test(path)) return;
+
+    var now      = Date.now();
+    var params   = new URLSearchParams(window.location.search);
+    var referrer = document.referrer || '';
+
+    // Detect traffic source (only on first page of session)
+    function detectSource() {
+      var gclid   = params.get('gclid');
+      var fbclid  = params.get('fbclid');
+      var source  = (params.get('utm_source') || '').toLowerCase();
+      var medium  = (params.get('utm_medium') || '').toLowerCase();
+
+      if (gclid || (source.indexOf('google') > -1 && (medium === 'cpc' || medium === 'ppc'))) return 'Google Ads';
+      if (fbclid || source.indexOf('facebook') > -1 || source.indexOf('meta') > -1) return 'Meta Ads';
+      if (source.indexOf('instagram') > -1) return 'Instagram';
+      if (source.indexOf('bing') > -1 && (medium === 'cpc' || medium === 'ppc')) return 'Bing Ads';
+      if (source.indexOf('tiktok') > -1) return 'TikTok';
+      if (source && medium === 'email') return 'Email';
+      if (source) return source.charAt(0).toUpperCase() + source.slice(1);
+
+      if (referrer) {
+        try {
+          var ref = new URL(referrer).hostname.replace('www.', '');
+          if (ref.indexOf('google.') > -1)    return 'Google Organic';
+          if (ref.indexOf('bing.com') > -1)   return 'Bing Organic';
+          if (ref.indexOf('yahoo.com') > -1)  return 'Yahoo Organic';
+          if (ref.indexOf('facebook.com') > -1) return 'Facebook';
+          if (ref.indexOf('instagram.com') > -1) return 'Instagram';
+          if (ref.indexOf('linkedin.com') > -1) return 'LinkedIn';
+          if (ref.indexOf('twitter.com') > -1 || ref.indexOf('x.com') > -1) return 'X / Twitter';
+          if (ref.indexOf('tiktok.com') > -1) return 'TikTok';
+          if (ref.indexOf('studentluxe.co.uk') > -1) return null;
+          return 'Referral: ' + ref;
+        } catch(e) {}
+      }
+
+      return 'Direct';
+    }
+
+    var existing    = localStorage.getItem(KEY) || '';
+    var pages       = existing ? existing.split(' 👉 ') : [];
+    var lastArrived = parseInt(localStorage.getItem(TS_KEY) || '0', 10);
+    var isFirst     = pages.length === 0;
+
+    if (isFirst) {
+      var source = detectSource();
+      if (source) {
+        localStorage.setItem(SRC_KEY, source);
+        pages.push(source);
+      }
+    }
+
+    var hasContent  = pages.filter(function(p) { return p.indexOf('/') > -1; }).length === 0;
+    var entry       = hasContent
+      ? (window.location.hostname + window.location.pathname + window.location.search)
+      : path;
+
+    if (pages.length > 0 && lastArrived > 0) {
+      var last = pages[pages.length - 1];
+      if (last.indexOf('/') > -1 && last.indexOf('(') === -1) {
+        var elapsed = Math.round((now - lastArrived) / 1000);
+        var mins    = Math.floor(elapsed / 60);
+        var secs    = elapsed % 60;
+        var timeStr = mins > 0
+          ? mins + ':' + (secs < 10 ? '0' : '') + secs + 'm'
+          : secs + 's';
+        pages[pages.length - 1] = last + ' (' + timeStr + ')';
+      }
+    }
+
+    var lastEntry = pages.length > 0 ? pages[pages.length - 1] : '';
+    var lastPath  = lastEntry.replace(/ \(.*\)$/, '').split('?')[0];
+    var thisClean = window.location.hostname + path;
+
+    if (lastPath !== path && lastPath !== thisClean) {
+      pages.push(entry);
+      if (pages.length > MAX_PAGES) pages = pages.slice(-MAX_PAGES);
+      localStorage.setItem(KEY, pages.join(' 👉 '));
+    }
+
+    localStorage.setItem(TS_KEY, now.toString());
+
+  } catch(e) {}
+})();
+</script>
+
+
+<!-- ============================================================
+     Student Luxe / Stay Luxe — Server-side Attribution Snippet
+     Captures first-touch + last-touch click IDs (gclid/gbraid/wbraid)
+     into 90-day cookies, pings /api/track on every page so KV holds
+     full multi-touch journey, mirrors cookies into hidden form inputs
+     on submit so the Vercel handlers receive them in req.body.
+     Coexists with the path-tracker above (different storage keys).
+     ============================================================ -->
+<script>
+(function () {
+  'use strict';
+
+  var COOKIE_DAYS = 90;
+  var TRACK_URL   = 'https://luxe-lead-capture.vercel.app/api/track';
+
+  function setCookie(name, value, days) {
+    if (value == null || value === '') return;
+    var expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) +
+      '; expires=' + expires + '; path=/; SameSite=Lax; Secure';
+  }
+  function getCookie(name) {
+    var match = document.cookie.match(new RegExp('(^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[2]) : '';
+  }
+  function setFirstTouch(name, value) {
+    if (!getCookie(name) && value) setCookie(name, value, COOKIE_DAYS);
+  }
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'sl-' + Date.now().toString(36) + '-' +
+      Math.random().toString(36).slice(2, 10);
+  }
+
+  // Session ID
+  if (!getCookie('sl_session_id')) setCookie('sl_session_id', uuid(), COOKIE_DAYS);
+  if (!getCookie('sl_first_seen')) setCookie('sl_first_seen', new Date().toISOString(), COOKIE_DAYS);
+
+  // URL params to cookies
+  var params = new URLSearchParams(window.location.search);
+  var fields = ['gclid', 'gbraid', 'wbraid', 'fbclid',
+                'utm_campaign', 'utm_adgroup', 'utm_term',
+                'utm_matchtype', 'utm_source', 'utm_medium'];
+
+  fields.forEach(function (f) {
+    var v = params.get(f);
+    if (!v) return;
+    var key;
+    if (f.indexOf('utm_') === 0) {
+      key = (f === 'utm_source' || f === 'utm_medium') ? 'sl_' + f : 'sl_' + f.slice(4);
+    } else {
+      key = 'sl_' + f;
+    }
+    setCookie(key, v, COOKIE_DAYS);
+    setFirstTouch('sl_first_' + key.slice(3), v);
+  });
+
+  // First-touch referrer + landing (skip same-host referrers)
+  if (document.referrer && document.referrer.indexOf(location.host) === -1) {
+    setFirstTouch('sl_first_referrer', document.referrer);
+    setCookie('sl_referrer', document.referrer, COOKIE_DAYS);
+  }
+  setFirstTouch('sl_first_landing_page', location.pathname);
+  setCookie('sl_landing_page', location.pathname, COOKIE_DAYS);
+
+  // Page-view ping (fire-and-forget). keepalive survives unload.
+  try {
+    fetch(TRACK_URL, {
+      method:      'POST',
+      credentials: 'omit',
+      keepalive:   true,
+      headers:     { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id:    getCookie('sl_session_id'),
+        gclid:         getCookie('sl_gclid'),
+        gbraid:        getCookie('sl_gbraid'),
+        wbraid:        getCookie('sl_wbraid'),
+        fbclid:        getCookie('sl_fbclid'),
+        utm_campaign:  getCookie('sl_campaign'),
+        utm_adgroup:   getCookie('sl_adgroup'),
+        utm_term:      getCookie('sl_term'),
+        utm_matchtype: getCookie('sl_matchtype'),
+        utm_source:    getCookie('sl_utm_source'),
+        utm_medium:    getCookie('sl_utm_medium'),
+        referrer:      document.referrer || '',
+        landing_page:  getCookie('sl_first_landing_page'),
+        path:          location.pathname
+      })
+    });
+  } catch (e) {}
+
+  // Mirror cookies into hidden form inputs on every form submit.
+  // visited_paths intentionally omitted: the path-tracker above owns that key.
+  function mirrorIntoForms() {
+    var forms = document.querySelectorAll('form');
+    forms.forEach(function (form) {
+      if (form.dataset.slMirrored === '1') return;
+      form.dataset.slMirrored = '1';
+      var cookieMap = {
+        session_id:         'sl_session_id',
+        gclid:              'sl_gclid',
+        gbraid:             'sl_gbraid',
+        wbraid:             'sl_wbraid',
+        fbclid:             'sl_fbclid',
+        utm_campaign:       'sl_campaign',
+        utm_adgroup:        'sl_adgroup',
+        utm_term:           'sl_term',
+        utm_matchtype:      'sl_matchtype',
+        utm_source:         'sl_utm_source',
+        utm_medium:         'sl_utm_medium',
+        referrer:           'sl_referrer',
+        landing_page:       'sl_landing_page',
+        first_gclid:        'sl_first_gclid',
+        first_gbraid:       'sl_first_gbraid',
+        first_wbraid:       'sl_first_wbraid',
+        first_campaign:     'sl_first_campaign',
+        first_adgroup:      'sl_first_adgroup',
+        first_term:         'sl_first_term',
+        first_referrer:     'sl_first_referrer',
+        first_landing_page: 'sl_first_landing_page',
+        first_seen:         'sl_first_seen'
+      };
+      Object.keys(cookieMap).forEach(function (name) {
+        if (form.querySelector('input[name="' + name + '"]')) return;
+        var input = document.createElement('input');
+        input.type  = 'hidden';
+        input.name  = name;
+        input.value = getCookie(cookieMap[name]) || '';
+        form.appendChild(input);
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mirrorIntoForms);
+  } else {
+    mirrorIntoForms();
+  }
+  var mo = new MutationObserver(mirrorIntoForms);
+  mo.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+<!-- End Attribution Snippet -->
+
+
+<!-- Collection Carousel from Will-Myers -->
+<script src="https://cdn.jsdelivr.net/gh/willmyerscode/collection-carousel@1/carousel.min.js"></script>
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KHZ2GFD2"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<script>
+// Global Pricing Dropdown Initializer
+// Add this to Settings → Advanced → Code Injection → Footer
+
+(function() {
+  function formatPrice(price, currency, multiplier = 1, pricingMode = 'weekly') {
+    if (!price && price !== 0) return 'TBA';
+
+    const priceStr = String(price);
+
+    if (priceStr.includes(currency) || priceStr.includes('per')) {
+      return priceStr;
+    }
+
+    let num = parseFloat(price);
+    if (!isNaN(num)) {
+      num = num * multiplier;
+      num = Math.ceil(num / 5) * 5;
+      const formatted = num.toLocaleString('en-GB');
+      const period = pricingMode === 'monthly' ? 'monthly' : 'per week';
+      return `${currency}${formatted} ${period}`;
+    }
+
+    return priceStr;
+  }
+
+  function initializePricingDropdowns() {
+    const dropdownContainers = document.querySelectorAll('.pricing-dropdown');
+
+    dropdownContainers.forEach(container => {
+      const dropdown = container.querySelector('.stay-duration-select');
+      const priceDisplay = container.querySelector('.stay-price');
+
+      if (!dropdown || !priceDisplay) {
+        console.warn('Pricing dropdown structure not found in container:', container);
+        return;
+      }
+
+      const currency = container.getAttribute('data-currency') || '£';
+
+      const pricingMode = container.getAttribute('data-pricing') || 'weekly';
+      const pricingMultiplier = pricingMode === 'monthly' ? 4.3 : 1;
+
+      const defaultSelection = container.getAttribute('data-default') || null;
+
+      const prices = {
+        long: '',
+        medium: '',
+        short: '',
+        summer: ''
+      };
+
+      function getPropertyRef() {
+        return container.getAttribute('data-property-ref');
+      }
+
+      async function fetchPricing() {
+        try {
+          const propertyRef = getPropertyRef();
+
+          if (!propertyRef) {
+            priceDisplay.innerHTML = "<i>Unable to load pricing</i>";
+            dropdown.disabled = true;
+            return;
+          }
+
+          const apiUrl = `https://apartment-pricing-api.vercel.app/api/pricing?property_ref=${encodeURIComponent(propertyRef)}`;
+
+          const response = await fetch(apiUrl);
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          const longRate = parseFloat(data.long);
+
+          let mediumRate = data.medium ? parseFloat(data.medium) : (longRate * 1.20);
+          let shortRate = data.short ? parseFloat(data.short) : (longRate * 1.40);
+          let summerRate = data.summer ? parseFloat(data.summer) : (longRate * 1.50);
+
+          prices.long = formatPrice(longRate, currency, pricingMultiplier, pricingMode);
+          prices.medium = formatPrice(mediumRate, currency, pricingMultiplier, pricingMode);
+          prices.short = formatPrice(shortRate, currency, pricingMultiplier, pricingMode);
+          prices.summer = formatPrice(summerRate, currency, pricingMultiplier, pricingMode);
+
+          dropdown.dataset.long = prices.long;
+          dropdown.dataset.medium = prices.medium;
+          dropdown.dataset.short = prices.short;
+          dropdown.dataset.summer = prices.summer;
+
+          dropdown.disabled = false;
+          priceDisplay.innerHTML = "<i>Prices based on length of stay</i>";
+
+          if (defaultSelection) {
+            dropdown.value = defaultSelection;
+            updatePrice();
+          }
+
+          if (document.referrer.includes("/lse-summer-accommodation")) {
+            dropdown.value = "summer";
+            updatePrice();
+          }
+
+        } catch (error) {
+          console.error('Error fetching pricing:', error);
+          priceDisplay.innerHTML = "<i>Unable to load prices</i>";
+          dropdown.disabled = true;
+        }
+      }
+
+      function updatePrice() {
+        if (dropdown.value && prices[dropdown.value]) {
+          priceDisplay.innerHTML = `from &nbsp;<span class="stay-price-amount">${prices[dropdown.value]}</span>`;
+        } else {
+          priceDisplay.innerHTML = "<i>Please select your stay length</i>";
+        }
+      }
+
+      dropdown.addEventListener("change", () => {
+        priceDisplay.style.opacity = 0;
+        setTimeout(() => {
+          updatePrice();
+          priceDisplay.style.opacity = 1;
+        }, 300);
+      });
+
+      fetchPricing();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePricingDropdowns);
+  } else {
+    initializePricingDropdowns();
+  }
+})();
+</script>
+
+
+<!-- ============================================================
+     Student Luxe — Floating Enquiry Widget
+     Paste into: Squarespace → Settings → Advanced → Code Injection → Footer
+     ============================================================ -->
+<script>
+(function () {
+
+  var FORM_URL    = 'https://www.studentluxe.co.uk/reservations';
+  var API_URL     = 'https://luxe-lead-capture.vercel.app/api/apartment-pages';
+  var aptMap      = {};
+  var currentApt  = null;
+
+  var HIDDEN_PAGES = ['/reservations', '/rest', '/team-new', '/luxury-student-residences', '/onboarding', '/data', '/london-apartments-social', '/luxury-serviced-residences', '/luxury-rentals-all-cities'];
+  if (HIDDEN_PAGES.indexOf(window.location.pathname.replace(/\/$/, '')) !== -1) return;
+
+  var style = document.createElement('style');
+  style.textContent = [
+    '#sl-widget-trigger{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;align-items:center;gap:8px;background:#B8966E;color:#fff;border:none;border-radius:8px;padding:13px 26px;font-family:"DM Sans",Helvetica,Arial,sans-serif;font-size:11px;font-weight:500;cursor:pointer;letter-spacing:0.12em;text-transform:uppercase;transition:background 0.18s;}',
+    '#sl-widget-trigger:hover{background:#a07d5a;}',
+    '#sl-widget-trigger svg{width:14px;height:14px;flex-shrink:0;}',
+    '#sl-widget-panel{position:fixed;bottom:76px;right:24px;z-index:9999;width:290px;background:#fff;border:0.5px solid rgba(184,150,110,0.4);border-radius:14px 0 14px 14px;overflow:visible;display:none;font-family:"DM Sans",Helvetica,Arial,sans-serif;}',
+    '#sl-widget-panel.sl-open{display:block;}',
+    '.sl-w-close-tab{position:absolute;top:-21px;right:-0.5px;background:#0d1a2e;color:rgba(255,255,255,0.75);border:none;border-radius:4px 4px 0 0;padding:4px 10px;font-family:"DM Sans",Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;}',
+    '.sl-w-close-tab:hover{color:#fff;}',
+    '.sl-w-banner{background:rgba(184,150,110,0.08);border-bottom:0.5px solid rgba(184,150,110,0.2);padding:8px 16px;display:none;align-items:center;gap:6px;}',
+    '.sl-w-banner p{margin:0;font-size:11px;color:#B8966E;line-height:1.4;}',
+    '.sl-w-banner svg{width:12px;height:12px;flex-shrink:0;color:#B8966E;}',
+    '.sl-w-opts{padding:12px;display:flex;flex-direction:column;gap:8px;}',
+    '.sl-w-opt{display:block;border:0.5px solid rgba(184,150,110,0.3);border-radius:10px;padding:12px 14px;cursor:pointer;text-decoration:none;transition:border-color 0.15s,background 0.15s;position:relative;}',
+    '.sl-w-opt:hover{border-color:#B8966E;background:#faf7f3;}',
+    '.sl-w-opt-tag{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#B8966E;margin:0 0 4px;}',
+    '.sl-w-opt-title{font-family:"Baskerville Display PT","Baskerville",Georgia,serif;font-size:22px;font-weight:400;color:#0d1a2e;margin:0 0 3px;letter-spacing:-0.03em;}',
+    '.sl-w-opt-desc{font-size:12px;color:#6b6b6b;margin:0;line-height:1.5;}',
+    '.sl-w-opt-name{color:#B8966E;font-weight:500;}',
+    '.sl-w-opt-arrow{position:absolute;top:12px;right:14px;color:#B8966E;font-size:14px;}',
+    '.sl-w-footer{padding:0 12px 12px;}',
+    '.sl-w-footer p{margin:0;font-size:10px;color:#9b9b9b;text-align:center;line-height:1.5;}',
+    '@media(max-width:400px){#sl-widget-panel{width:calc(100vw - 32px);right:16px;}#sl-widget-trigger{right:16px;bottom:16px;}#sl-widget-panel{bottom:68px;}}'
+  ].join('');
+  document.head.appendChild(style);
+
+  var trigger = document.createElement('button');
+  trigger.id = 'sl-widget-trigger';
+  trigger.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.5"><path d="M14 2H2a1 1 0 00-1 1v8a1 1 0 001 1h3l3 3 3-3h3a1 1 0 001-1V3a1 1 0 00-1-1z"/></svg>Make an enquiry';
+  trigger.addEventListener('click', togglePanel);
+
+  var panel = document.createElement('div');
+  panel.id = 'sl-widget-panel';
+  panel.innerHTML = [
+    '<button class="sl-w-close-tab" id="sl-w-close-btn">Close &#x2715;</button>',
+    '<div style="border-radius:14px 0 14px 14px;overflow:hidden;">',
+    '<div style="background:#0d1a2e;padding:12px 14px;">',
+    '  <p style="margin:0;font-size:11px;line-height:1.55;font-family:\'DM Sans\',Helvetica,Arial,sans-serif;color:rgba(255,255,255,0.75);">Our apartments are available on a <strong style="color:#E8E1C3;font-weight:600;">request-only</strong> basis. Please choose an option below:</p>',
+    '</div>',
+    '<div class="sl-w-opts">',
+    '  <a class="sl-w-opt" id="sl-w-opt-a">',
+    '    <span class="sl-w-opt-tag">Option A</span>',
+    '    <p class="sl-w-opt-title" id="sl-w-a-title">Check availability</p>',
+    '    <p class="sl-w-opt-desc" id="sl-w-a-desc">Enquire about a specific apartment</p>',
+    '    <span class="sl-w-opt-arrow">&rarr;</span>',
+    '  </a>',
+    '  <a class="sl-w-opt" id="sl-w-opt-b">',
+    '    <span class="sl-w-opt-tag">Option B</span>',
+    '    <p class="sl-w-opt-title" id="sl-w-b-title">Send me options</p>',
+    '    <p class="sl-w-opt-desc" id="sl-w-b-desc">Curated to your budget &amp; preferences</p>',
+    '    <span class="sl-w-opt-arrow">&rarr;</span>',
+    '  </a>',
+    '</div>',
+    '</div>'
+  ].join('');
+
+  document.body.appendChild(trigger);
+  document.body.appendChild(panel);
+
+  panel.querySelector('#sl-w-close-btn').addEventListener('click', togglePanel);
+
+  document.addEventListener('click', function (e) {
+    if (!panel.contains(e.target) && e.target !== trigger && !trigger.contains(e.target)) {
+      panel.classList.remove('sl-open');
+    }
+  });
+
+  function togglePanel() {
+    panel.classList.toggle('sl-open');
+  }
+
+  fetch(API_URL)
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.apartments) return;
+      data.apartments.forEach(function (apt) {
+        aptMap[apt.slug] = { name: apt.name, city: apt.city };
+      });
+      matchCurrentPage();
+    })
+    .catch(function (err) {
+      console.warn('[SL Widget] Could not load apartment map:', err);
+      swapJotformButtons(null);
+    });
+
+  function matchCurrentPage() {
+    var path = window.location.pathname.replace(/\/$/, '').toLowerCase();
+    if (aptMap[path]) {
+      currentApt = aptMap[path];
+      activateAptMode(currentApt);
+    } else {
+      swapJotformButtons(null);
+    }
+  }
+
+  function cleanName(name) {
+    return name
+      .replace(/\s+(studio|penthouse|\d[\s-]*bed(room)?s?|one[\s-]*bed(room)?|deluxe[\s-]*(studio|\d[\s-]*bed)|executive[\s-]*studio|accessible[\s-]*studio|double[\s-]*studio|twin[\s-]*bed|small[\s-]*double.*|w\/\s*patio.*)$/i, '')
+      .trim();
+  }
+
+  function activateAptMode(apt) {
+    var aTitle  = document.getElementById('sl-w-a-title');
+    var aDesc   = document.getElementById('sl-w-a-desc');
+    var bTitle  = document.getElementById('sl-w-b-title');
+    var bDesc   = document.getElementById('sl-w-b-desc');
+
+    var displayName = cleanName(apt.name);
+    var cityLabel   = apt.city ? apt.city.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); }) : '';
+
+    aTitle.textContent  = 'Check availability';
+    aDesc.innerHTML     = 'Enquire about <span class="sl-w-opt-name">' + displayName + '</span>';
+
+    if (cityLabel) {
+      bTitle.textContent = 'Send me ' + cityLabel + ' options';
+    }
+    bDesc.textContent = 'Curated to your budget & preferences';
+
+    document.getElementById('sl-w-opt-a').href =
+      FORM_URL + '?type=A&ref=' + encodeURIComponent(displayName) + '&city=' + encodeURIComponent(apt.city);
+
+    document.getElementById('sl-w-opt-b').href =
+      FORM_URL + '?type=B&city=' + encodeURIComponent(apt.city);
+
+    swapJotformButtons(apt);
+  }
+
+  document.getElementById('sl-w-opt-a').href = FORM_URL + '?type=A';
+  document.getElementById('sl-w-opt-b').href = FORM_URL + '?type=B';
+
+  function detectCityFromPath() {
+    var path = window.location.pathname.toLowerCase();
+    var cities = ['london', 'paris', 'new-york', 'cambridge', 'madrid'];
+    for (var i = 0; i < cities.length; i++) {
+      if (path.indexOf(cities[i]) !== -1) return cities[i];
+    }
+    return null;
+  }
+
+  function swapJotformButtons(apt) {
+    document.querySelectorAll('a[href*="jotform"]').forEach(function (el) {
+      if (apt) {
+        var displayName = cleanName(apt.name);
+        el.href = FORM_URL + '?type=A&ref=' + encodeURIComponent(displayName) + '&city=' + encodeURIComponent(apt.city);
+      } else {
+        var city = detectCityFromPath();
+        el.href = FORM_URL + '?type=B' + (city ? '&city=' + encodeURIComponent(city) : '');
+      }
+      el.removeAttribute('target');
+      el.removeAttribute('rel');
+    });
+  }
+
+})();
+</script>
+<!-- End Student Luxe Enquiry Widget -->
