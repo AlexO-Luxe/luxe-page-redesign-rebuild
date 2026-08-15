@@ -1,0 +1,230 @@
+<!-- ============================================================
+  STUDENT LUXE — WhatsApp Pre-Chat Modal (sitewide)
+  Paste into: Settings > Advanced > Code Injection > FOOTER
+  (below the existing footer code, order does not matter)
+
+  Intercepts every link to wa.me / api.whatsapp.com / whatsapp:
+  on any page, shows the Concierge Card modal, mints an enquiry
+  ref via luxe-lead-capture, then opens WhatsApp with the
+  prefilled message. If the API is slow or down, WhatsApp still
+  opens, just without the ref.
+============================================================ -->
+<style>
+  .slwa-overlay {
+    position: fixed; inset: 0; z-index: 100000;
+    background: rgba(8, 15, 26, 0.55);
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .slwa-overlay.slwa-open { display: flex; }
+  .slwa-card {
+    width: 100%; max-width: 420px; background: #fff;
+    border-radius: 14px; border: 0.5px solid rgba(184, 150, 110, 0.5);
+    padding: 30px 32px 22px; text-align: center; position: relative;
+    box-shadow: 0 24px 70px rgba(8, 15, 26, 0.35);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    animation: slwaPop .22s cubic-bezier(.23, 1, .32, 1);
+  }
+  @keyframes slwaPop { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .slwa-card { animation: none; } }
+  .slwa-x {
+    position: absolute; top: 10px; right: 14px; background: none; border: 0;
+    color: #9b9b9b; font-size: 20px; cursor: pointer; padding: 4px; line-height: 1;
+  }
+  .slwa-x:hover { color: #1a1a1a; }
+  .slwa-eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: #B8966E; font-weight: 700; margin: 0 0 8px;
+  }
+  .slwa-title {
+    font-family: 'Baskerville', Georgia, serif; font-weight: 400;
+    font-size: 26px; color: #0d1a2e; letter-spacing: -0.01em; margin: 0 0 6px;
+  }
+  .slwa-sub { font-size: 12.5px; color: #6b6b6b; margin: 0 0 18px; }
+  .slwa-field { margin-bottom: 10px; text-align: left; }
+  .slwa-label {
+    display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #6b6b6b; font-weight: 500; margin-bottom: 4px;
+  }
+  .slwa-label .slwa-req { color: #B8966E; }
+  .slwa-input {
+    width: 100%; box-sizing: border-box;
+    background: #e6f1fb; border: 1px solid #b5d4f4; border-radius: 8px;
+    padding: 11px 12px; font-size: 16px; color: #1a1a1a;
+    font-family: inherit; outline: none;
+    transition: background .18s, border-color .18s;
+  }
+  .slwa-input:focus { background: #ddeefb; border-color: #7ab8f0; }
+  .slwa-input.slwa-error { border-color: #c0392b; background: #fdf0ee; }
+  .slwa-go {
+    width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: #25D366; color: #fff; border: 0; border-radius: 99px;
+    padding: 13px 22px; font-size: 14px; font-weight: 700; cursor: pointer;
+    font-family: inherit; margin-top: 8px;
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
+    transition: transform .18s, box-shadow .18s;
+  }
+  .slwa-go:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(37, 211, 102, 0.45); }
+  .slwa-go:disabled { opacity: 0.6; cursor: wait; transform: none; }
+  .slwa-privacy { font-size: 9.5px; color: #b3aca0; margin: 10px 0 0; }
+  @media (max-width: 480px) {
+    .slwa-card { padding: 24px 20px 18px; }
+    .slwa-title { font-size: 22px; }
+  }
+</style>
+
+<div class="slwa-overlay" id="slwaOverlay" role="dialog" aria-modal="true" aria-labelledby="slwaTitle">
+  <div class="slwa-card">
+    <button class="slwa-x" id="slwaClose" aria-label="Close">&#10005;</button>
+    <p class="slwa-eyebrow">WhatsApp Concierge</p>
+    <h3 class="slwa-title" id="slwaTitle">Message our team</h3>
+    <p class="slwa-sub" id="slwaHours">We're live from 10am to 6pm GMT.</p>
+    <div class="slwa-field">
+      <label class="slwa-label" for="slwaName">Your name <span class="slwa-req">*</span></label>
+      <input class="slwa-input" id="slwaName" type="text" autocomplete="given-name" placeholder="First name">
+    </div>
+    <div class="slwa-field">
+      <label class="slwa-label" for="slwaNeed">What are you looking for? <span class="slwa-req">*</span></label>
+      <input class="slwa-input" id="slwaNeed" type="text" placeholder="e.g. Studio near LSE from September">
+    </div>
+    <button class="slwa-go" id="slwaGo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+      Open WhatsApp
+    </button>
+    <p class="slwa-privacy">We attach a short reference so we know which page you came from.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var API_URL = 'https://luxe-lead-capture.vercel.app/api/submit-whatsapp';
+  var DEFAULT_NUMBER = '442030070017';
+  var API_TIMEOUT_MS = 2500;
+
+  var overlay = document.getElementById('slwaOverlay');
+  var nameInput = document.getElementById('slwaName');
+  var needInput = document.getElementById('slwaNeed');
+  var goBtn = document.getElementById('slwaGo');
+  var pendingNumber = DEFAULT_NUMBER;
+
+  // Localised opening hours: 10:00 to 18:00 London time, shown in the
+  // visitor's own timezone (falls back to the plain GMT line).
+  try {
+    var visitorZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if (visitorZone && visitorZone !== 'Europe/London') {
+      var fmtLondon = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: 'numeric', minute: 'numeric', hour12: false });
+      var fmtLocal = new Intl.DateTimeFormat('en-GB', { hour: 'numeric', minute: 'numeric', hour12: true, timeZoneName: 'short' });
+      var toLocal = function (h) {
+        var d = new Date();
+        var parts = fmtLondon.format(d).split(':');
+        d.setMinutes(d.getMinutes() + ((h * 60) - (parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10))));
+        return fmtLocal.format(d).replace(/\s?([ap]m)/, '$1');
+      };
+      document.getElementById('slwaHours').textContent =
+        "We're live from " + toLocal(10) + ' to ' + toLocal(18) + ' your time.';
+    }
+  } catch (e) { /* keep the GMT default */ }
+
+  function getCookie(name) {
+    var m = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+    if (m) return decodeURIComponent(m[1]);
+    try { return localStorage.getItem('ct_' + name.replace(/^sl_/, '')) || ''; } catch (e) { return ''; }
+  }
+
+  function trackingData() {
+    return {
+      timestamp: new Date().toISOString(),
+      page_path: location.pathname + location.search,
+      last_page: getCookie('sl_last_page'),
+      landing_page: getCookie('sl_landing_page'),
+      utm_source: getCookie('sl_utm_source'),
+      utm_medium: getCookie('sl_utm_medium'),
+      utm_campaign: getCookie('sl_campaign') || getCookie('sl_utm_campaign'),
+      utm_adgroup: getCookie('sl_adgroup'),
+      utm_term: getCookie('sl_term'),
+      utm_matchtype: getCookie('sl_matchtype'),
+      gclid: getCookie('sl_gclid'),
+      gbraid: getCookie('sl_gbraid'),
+      wbraid: getCookie('sl_wbraid'),
+      fbclid: getCookie('sl_fbclid'),
+      session_id: getCookie('sl_session_id'),
+      visited_paths: getCookie('sl_visited_paths'),
+      first_gclid: getCookie('sl_first_gclid'),
+      first_campaign: getCookie('sl_first_campaign')
+    };
+  }
+
+  function extractNumber(href) {
+    var m = (href || '').match(/(?:wa\.me\/|phone=)\+?(\d{6,15})/);
+    return m ? m[1] : DEFAULT_NUMBER;
+  }
+
+  function openModal(number) {
+    pendingNumber = number || DEFAULT_NUMBER;
+    overlay.classList.add('slwa-open');
+    try { nameInput.value = nameInput.value || localStorage.getItem('slwa_name') || ''; } catch (e) {}
+    (nameInput.value ? needInput : nameInput).focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('slwa-open');
+    goBtn.disabled = false;
+    goBtn.lastChild.textContent = ' Open WhatsApp';
+  }
+
+  document.getElementById('slwaClose').addEventListener('click', closeModal);
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay.classList.contains('slwa-open')) closeModal();
+  });
+
+  // Intercept every WhatsApp link on the page, current and future
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    if (!/wa\.me\/|api\.whatsapp\.com|whatsapp\.com\/send|^whatsapp:/i.test(href)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openModal(extractNumber(href));
+  }, true);
+
+  function withTimeout(promise, ms) {
+    return Promise.race([promise, new Promise(function (resolve) { setTimeout(function () { resolve(null); }, ms); })]);
+  }
+
+  goBtn.addEventListener('click', function () {
+    var name = nameInput.value.trim();
+    var need = needInput.value.trim();
+    nameInput.classList.toggle('slwa-error', !name);
+    needInput.classList.toggle('slwa-error', !need);
+    if (!name || !need) { (!name ? nameInput : needInput).focus(); return; }
+
+    try { localStorage.setItem('slwa_name', name); } catch (e) {}
+    goBtn.disabled = true;
+    goBtn.lastChild.textContent = ' Opening…';
+
+    var payload = trackingData();
+    payload.guest_name = name;
+    payload.guest_need = need;
+
+    var post = fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json(); }).catch(function () { return null; });
+
+    withTimeout(post, API_TIMEOUT_MS).then(function (data) {
+      var ref = data && data.ref ? data.ref : null;
+      var msg = 'Hi Student Luxe! I\'m ' + name + '. I\'m looking for: ' + need + '.';
+      if (ref) msg += ' (enquiry ref ' + ref + ')';
+      var url = 'https://wa.me/' + pendingNumber + '?text=' + encodeURIComponent(msg);
+      closeModal();
+      window.location.href = url;
+    });
+  });
+
+  needInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') goBtn.click(); });
+})();
+</script>
