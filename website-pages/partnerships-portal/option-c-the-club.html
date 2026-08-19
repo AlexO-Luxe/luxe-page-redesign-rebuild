@@ -1,0 +1,412 @@
+<!-- ============================================================
+     STUDENT LUXE - Guest Partnerships Portal
+     OPTION C: "The Club" - dark members lounge, rail navigation.
+
+     Block: .slpc - one self-contained Squarespace Code Block.
+     The block paints its own navy surface, so it sits happily on a
+     cream Squarespace section. Set the section padding to 0 if you
+     want it edge to edge.
+
+     MOCKUP NOTE: sign-in is a front-end demo only. A Squarespace
+     Code Block is public source, so the live build must verify the
+     booking reference + surname server side (Vercel function ->
+     Monday bookings board) and return the partner list from there.
+
+     IMAGES: partner shots come from the Squarespace CDN at
+     ?format=750w. Missing images fall back to a gold wash and a
+     serif monogram.
+     ============================================================ -->
+
+<style>
+  .slpc{
+    --navy:#0d1a2e; --navy-2:#122238; --navy-3:#182b45;
+    --gold:#B8966E; --gold-hover:#a07d5a; --gold-light:#D4B896;
+    --line:rgba(212,184,150,.20); --line-soft:rgba(212,184,150,.10);
+    --txt:#F4F0E6; --txt-soft:rgba(244,240,230,.62); --txt-body:rgba(244,240,230,.76);
+    --red:#E0655C;
+    --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+    --body-serif:'adobe-garamond-pro','Adobe Garamond Pro',Georgia,serif;
+    --sans:'dm-sans','DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --ease:cubic-bezier(.22,.8,.28,1);
+    font-family:var(--sans); color:var(--txt); background:var(--navy);
+    -webkit-font-smoothing:antialiased; border-radius:20px; overflow:hidden;
+  }
+  .slpc *{box-sizing:border-box; margin:0; padding:0}
+  .slpc button{font-family:inherit}
+  .slpc-eyebrow{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-light); font-weight:500}
+
+  /* ── GATE ── */
+  .slpc-gate{max-width:460px; margin:0 auto; padding:96px 24px 104px; text-align:center}
+  .slpc-crest{width:52px; height:52px; margin:0 auto 26px; border:1px solid var(--line); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-style:italic; font-weight:300; font-size:22px; color:var(--gold-light)}
+  .slpc-gate h1{font-family:var(--serif); font-weight:300; letter-spacing:-.05em; line-height:.92; font-size:clamp(38px,5.4vw,60px); margin-top:22px}
+  .slpc-gate h1 em{font-style:italic; color:var(--gold-light)}
+  .slpc-gate .lede{font-family:var(--body-serif); font-size:16px; line-height:1.65; color:var(--txt-body); margin:20px auto 0; max-width:360px}
+
+  .slpc-form{margin-top:40px; text-align:left}
+  .slpc-field + .slpc-field{margin-top:26px}
+  .slpc-label{display:block; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-light); font-weight:500; margin-bottom:10px}
+  .slpc-input{width:100%; font-family:var(--sans); font-size:16px; color:var(--txt); background:transparent; border:none; border-bottom:1px solid var(--line); border-radius:0; padding:10px 2px; outline:none; transition:border-color .2s var(--ease)}
+  .slpc-input::placeholder{color:rgba(244,240,230,.28)}
+  .slpc-input:focus{border-bottom-color:var(--gold)}
+  .slpc-hint{font-size:12px; color:var(--txt-soft); margin-top:10px}
+  .slpc-error{display:none; font-size:12.5px; color:var(--red); margin-top:18px}
+  .slpc-error.on{display:block}
+  .slpc-submit{width:100%; margin-top:36px; padding:17px 32px; background:var(--gold); color:#fff; font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; border:none; border-radius:8px; cursor:pointer; transition:background .2s var(--ease)}
+  .slpc-submit:hover{background:var(--gold-hover)}
+  .slpc-help{font-size:12.5px; color:var(--txt-soft); margin-top:22px; text-align:center; line-height:1.6}
+  .slpc-help a{color:var(--gold-light); text-decoration:none; border-bottom:1px solid var(--line)}
+  .slpc-help a:hover{color:#fff}
+
+  /* ── PORTAL SHELL ── */
+  .slpc-portal{display:none}
+  .slpc-portal.on{display:block}
+
+  .slpc-bar{display:flex; align-items:center; justify-content:space-between; gap:20px; padding:22px 32px; border-bottom:1px solid var(--line-soft)}
+  .slpc-brand{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-light)}
+  .slpc-id{display:flex; align-items:center; gap:16px; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--txt-soft)}
+  .slpc-id strong{font-family:var(--serif); font-weight:400; font-size:17px; letter-spacing:-.02em; text-transform:none; color:var(--txt)}
+  .slpc-out{background:none; border:1px solid var(--line); border-radius:100px; padding:8px 14px; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--txt-soft); cursor:pointer; transition:border-color .2s var(--ease), color .2s var(--ease)}
+  .slpc-out:hover{border-color:var(--gold); color:var(--gold-light)}
+
+  .slpc-shell{display:grid; grid-template-columns:224px 1fr; gap:0}
+  .slpc-rail{border-right:1px solid var(--line-soft); padding:34px 22px 40px; position:sticky; top:0; align-self:start; background:var(--navy)}
+  .slpc-railhead{font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--txt-soft); margin-bottom:16px}
+  .slpc-navbtn{display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%; text-align:left; background:none; border:none; border-radius:8px; padding:11px 12px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--txt-body); cursor:pointer; transition:background .18s var(--ease), color .18s var(--ease)}
+  .slpc-navbtn .n{font-family:var(--serif); font-style:italic; font-size:13px; color:var(--txt-soft)}
+  .slpc-navbtn:hover{background:var(--navy-2); color:var(--txt)}
+  .slpc-navbtn.on{background:var(--navy-3); color:var(--gold-light)}
+  .slpc-navbtn.on .n{color:var(--gold-light)}
+  .slpc-railfoot{margin-top:28px; padding-top:22px; border-top:1px solid var(--line-soft); font-size:12px; line-height:1.6; color:var(--txt-soft)}
+  .slpc-railfoot a{color:var(--gold-light); text-decoration:none; border-bottom:1px solid var(--line)}
+
+  .slpc-main{padding:36px 32px 48px; min-width:0}
+
+  /* ── SPOTLIGHT ── */
+  .slpc-spot{position:relative; border-radius:16px; overflow:hidden; background:var(--navy-2); min-height:340px; display:flex; align-items:flex-end; padding:38px}
+  .slpc-spot img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.55}
+  .slpc-spot .veil{position:absolute; inset:0; background:linear-gradient(105deg,rgba(13,26,46,.92) 12%,rgba(13,26,46,.25) 100%)}
+  .slpc-spot .inner{position:relative; max-width:520px}
+  .slpc-spot h2{font-family:var(--serif); font-weight:300; letter-spacing:-.04em; line-height:.98; font-size:clamp(30px,3.6vw,46px); margin-top:14px}
+  .slpc-spot h2 em{font-style:italic; color:var(--gold-light)}
+  .slpc-spot p{font-family:var(--body-serif); font-size:16px; line-height:1.6; color:var(--txt-body); margin-top:14px}
+  .slpc-spot .row{display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:26px}
+  .slpc-btn{display:inline-block; padding:14px 26px; background:var(--gold); color:#fff; font-size:10.5px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; border:none; border-radius:8px; text-decoration:none; cursor:pointer; transition:background .2s var(--ease)}
+  .slpc-btn:hover{background:var(--gold-hover); color:#fff}
+  .slpc-btn-ghost{display:inline-block; padding:14px 24px; background:transparent; color:var(--txt); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; border:1px solid var(--line); border-radius:8px; text-decoration:none; cursor:pointer; transition:border-color .2s var(--ease), color .2s var(--ease)}
+  .slpc-btn-ghost:hover{border-color:var(--gold); color:var(--gold-light)}
+
+  /* ── RAILS ── */
+  .slpc-sec{margin-top:52px; scroll-margin-top:20px}
+  .slpc-sechead{display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:4px}
+  .slpc-sechead h3{font-family:var(--serif); font-weight:300; letter-spacing:-.03em; font-size:27px}
+  .slpc-sechead span{font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--txt-soft)}
+  .slpc-secintro{font-family:var(--body-serif); font-style:italic; font-size:16px; color:var(--txt-soft); margin-bottom:20px}
+
+  .slpc-row{display:flex; gap:18px; overflow-x:auto; padding-bottom:8px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+  .slpc-row::-webkit-scrollbar{display:none}
+  .slpc-item{flex:0 0 268px; scroll-snap-align:start; background:var(--navy-2); border:1px solid var(--line-soft); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; opacity:0; transition:opacity .5s var(--ease), border-color .25s var(--ease)}
+  .slpc-item.on{opacity:1}
+  .slpc-shot{position:relative; aspect-ratio:16/10; background:linear-gradient(140deg,#182b45 0%,rgba(184,150,110,.42) 100%); overflow:hidden}
+  .slpc-shot img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s var(--ease)}
+  .slpc-mono{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-style:italic; font-weight:300; font-size:38px; color:rgba(244,240,230,.30)}
+  .slpc-perk{position:absolute; left:12px; bottom:12px; z-index:2; font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--navy); background:var(--gold-light); border-radius:100px; padding:7px 12px}
+  .slpc-ibody{padding:18px 18px 20px; display:flex; flex-direction:column; flex:1}
+  .slpc-iname{font-family:var(--serif); font-weight:400; letter-spacing:-.02em; font-size:20px; line-height:1.2}
+  .slpc-icity{font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--txt-soft); margin-top:7px}
+  .slpc-iblurb{font-family:var(--body-serif); font-size:14.5px; line-height:1.55; color:var(--txt-body); margin-top:11px; flex:1}
+  .slpc-code{margin-top:16px; width:100%; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-light); background:rgba(184,150,110,.12); border:1px dashed var(--line); border-radius:8px; padding:12px 10px; cursor:pointer; transition:background .2s var(--ease)}
+  .slpc-code:hover{background:rgba(184,150,110,.22)}
+
+  @media (hover:hover) and (pointer:fine){
+    .slpc-item:hover{border-color:var(--line)}
+    .slpc-item:hover .slpc-shot img{transform:scale(1.05)}
+  }
+
+  /* ── FOOT ── */
+  .slpc-foot{margin:60px 0 8px; padding:34px 0 0; border-top:1px solid var(--line-soft); display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap}
+  .slpc-foot p{font-family:var(--body-serif); font-size:16px; color:var(--txt-soft); max-width:420px}
+
+  @media (max-width:900px){
+    .slpc{border-radius:14px}
+    .slpc-shell{grid-template-columns:1fr}
+    .slpc-rail{position:static; border-right:none; border-bottom:1px solid var(--line-soft); padding:14px 20px; overflow-x:auto; scrollbar-width:none}
+    .slpc-rail::-webkit-scrollbar{display:none}
+    .slpc-rail > div{display:flex; gap:8px}
+    .slpc-railhead, .slpc-railfoot{display:none}
+    .slpc-navbtn{width:auto; white-space:nowrap; border:1px solid var(--line-soft); border-radius:100px; padding:10px 15px}
+    .slpc-navbtn .n{display:none}
+    .slpc-main{padding:24px 20px 40px}
+    .slpc-bar{padding:16px 20px; flex-wrap:wrap; gap:10px}
+    .slpc-brand{flex:1 1 100%}
+    .slpc-id{flex:1 1 100%; justify-content:space-between; gap:10px}
+    .slpc-spot{min-height:280px; padding:26px}
+    .slpc-item{flex-basis:236px}
+    .slpc-gate{padding:64px 22px 76px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .slpc-item{opacity:1 !important; transition:none !important}
+    .slpc *{transition:none !important}
+  }
+</style>
+
+<div class="slpc">
+
+  <!-- ── SIGN IN ── -->
+  <section class="slpc-gate" id="slpc-gate">
+    <div class="slpc-crest" aria-hidden="true">L</div>
+    <div class="slpc-eyebrow">Members entrance</div>
+    <h1>The Luxe<br><em>Club.</em></h1>
+    <p class="lede">Partner rates held for residents only. Sign in with the details on your booking confirmation.</p>
+
+    <form class="slpc-form" id="slpc-form" novalidate>
+      <div class="slpc-field">
+        <label class="slpc-label" for="slpc-ref">Booking reference</label>
+        <input class="slpc-input" id="slpc-ref" name="ref" type="text" autocomplete="off" spellcheck="false" placeholder="SL-48213" required>
+        <div class="slpc-hint">Top right of your confirmation email.</div>
+      </div>
+      <div class="slpc-field">
+        <label class="slpc-label" for="slpc-name">Surname</label>
+        <input class="slpc-input" id="slpc-name" name="surname" type="text" autocomplete="family-name" placeholder="Obertelli" required>
+      </div>
+      <div class="slpc-error" id="slpc-err">We could not match those details. Check the reference and surname exactly as they appear on your confirmation.</div>
+      <button class="slpc-submit" type="submit">Enter the club</button>
+    </form>
+
+    <p class="slpc-help">Lost your reference? <a href="/contact">Message the guest team</a>.</p>
+  </section>
+
+  <!-- ── PORTAL ── -->
+  <div class="slpc-portal" id="slpc-portal">
+
+    <div class="slpc-bar">
+      <div class="slpc-brand">Student Luxe &middot; The Club</div>
+      <div class="slpc-id">
+        <strong id="slpc-guest">Guest</strong>
+        <span>SL-48213 &middot; London</span>
+        <button class="slpc-out" type="button" id="slpc-out">Sign out</button>
+      </div>
+    </div>
+
+    <div class="slpc-shell">
+
+      <nav class="slpc-rail" id="slpc-rail" aria-label="Partner categories">
+        <div class="slpc-railhead">The collection</div>
+        <div id="slpc-nav"></div>
+        <div class="slpc-railfoot">
+          Want a partner added near your apartment?<br>
+          <a href="/contact">Ask the guest team</a>
+        </div>
+      </nav>
+
+      <div class="slpc-main">
+
+        <section class="slpc-spot" id="slpc-spot">
+          <!-- EDITABLE IMAGE: Squarespace CDN url, ?format=1500w -->
+          <img src="/assets/partner-feature.jpg?format=1500w" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'">
+          <div class="veil"></div>
+          <div class="inner">
+            <div class="slpc-eyebrow">This month</div>
+            <h2>Third Space, Soho<br><em>20% off membership.</em></h2>
+            <p>Full club access across Soho, Canary Wharf and Marylebone, including the pool, climbing wall and unlimited classes. No joining fee for Student Luxe residents.</p>
+            <div class="row">
+              <button class="slpc-btn" type="button" id="slpc-spot-code" data-code="LUXE-TS20">Reveal code</button>
+              <a class="slpc-btn-ghost" href="#" target="_blank" rel="noopener">Visit partner</a>
+            </div>
+          </div>
+        </section>
+
+        <div id="slpc-sections"></div>
+
+        <div class="slpc-foot">
+          <p>New partners are added on the first of every month, always chosen around where our apartments actually are.</p>
+          <a class="slpc-btn-ghost" href="/contact">Suggest a partner</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ============================================================
+     CONFIG - editors only ever touch this object.
+     PORTAL_API: live build POSTs {ref, surname} and renders the
+     partner list the server returns. Never ship real codes here.
+     ============================================================ */
+  var CONFIG = {
+    PORTAL_API: '/api/partnerships/session',
+    demoMode: true,
+    categories: [
+      { id:'fitness', label:'Fitness',             intro:'Train without a twelve month contract.' },
+      { id:'spa',     label:'Spa and wellness',    intro:'Recovery, treatment rooms and quiet hours.' },
+      { id:'escapes', label:'Countryside escapes', intro:'For the weekends you leave the city behind.' },
+      { id:'home',    label:'Home services',       intro:'Laundry, dry cleaning and everything collected from your door.' },
+      { id:'travel',  label:'Travel',              intro:'Airports, terminals and everything in between.' },
+      { id:'culture', label:'Dining and culture',  intro:'Tables and memberships worth the walk.' }
+    ],
+    partners: [
+      { cat:'fitness', name:'Third Space, Soho', city:'London', perk:'20% off membership', code:'LUXE-TS20',
+        blurb:'Full club access across three London sites, pool and classes included.', img:'/assets/partner-third-space.jpg?format=750w', url:'#' },
+      { cat:'fitness', name:'KXU, Chelsea', city:'London', perk:'3 classes free', code:'LUXE-KXU3',
+        blurb:'Reformer, boxing and treadmill classes minutes from our Chelsea apartments.', img:'/assets/partner-kxu.jpg?format=750w', url:'#' },
+      { cat:'fitness', name:'Ken Club', city:'Paris', perk:'25% off 3 months', code:'LUXE-KEN25',
+        blurb:'Pool, squash courts and spa in Auteuil, close to our Passy residences.', img:'/assets/partner-ken-club.jpg?format=750w', url:'#' },
+      { cat:'spa', name:'Bamford Wellness Spa', city:'London', perk:'15% off treatments', code:'LUXE-BAM15',
+        blurb:'Covent Garden treatment rooms, facials and massage, botanical range throughout.', img:'/assets/partner-bamford.jpg?format=750w', url:'#' },
+      { cat:'spa', name:'Akasha, Hotel Cafe Royal', city:'London', perk:'Day pass included', code:'LUXE-AKA1',
+        blurb:'Pool, hammam and gym on Regent Street, included with any treatment.', img:'/assets/partner-akasha.jpg?format=750w', url:'#' },
+      { cat:'spa', name:'Aire Ancient Baths', city:'New York', perk:'20% off thermal baths', code:'LUXE-AIR20',
+        blurb:'Candlelit baths in Tribeca, ninety minutes of thermal circuit and quiet.', img:'/assets/partner-aire.jpg?format=750w', url:'#' },
+      { cat:'escapes', name:'Beaverbrook', city:'Surrey Hills', perk:'15% off midweek', code:'LUXE-BVB15',
+        blurb:'Country house, Japanese restaurant and spa, direct trains from Victoria.', img:'/assets/partner-beaverbrook.jpg?format=750w', url:'#' },
+      { cat:'escapes', name:'Heckfield Place', city:'Hampshire', perk:'Breakfast and upgrade', code:'LUXE-HKF',
+        blurb:'Georgian house on a biodynamic farm, walled gardens and a screening room.', img:'/assets/partner-heckfield.jpg?format=750w', url:'#' },
+      { cat:'home', name:'Oxwash', city:'London', perk:'25% off first 3 orders', code:'LUXE-OXW25',
+        blurb:'Carbon neutral laundry and dry cleaning, collected from your lobby.', img:'/assets/partner-oxwash.jpg?format=750w', url:'#' },
+      { cat:'home', name:'Laundryheap', city:'All cities', perk:'Free collection, 20% off', code:'LUXE-LH20',
+        blurb:'Next day wash, dry and fold with 24 hour turnaround, tracked in the app.', img:'/assets/partner-laundryheap.jpg?format=750w', url:'#' },
+      { cat:'home', name:'Housekeeping Plus', city:'All cities', perk:'Extra clean at partner rate', code:'LUXE-HKP',
+        blurb:'Add a visit on top of the housekeeping already included in your stay.', img:'/assets/partner-housekeeping.jpg?format=750w', url:'#' },
+      { cat:'travel', name:'Blacklane', city:'All cities', perk:'15% off transfers', code:'LUXE-BL15',
+        blurb:'Chauffeur airport transfers with flight tracking and an hour of free wait time.', img:'/assets/partner-blacklane.jpg?format=750w', url:'#' },
+      { cat:'culture', name:'The Ned', city:'London', perk:'Priority tables, 10% off', code:'LUXE-NED10',
+        blurb:'Nine restaurants under one roof in the City, open to non members.', img:'/assets/partner-the-ned.jpg?format=750w', url:'#' },
+      { cat:'culture', name:'Royal Academy of Arts', city:'London', perk:'Half price membership', code:'LUXE-RA50',
+        blurb:'Unlimited entry to every exhibition, plus the members room on Piccadilly.', img:'/assets/partner-royal-academy.jpg?format=750w', url:'#' }
+    ]
+  };
+
+  var root = document.querySelector('.slpc');
+  if(!root) return;
+
+  var gate    = root.querySelector('#slpc-gate');
+  var portal  = root.querySelector('#slpc-portal');
+  var form    = root.querySelector('#slpc-form');
+  var err     = root.querySelector('#slpc-err');
+  var nav     = root.querySelector('#slpc-nav');
+  var secWrap = root.querySelector('#slpc-sections');
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+    });
+  }
+
+  function build(){
+    var navHTML = '', secHTML = '';
+
+    CONFIG.categories.forEach(function(cat){
+      var list = CONFIG.partners.filter(function(p){ return p.cat === cat.id; });
+      if(!list.length) return;
+
+      navHTML += '<button class="slpc-navbtn" type="button" data-go="slpc-' + cat.id + '">' +
+        esc(cat.label) + '<span class="n">' + list.length + '</span></button>';
+
+      var items = list.map(function(p){
+        return '<article class="slpc-item">' +
+          '<div class="slpc-shot">' +
+            '<span class="slpc-mono" aria-hidden="true">' + esc(p.name.charAt(0)) + '</span>' +
+            '<span class="slpc-perk">' + esc(p.perk) + '</span>' +
+            '<img src="' + esc(p.img) + '" alt="" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
+          '</div>' +
+          '<div class="slpc-ibody">' +
+            '<h4 class="slpc-iname">' + esc(p.name) + '</h4>' +
+            '<div class="slpc-icity">' + esc(p.city) + '</div>' +
+            '<p class="slpc-iblurb">' + esc(p.blurb) + '</p>' +
+            '<button class="slpc-code" type="button" data-code="' + esc(p.code) + '">Reveal code</button>' +
+          '</div>' +
+        '</article>';
+      }).join('');
+
+      secHTML += '<section class="slpc-sec" id="slpc-' + cat.id + '">' +
+        '<div class="slpc-sechead"><h3>' + esc(cat.label) + '</h3>' +
+        '<span>' + list.length + ' partner' + (list.length > 1 ? 's' : '') + '</span></div>' +
+        '<p class="slpc-secintro">' + esc(cat.intro) + '</p>' +
+        '<div class="slpc-row">' + items + '</div></section>';
+    });
+
+    nav.innerHTML = navHTML;
+    secWrap.innerHTML = secHTML;
+    if(nav.firstChild) nav.firstChild.classList.add('on');
+
+    reveal();
+    spy();
+  }
+
+  /* Opacity-only reveal, observed rather than scroll-handled. */
+  function reveal(){
+    var items = secWrap.querySelectorAll('.slpc-item');
+    if(!('IntersectionObserver' in window)){
+      Array.prototype.forEach.call(items, function(i){ i.classList.add('on'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        e.target.classList.add('on');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin:'0px 200px -5% 0px' });
+    Array.prototype.forEach.call(items, function(i){ io.observe(i); });
+  }
+
+  /* Rail highlight follows the section in view. */
+  function spy(){
+    if(!('IntersectionObserver' in window)) return;
+    var secs = secWrap.querySelectorAll('.slpc-sec');
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var id = e.target.id;
+        Array.prototype.forEach.call(nav.children, function(b){
+          b.classList.toggle('on', b.getAttribute('data-go') === id);
+        });
+      });
+    }, { rootMargin:'-20% 0px -70% 0px' });
+    Array.prototype.forEach.call(secs, function(s){ io.observe(s); });
+  }
+
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var ref  = form.ref.value.trim();
+    var name = form.surname.value.trim();
+    if(!ref || !name){ err.classList.add('on'); return; }
+    err.classList.remove('on');
+
+    root.querySelector('#slpc-guest').textContent = name;
+    build();
+    gate.style.display = 'none';
+    portal.classList.add('on');
+    window.scrollTo({ top: root.offsetTop - 20, behavior:'smooth' });
+  });
+
+  root.querySelector('#slpc-out').addEventListener('click', function(){
+    portal.classList.remove('on');
+    gate.style.display = '';
+    form.reset();
+  });
+
+  nav.addEventListener('click', function(ev){
+    var b = ev.target.closest ? ev.target.closest('.slpc-navbtn') : null;
+    if(!b) return;
+    var target = root.querySelector('#' + b.getAttribute('data-go'));
+    if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+
+  /* Reveal then copy. Text swap only, no transform on a tap target. */
+  root.addEventListener('click', function(ev){
+    var btn = ev.target.closest ? ev.target.closest('.slpc-code, #slpc-spot-code') : null;
+    if(!btn) return;
+    var code = btn.getAttribute('data-code');
+    if(btn.getAttribute('data-shown') !== '1'){
+      btn.setAttribute('data-shown', '1');
+      btn.textContent = code;
+      return;
+    }
+    if(navigator.clipboard){ navigator.clipboard.writeText(code); }
+    btn.textContent = 'Copied';
+    setTimeout(function(){ btn.textContent = code; }, 1400);
+  });
+})();
+</script>

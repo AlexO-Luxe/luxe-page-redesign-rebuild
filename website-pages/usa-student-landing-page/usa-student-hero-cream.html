@@ -1,0 +1,71 @@
+<!-- ============================================================
+     STUDENT LUXE · USA Student Landing Page: Hero (CREAM)
+     Block: sl-uh. Standalone, no enquiry modal.
+     Reskin of the UCL cream hero for the
+         "luxury student apartments in the USA" landing page.
+         No hero image, so the LCP element is the H1 text.
+         H1 is "Luxury student apartments" ONLY.
+         "in the USA" is a styled sub-line (div, not a heading)
+         so it keeps the look without entering the H1.
+         No prices, no rotator: this block ships with NO
+         JavaScript at all. The all-inclusive tick line sits
+         under the CTA button.
+     Paste into a Squarespace Code Block.
+     Background: set the Squarespace section to cream #FBF8F1
+     (block itself is transparent, like the atlas page).
+     Primary CTA is a native anchor to #apartments.
+     ============================================================ -->
+
+<style>
+  .sl-uh{
+    --h1-ls:-.06em;
+    --ink:#0d1a2e; --gold:#B8966E; --gold-hover:#a07d5a; --gold-deep:#8B6E4E;
+    --gold-line:rgba(184,150,110,.42);
+    --txt:#0d1a2e; --txt-soft:rgba(13,26,46,.62);
+    --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+    --sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --ease:cubic-bezier(.23,1,.32,1);
+    font-family:var(--sans); color:var(--txt); -webkit-font-smoothing:antialiased; text-align:center;
+    max-width:880px; margin:0 auto; padding:10px 20px;
+  }
+  .sl-uh *{box-sizing:border-box; margin:0; padding:0}
+
+  .sl-uh .eyebrow{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-deep)}
+  .sl-uh h1{font-family:var(--serif); font-weight:300; color:var(--ink); letter-spacing:var(--h1-ls); font-size:clamp(40px,6vw,72px); line-height:0.9; margin-top:28px}
+  .sl-uh .h1-sub{font-family:var(--serif); font-weight:300; font-style:italic; color:var(--gold); letter-spacing:-0.03em; font-size:clamp(30px,3.8vw,48px); line-height:1; margin-top:10px}
+
+  .sl-uh .pos{margin:26px auto 0; max-width:560px; font-size:14px; line-height:1.65; color:rgba(13,26,46,.72)}
+
+  .sl-uh .val{margin-top:26px; color:var(--ink); font-size:clamp(19px,1.6vw,21px)}
+  .sl-uh .val b{color:var(--gold-deep); font-weight:500}
+
+  .sl-uh .cta{display:inline-flex; align-items:center; gap:10px; margin-top:30px; padding:17px 38px; background:var(--gold); color:#fff; font-size:13.5px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; border:none; border-radius:10px; cursor:pointer; font-family:var(--sans); text-decoration:none; box-shadow:0 6px 20px rgba(184,150,110,.28); transition:background .2s var(--ease)}
+  .sl-uh .cta:hover{background:var(--gold-hover); color:#fff}
+
+  .sl-uh .val-sub{margin-top:14px; color:var(--txt-soft); font-size:13px; letter-spacing:.02em}
+
+  @media (max-width:768px){
+    .sl-uh{padding:10px 16px}
+    .sl-uh .pos{font-size:13px}
+    .sl-uh .cta{margin-top:26px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .sl-uh .cta{transition:none !important}
+  }
+</style>
+
+<div class="sl-uh">
+
+  <div class="eyebrow">Available by enquiry only</div>
+  <h1>Luxury student apartments</h1>
+  <div class="h1-sub">in the USA</div>
+
+  <div class="val">NYC, Boston, Washington DC, LA <b>&amp; more</b></div>
+
+  <p class="pos">A boutique agency, not a listings site. Every apartment is hand-picked, private and arranged around your course dates - the way it should be.</p>
+
+  <a href="#apartments" class="cta">View apartments &darr;</a>
+
+  <div class="val-sub">&#10003;&nbsp; All bills, utilities &amp; everything included</div>
+
+</div>

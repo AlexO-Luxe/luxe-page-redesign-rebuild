@@ -1,0 +1,85 @@
+<!-- ============================================================
+     STUDENT LUXE - Chorus Reviews : SECTION 5 - CLOSING CTA
+     Self-contained. Pure HTML/CSS, no script.
+     Edit the two href="" values below:
+       - "Make an enquiry"  -> your enquiry page (default /contact-us)
+       - "Read us on Google" -> your g.page review link
+     ============================================================ -->
+<style>
+.sl-chorus{
+  --paper:#FBF8F1; --ink:#0d1a2e;
+  --gold:#B8966E; --gold-hover:#a07d5a;
+  --serif:'baskerville-display-pt',Georgia,'Times New Roman',serif;
+  --sans:'dm-sans',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --ease:cubic-bezier(.22,.8,.28,1);
+  font-family:var(--sans); color:var(--ink); -webkit-font-smoothing:antialiased;
+}
+.sl-chorus *{ box-sizing:border-box; }
+.sl-chorus.chorus-section{ padding:40px 24px 8px; }
+.sl-chorus .chorus-wrap{ max-width:1180px; margin:0 auto; }
+.chorus-cta{
+  background:var(--ink);
+  border-radius:18px;
+  padding:clamp(44px,6vw,72px) clamp(24px,5vw,64px);
+  text-align:center; position:relative; overflow:hidden;
+}
+.chorus-cta::before{
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(90% 130% at 50% 115%, rgba(184,150,110,.22) 0%, transparent 60%);
+  pointer-events:none;
+}
+.chorus-cta-eyebrow{
+  position:relative;
+  font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:rgba(212,184,150,.85);
+  margin-bottom:16px;
+}
+.chorus-cta-title{
+  position:relative;
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(28px,4.4vw,48px); line-height:1.02; letter-spacing:-.05em;
+  color:#F4F0E6; margin:0 0 12px;
+}
+.chorus-cta-title em{ font-style:italic; color:#D4B896; }
+.chorus-cta-sub{
+  position:relative;
+  font-family:var(--sans); font-size:14px; line-height:1.6; color:rgba(244,240,230,.62);
+  max-width:52ch; margin:0 auto 30px;
+}
+.chorus-cta-row{
+  position:relative;
+  display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;
+}
+.chorus-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 28px; border-radius:8px; text-decoration:none; cursor:pointer;
+  font-family:var(--sans); font-size:11px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase;
+  transition:background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+}
+.chorus-btn svg{ width:14px; height:14px; }
+.chorus-btn-gold{ background:var(--gold); color:#fff; border:1px solid var(--gold); }
+.chorus-btn-gold:hover{ background:var(--gold-hover); border-color:var(--gold-hover); color:#fff; }
+.chorus-btn-ghost{ background:transparent; color:#F4F0E6; border:1px solid rgba(244,240,230,.35); }
+.chorus-btn-ghost:hover{ border-color:#D4B896; color:#D4B896; }
+@media (max-width:640px){ .sl-chorus.chorus-section{ padding:32px 16px 8px; } .chorus-cta{ border-radius:16px; } }
+</style>
+
+<div class="sl-chorus chorus-section">
+  <div class="chorus-wrap">
+    <div class="chorus-cta">
+      <div class="chorus-cta-eyebrow">Your turn</div>
+      <h2 class="chorus-cta-title">Ready to live<br><em>the Luxe way?</em></h2>
+      <p class="chorus-cta-sub">Tell us your city, university and budget, and our team will curate a shortlist of serviced apartments made for you.</p>
+      <div class="chorus-cta-row">
+        <a class="chorus-btn chorus-btn-gold" href="/contact-us">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Make an enquiry
+        </a>
+        <a class="chorus-btn chorus-btn-ghost" href="https://www.google.com/search?q=Student+Luxe+reviews" target="_blank" rel="noopener">
+          Read us on Google
+          <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

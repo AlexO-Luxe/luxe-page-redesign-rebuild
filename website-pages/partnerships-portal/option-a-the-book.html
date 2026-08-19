@@ -1,0 +1,361 @@
+<!-- ============================================================
+     STUDENT LUXE - Guest Partnerships Portal
+     OPTION A: "The Book" - editorial ledger, no imagery.
+
+     Block: .slpa - one self-contained Squarespace Code Block.
+     Background: set the Squarespace section to cream #FBF8F1.
+     Design language: services-page / atlas-cities cream pages.
+
+     MOCKUP NOTE: the sign-in below is a front-end demo only. Any
+     content inside a Squarespace Code Block is public source, so a
+     real build must fetch partner data from a Vercel serverless
+     endpoint AFTER the booking reference + surname are verified
+     against the Monday bookings board. See PORTAL_API in CONFIG.
+     ============================================================ -->
+
+<style>
+  .slpa{
+    --ink:#0d1a2e; --gold:#B8966E; --gold-hover:#a07d5a; --gold-deep:#8B6E4E;
+    --gold-line:rgba(184,150,110,.42);
+    --hair:rgba(184,150,110,.22); --hair-soft:rgba(184,150,110,.12);
+    --txt-soft:rgba(13,26,46,.62); --txt-body:rgba(13,26,46,.74);
+    --red:#C53026;
+    --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+    --body-serif:'adobe-garamond-pro','Adobe Garamond Pro',Georgia,serif;
+    --sans:'dm-sans','DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --ease:cubic-bezier(.22,.8,.28,1);
+    font-family:var(--sans); color:var(--ink); -webkit-font-smoothing:antialiased;
+    max-width:1120px; margin:0 auto; padding:24px 24px 8px;
+  }
+  .slpa *{box-sizing:border-box; margin:0; padding:0}
+  .slpa button{font-family:inherit}
+
+  /* ── GATE ── */
+  .slpa-gate{max-width:520px; margin:40px auto 64px; text-align:center}
+  .slpa-eyebrow{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-deep); font-weight:500}
+  .slpa-gate h1{font-family:var(--serif); font-weight:300; letter-spacing:-.06em; line-height:.9; font-size:clamp(40px,6vw,68px); margin-top:24px}
+  .slpa-gate .sub{font-family:var(--serif); font-weight:300; font-style:italic; color:var(--gold); letter-spacing:-.03em; font-size:clamp(28px,3.6vw,44px); line-height:1; margin-top:8px}
+  .slpa-gate .lede{font-family:var(--body-serif); margin:24px auto 0; max-width:400px; font-size:16px; line-height:1.65; color:var(--txt-body)}
+
+  .slpa-form{margin-top:36px; text-align:left; border-top:1px solid var(--hair); padding-top:28px}
+  .slpa-field + .slpa-field{margin-top:18px}
+  .slpa-label{display:block; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); font-weight:500; margin-bottom:8px}
+  .slpa-input{width:100%; font-family:var(--sans); font-size:16px; color:var(--ink); background:#fff; border:1px solid var(--hair); border-radius:8px; padding:15px 16px; outline:none; transition:border-color .18s var(--ease)}
+  .slpa-input::placeholder{color:rgba(13,26,46,.34)}
+  .slpa-input:focus{border-color:var(--gold)}
+  .slpa-hint{font-size:12px; color:var(--txt-soft); margin-top:8px; line-height:1.5}
+  .slpa-error{display:none; font-size:12.5px; color:var(--red); margin-top:14px}
+  .slpa-error.on{display:block}
+  .slpa-submit{display:inline-flex; align-items:center; justify-content:center; gap:10px; width:100%; margin-top:24px; padding:17px 32px; background:var(--gold); color:#fff; font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; border:none; border-radius:8px; cursor:pointer; transition:background .2s var(--ease)}
+  .slpa-submit:hover{background:var(--gold-hover)}
+  .slpa-help{font-size:12.5px; color:var(--txt-soft); margin-top:20px; text-align:center; line-height:1.6}
+  .slpa-help a{color:var(--gold-deep); text-decoration:none; border-bottom:1px solid var(--gold-line)}
+  .slpa-help a:hover{color:var(--ink); border-color:rgba(13,26,46,.4)}
+
+  /* ── PORTAL ── */
+  .slpa-portal{display:none}
+  .slpa-portal.on{display:block}
+
+  .slpa-bar{display:flex; align-items:baseline; justify-content:space-between; gap:20px; border-bottom:1px solid var(--hair); padding-bottom:18px}
+  .slpa-who{font-family:var(--serif); font-weight:300; letter-spacing:-.03em; font-size:22px}
+  .slpa-who em{font-style:italic; color:var(--gold)}
+  .slpa-meta{font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--txt-soft); display:flex; align-items:center; gap:14px}
+  .slpa-out{background:none; border:none; padding:0; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); cursor:pointer; border-bottom:1px solid var(--gold-line)}
+  .slpa-out:hover{color:var(--ink)}
+
+  .slpa-intro{max-width:620px; margin:56px 0 12px}
+  .slpa-intro h2{font-family:var(--serif); font-weight:300; letter-spacing:-.05em; line-height:.95; font-size:clamp(32px,4.6vw,54px)}
+  .slpa-intro h2 em{font-style:italic; color:var(--gold)}
+  .slpa-intro p{font-family:var(--body-serif); font-size:16px; line-height:1.65; color:var(--txt-body); margin-top:18px}
+
+  .slpa-index{display:flex; flex-wrap:wrap; gap:8px; margin:34px 0 64px}
+  .slpa-chip{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep); background:rgba(184,150,110,.10); border:1px solid var(--hair-soft); border-radius:100px; padding:9px 16px; text-decoration:none; transition:background .18s var(--ease), color .18s var(--ease)}
+  .slpa-chip:hover{background:var(--ink); color:#fff; border-color:var(--ink)}
+
+  .slpa-sec{margin-bottom:72px; scroll-margin-top:90px}
+  .slpa-sechead{display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:6px}
+  .slpa-sechead .name{font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); font-weight:500}
+  .slpa-sechead .count{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--txt-soft)}
+  .slpa-secintro{font-family:var(--serif); font-weight:300; font-style:italic; color:var(--txt-soft); font-size:19px; letter-spacing:-.02em; margin-bottom:10px}
+
+  .slpa-row{border-top:1px solid var(--hair-soft)}
+  .slpa-row:first-of-type{border-top:1px solid var(--hair)}
+  .slpa-row summary{display:flex; align-items:flex-start; gap:20px; padding:24px 0; cursor:pointer; list-style:none}
+  .slpa-row summary::-webkit-details-marker{display:none}
+  .slpa-num{font-family:var(--serif); font-style:italic; font-weight:300; color:var(--gold); font-size:15px; line-height:1.9; min-width:26px}
+  .slpa-main{flex:1; min-width:0}
+  .slpa-name{display:block; font-family:var(--serif); font-weight:400; letter-spacing:-.02em; font-size:21px; line-height:1.25}
+  .slpa-where{display:block; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--txt-soft); margin-top:7px}
+  .slpa-perk{font-family:var(--body-serif); font-size:16px; color:var(--gold-deep); text-align:right; line-height:1.4; max-width:230px; flex-shrink:0}
+  .slpa-caret{width:11px; height:11px; border-right:1px solid var(--gold); border-bottom:1px solid var(--gold); transform:rotate(45deg); margin-top:9px; flex-shrink:0; transition:opacity .2s var(--ease)}
+  .slpa-row[open] .slpa-caret{opacity:.35}
+
+  .slpa-body{padding:0 0 28px 46px; max-width:640px}
+  .slpa-body p{font-family:var(--body-serif); font-size:15.5px; line-height:1.65; color:var(--txt-body)}
+  .slpa-redeem{display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:18px}
+  .slpa-code{font-family:var(--sans); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink); background:rgba(184,150,110,.14); border:1px dashed var(--gold-line); border-radius:8px; padding:11px 16px; cursor:pointer}
+  .slpa-code:hover{background:rgba(184,150,110,.22)}
+  .slpa-link{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:#fff; background:var(--ink); border-radius:8px; padding:12px 20px; text-decoration:none; transition:background .2s var(--ease)}
+  .slpa-link:hover{background:var(--gold); color:#fff}
+  .slpa-terms{font-size:12px; color:var(--txt-soft); margin-top:14px; line-height:1.55}
+
+  /* ── FOOT ── */
+  .slpa-foot{background:var(--ink); border-radius:18px; text-align:center; padding:56px 32px 60px; margin:0 0 56px}
+  .slpa-foot .slpa-eyebrow{color:#D4B896}
+  .slpa-foot h2{font-family:var(--serif); font-weight:300; letter-spacing:-.05em; line-height:.95; font-size:clamp(28px,4vw,44px); color:#fff; margin-top:18px}
+  .slpa-foot h2 em{font-style:italic; color:#D4B896}
+  .slpa-foot p{margin:18px auto 0; max-width:440px; font-size:14px; line-height:1.65; color:rgba(255,255,255,.72)}
+  .slpa-foot a.btn{display:inline-flex; align-items:center; gap:10px; margin-top:28px; padding:16px 34px; background:var(--gold); color:#fff; font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; border-radius:8px; text-decoration:none; transition:background .2s var(--ease)}
+  .slpa-foot a.btn:hover{background:var(--gold-hover); color:#fff}
+
+  .slpa-reveal{opacity:0; transition:opacity .6s var(--ease)}
+  .slpa-reveal.on{opacity:1}
+
+  @media (max-width:820px){
+    .slpa{padding:16px 20px 8px}
+    .slpa-gate{margin:24px auto 48px}
+    .slpa-bar{flex-direction:column; align-items:flex-start; gap:10px}
+    .slpa-intro{margin-top:40px}
+    .slpa-index{margin-bottom:48px}
+    .slpa-sec{margin-bottom:56px}
+    .slpa-row summary{position:relative; flex-wrap:wrap; gap:0 16px; padding:20px 0}
+    .slpa-main{flex:1 1 calc(100% - 66px)}
+    .slpa-perk{text-align:left; max-width:none; flex:1 1 100%; margin:10px 0 0 46px; font-size:15px}
+    .slpa-caret{position:absolute; right:2px; top:26px; margin-top:0}
+    .slpa-body{padding-left:46px}
+    .slpa-foot{padding:44px 22px 48px; border-radius:14px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .slpa-reveal{opacity:1 !important; transition:none !important}
+    .slpa *{transition:none !important}
+  }
+</style>
+
+<div class="slpa">
+
+  <!-- ── SIGN IN ── -->
+  <section class="slpa-gate" id="slpa-gate">
+    <div class="slpa-eyebrow">Guest partnerships</div>
+    <h1>The Luxe Book</h1>
+    <div class="sub">for residents only.</div>
+    <p class="lede">Rates, memberships and services we have negotiated for guests staying with us. Sign in with the details on your booking confirmation.</p>
+
+    <form class="slpa-form" id="slpa-form" novalidate>
+      <div class="slpa-field">
+        <label class="slpa-label" for="slpa-ref">Booking reference</label>
+        <input class="slpa-input" id="slpa-ref" name="ref" type="text" autocomplete="off" spellcheck="false" placeholder="SL-48213" required>
+        <div class="slpa-hint">Top right of your confirmation email.</div>
+      </div>
+      <div class="slpa-field">
+        <label class="slpa-label" for="slpa-name">Surname</label>
+        <input class="slpa-input" id="slpa-name" name="surname" type="text" autocomplete="family-name" placeholder="Obertelli" required>
+      </div>
+      <div class="slpa-error" id="slpa-err">We could not match those details. Check the reference and surname exactly as they appear on your confirmation.</div>
+      <button class="slpa-submit" type="submit">Enter the book</button>
+    </form>
+
+    <p class="slpa-help">Lost your reference? <a href="/contact">Message the guest team</a> and we will resend it.</p>
+  </section>
+
+  <!-- ── PORTAL ── -->
+  <div class="slpa-portal" id="slpa-portal">
+
+    <div class="slpa-bar">
+      <div class="slpa-who">Welcome back, <em id="slpa-guest">Guest</em></div>
+      <div class="slpa-meta">
+        <span id="slpa-stay">London &middot; until 30 Jun 2027</span>
+        <button class="slpa-out" type="button" id="slpa-out">Sign out</button>
+      </div>
+    </div>
+
+    <div class="slpa-intro">
+      <h2>Everything else<br><em>your stay deserves.</em></h2>
+      <p id="slpa-lede"></p>
+    </div>
+
+    <nav class="slpa-index" id="slpa-index" aria-label="Partner categories"></nav>
+
+    <div id="slpa-sections"></div>
+
+    <section class="slpa-foot">
+      <div class="slpa-eyebrow">Know somewhere we should add?</div>
+      <h2>Tell us who you would like<br><em>on the list.</em></h2>
+      <p>We add partners on guest request. If there is a gym, studio or service near your apartment you would like us to negotiate with, send it over.</p>
+      <a class="btn" href="/contact">Suggest a partner</a>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ============================================================
+     CONFIG - editors only ever touch this object.
+     PORTAL_API: in the live build, POST {ref, surname} here and
+     render the partners the server returns. Never ship the real
+     partner list inside the page: this block is public source.
+     ============================================================ */
+  var CONFIG = {
+    PORTAL_API: '/api/partnerships/session',
+    demoMode: true,
+    lede: 'Fourteen partners across our cities, each rate held for Student Luxe residents only. Open a partner for the code and how to redeem it. New additions land on the first of every month.',
+    categories: [
+      { id:'fitness',  label:'Fitness',             intro:'Train without a twelve month contract.' },
+      { id:'spa',      label:'Spa and wellness',    intro:'Recovery, treatment rooms and quiet hours.' },
+      { id:'escapes',  label:'Countryside escapes', intro:'For the weekends you leave the city behind.' },
+      { id:'home',     label:'Home services',       intro:'Laundry, dry cleaning and everything collected from your door.' },
+      { id:'travel',   label:'Travel',              intro:'Airports, terminals and everything in between.' },
+      { id:'culture',  label:'Dining and culture',  intro:'Tables and memberships worth the walk.' }
+    ],
+    partners: [
+      { cat:'fitness', name:'Third Space, Soho', city:'London', perk:'20% off monthly membership', code:'LUXE-TS20',
+        blurb:'Full club access across Soho, Canary Wharf and Marylebone, including the pool, climbing wall and unlimited classes. No joining fee for Student Luxe residents.',
+        terms:'Rolling monthly membership, cancel with 30 days notice. Photo ID and booking reference required at first visit.', url:'#' },
+      { cat:'fitness', name:'KXU, Chelsea', city:'London', perk:'First three classes complimentary', code:'LUXE-KXU3',
+        blurb:'Reformer, boxing and treadmill classes a short walk from our Chelsea and South Kensington apartments.',
+        terms:'New members only. Classes must be used within 30 days of first booking.', url:'#' },
+      { cat:'fitness', name:'Ken Club, Paris 16e', city:'Paris', perk:'25% off a three month membership', code:'LUXE-KEN25',
+        blurb:'Pool, squash courts and spa in Auteuil, five minutes from our Passy residences.',
+        terms:'Three month minimum term. Proof of stay required.', url:'#' },
+      { cat:'spa', name:'Bamford Wellness Spa', city:'London', perk:'15% off all treatments', code:'LUXE-BAM15',
+        blurb:'Covent Garden treatment rooms, facials and massage using the Bamford botanical range.',
+        terms:'Monday to Thursday. Subject to availability, 48 hours cancellation.', url:'#' },
+      { cat:'spa', name:'Akasha Holistic Wellbeing', city:'London', perk:'Day pass included with any treatment', code:'LUXE-AKA1',
+        blurb:'Pool, hammam and gym at Hotel Cafe Royal, plus the full treatment menu.',
+        terms:'One pass per treatment booked. Advance reservation required.', url:'#' },
+      { cat:'spa', name:'Aire Ancient Baths', city:'New York', perk:'20% off the thermal bath experience', code:'LUXE-AIR20',
+        blurb:'Candlelit baths in Tribeca, ninety minutes of thermal circuit and relaxation.',
+        terms:'Sunday to Thursday sessions. Over 18s only.', url:'#' },
+      { cat:'escapes', name:'Beaverbrook, Surrey Hills', city:'45 min from London', perk:'15% off midweek stays', code:'LUXE-BVB15',
+        blurb:'Country house, Japanese restaurant and spa in the Surrey Hills, direct trains from Victoria.',
+        terms:'Sunday to Thursday, excludes bank holidays. Two night minimum in August.', url:'#' },
+      { cat:'escapes', name:'Heckfield Place, Hampshire', city:'1 hr from London', perk:'Breakfast included, upgrade when available', code:'LUXE-HKF',
+        blurb:'Georgian house on a working biodynamic farm, with walled gardens and a screening room.',
+        terms:'Upgrade at check in, subject to availability.', url:'#' },
+      { cat:'home', name:'Oxwash', city:'London and Cambridge', perk:'25% off your first three collections', code:'LUXE-OXW25',
+        blurb:'Carbon neutral laundry and dry cleaning, collected and returned to your apartment lobby.',
+        terms:'New customers only. Minimum order applies.', url:'#' },
+      { cat:'home', name:'Laundryheap', city:'All UK cities', perk:'Free collection plus 20% off', code:'LUXE-LH20',
+        blurb:'Next day wash, dry and fold with 24 hour turnaround, tracked in the app.',
+        terms:'One use per booking reference.', url:'#' },
+      { cat:'home', name:'Housekeeping Plus', city:'All cities', perk:'Extra weekly clean at partner rate', code:'LUXE-HKP',
+        blurb:'Top up the housekeeping already included in your stay with an additional visit, arranged through the guest team.',
+        terms:'Subject to building access rules. 48 hours notice.', url:'#' },
+      { cat:'travel', name:'Blacklane', city:'All cities', perk:'15% off airport transfers', code:'LUXE-BL15',
+        blurb:'Chauffeur transfers with flight tracking and 60 minutes of complimentary wait time.',
+        terms:'Excludes hourly bookings. Not valid on 31 December.', url:'#' },
+      { cat:'culture', name:'The Ned', city:'London', perk:'Priority reservations and 10% off dining', code:'LUXE-NED10',
+        blurb:'Nine restaurants under one roof in the City, open to non members for dining.',
+        terms:'Food only, excludes Friday and Saturday evenings.', url:'#' },
+      { cat:'culture', name:'Royal Academy of Arts', city:'London', perk:'Student membership at half price', code:'LUXE-RA50',
+        blurb:'Unlimited entry to every exhibition, plus the members room on Piccadilly.',
+        terms:'Valid student ID required. Twelve month membership.', url:'#' }
+    ]
+  };
+
+  var root = document.querySelector('.slpa');
+  if(!root) return;
+
+  var gate    = root.querySelector('#slpa-gate');
+  var portal  = root.querySelector('#slpa-portal');
+  var form    = root.querySelector('#slpa-form');
+  var err     = root.querySelector('#slpa-err');
+  var secWrap = root.querySelector('#slpa-sections');
+  var index   = root.querySelector('#slpa-index');
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+    });
+  }
+
+  function build(){
+    root.querySelector('#slpa-lede').textContent = CONFIG.lede;
+
+    var idxHTML = '', secHTML = '', n = 0;
+    CONFIG.categories.forEach(function(cat){
+      var list = CONFIG.partners.filter(function(p){ return p.cat === cat.id; });
+      if(!list.length) return;
+      idxHTML += '<a class="slpa-chip" href="#slpa-' + cat.id + '">' + esc(cat.label) + ' (' + list.length + ')</a>';
+
+      var rows = list.map(function(p){
+        n++;
+        var num = (n < 10 ? '0' : '') + n;
+        return '<details class="slpa-row">' +
+          '<summary>' +
+            '<span class="slpa-num" aria-hidden="true">' + num + '</span>' +
+            '<span class="slpa-main">' +
+              '<span class="slpa-name">' + esc(p.name) + '</span>' +
+              '<span class="slpa-where">' + esc(p.city) + '</span>' +
+            '</span>' +
+            '<span class="slpa-perk">' + esc(p.perk) + '</span>' +
+            '<span class="slpa-caret" aria-hidden="true"></span>' +
+          '</summary>' +
+          '<div class="slpa-body">' +
+            '<p>' + esc(p.blurb) + '</p>' +
+            '<div class="slpa-redeem">' +
+              '<button class="slpa-code" type="button" data-code="' + esc(p.code) + '">' + esc(p.code) + '</button>' +
+              '<a class="slpa-link" href="' + esc(p.url) + '" target="_blank" rel="noopener">Book with partner</a>' +
+            '</div>' +
+            '<p class="slpa-terms">' + esc(p.terms) + '</p>' +
+          '</div>' +
+        '</details>';
+      }).join('');
+
+      secHTML += '<section class="slpa-sec slpa-reveal" id="slpa-' + cat.id + '">' +
+        '<div class="slpa-sechead"><span class="name">' + esc(cat.label) + '</span>' +
+        '<span class="count">' + list.length + ' partner' + (list.length > 1 ? 's' : '') + '</span></div>' +
+        '<p class="slpa-secintro">' + esc(cat.intro) + '</p>' + rows + '</section>';
+    });
+
+    index.innerHTML = idxHTML;
+    secWrap.innerHTML = secHTML;
+
+    /* Reveal on scroll: IntersectionObserver, never a scroll handler. */
+    var secs = secWrap.querySelectorAll('.slpa-reveal');
+    if(!('IntersectionObserver' in window)){
+      Array.prototype.forEach.call(secs, function(s){ s.classList.add('on'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
+      });
+    }, { rootMargin:'0px 0px -8% 0px' });
+    Array.prototype.forEach.call(secs, function(s){ io.observe(s); });
+  }
+
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var ref  = form.ref.value.trim();
+    var name = form.surname.value.trim();
+    if(!ref || !name){ err.classList.add('on'); return; }
+    err.classList.remove('on');
+
+    /* Live build: POST to CONFIG.PORTAL_API and render only what the
+       server returns. Demo shortcut below. */
+    root.querySelector('#slpa-guest').textContent = name;
+    build();
+    gate.style.display = 'none';
+    portal.classList.add('on');
+    window.scrollTo({ top: root.offsetTop - 20, behavior:'smooth' });
+  });
+
+  root.querySelector('#slpa-out').addEventListener('click', function(){
+    portal.classList.remove('on');
+    gate.style.display = '';
+    form.reset();
+  });
+
+  /* Copy code on tap. Text swap only, no transform on a tap target. */
+  root.addEventListener('click', function(ev){
+    var btn = ev.target.closest ? ev.target.closest('.slpa-code') : null;
+    if(!btn) return;
+    var code = btn.getAttribute('data-code');
+    if(navigator.clipboard){ navigator.clipboard.writeText(code); }
+    var was = btn.textContent;
+    btn.textContent = 'Copied';
+    setTimeout(function(){ btn.textContent = was; }, 1400);
+  });
+})();
+</script>

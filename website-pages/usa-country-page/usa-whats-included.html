@@ -1,0 +1,348 @@
+<!-- ============================================================
+     STUDENT LUXE - USA Page: What's Included
+     Block 3, sits under the USA cities block.
+     Paste into a Squarespace Code Block.
+     Standalone: no shared styles block required.
+     Background: set to navy (#0d1a2e) in Squarespace.
+     id="whats-included" needed on Squarespace section wrapper.
+     Reskin of the UCL what's-included block, copy aimed at
+     international students coming to study in the USA.
+     ============================================================ -->
+
+<style>
+.slw {
+  --gold:        #B8966E;
+  --gold-l:      #D4B896;
+  --gold-border: rgba(184,150,110,0.18);
+  --gold-line:   rgba(184,150,110,0.42);
+  --heading-size: clamp(30px, 4.5vw, 54px);
+  --serif: 'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.slw * { box-sizing: border-box; margin: 0; padding: 0; }
+.slw {
+  background: transparent;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding: 72px 0 0;
+}
+@media (max-width: 768px) { .slw { padding: 48px 0 0; } }
+
+/* ── OUTER GRID ── */
+.slw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+}
+@media (max-width: 860px) { .slw-grid { grid-template-columns: 1fr; } }
+
+/* ── LEFT COLUMN ── */
+.slw-left {
+  padding: 0 40px 48px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 28px;
+}
+@media (max-width: 860px) {
+  .slw-left { padding: 0 24px 24px; border-right: none; border-bottom: none; }
+}
+
+/* plain eyebrow, same treatment as the hero (no pill) */
+.slw-eyebrow {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-l);
+  margin-bottom: 20px;
+}
+
+.slw-heading {
+  font-family: var(--serif);
+  font-size: var(--heading-size);
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  color: #ffffff;
+  margin-bottom: 24px;
+}
+.slw-heading em { font-style: italic; color: var(--gold-l); }
+
+.slw-sub {
+  font-size: 17px;
+  color: #ffffff;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.slw-lead {
+  font-size: 13px;
+  color: rgba(255,255,255,0.78);
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+.slw-lead strong em { color: var(--gold-l); }
+
+
+/* underlined link, same treatment as the hero nudge link */
+.slw-services-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gold-l);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  margin-top: 12px;
+  border-bottom: 1px solid var(--gold-line);
+  padding-bottom: 1px;
+  transition: color 0.15s var(--ease), border-color 0.15s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .slw-services-link:hover { color: #ffffff; border-color: rgba(255,255,255,0.4); }
+}
+/* Desktop: show in left col, hide in right col */
+.slw-services-mobile { display: none; }
+@media (max-width: 860px) {
+  .slw-left .slw-services-link { display: none; }
+  .slw-services-mobile { display: inline-flex; margin-top: 20px; margin-left: 29px; }
+}
+
+/* ── RIGHT COLUMN ── */
+.slw-right {
+  padding: 0 48px 48px 40px;
+}
+@media (max-width: 860px) {
+  .slw-right { padding: 0 24px 48px; margin-top: -16px; }
+  .slw-heading { font-size: clamp(36px, 8vw, 54px); }
+}
+
+.slw-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 36px;
+}
+.slw-cols > div:first-child {
+  border-right: 0.5px solid var(--gold-border);
+  padding-right: 36px;
+}
+@media (max-width: 500px) {
+  .slw-cols { grid-template-columns: 1fr; }
+  .slw-cols > div:last-child { margin-top: 28px; }
+}
+
+.slw-col-head {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(184,150,110,0.8);
+  font-weight: 500;
+  padding-bottom: 10px;
+  border-bottom: none;
+  margin-bottom: 4px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.slw-list { list-style: none; }
+
+.slw-check {
+  display: flex;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 0.5px solid rgba(184,150,110,0.07);
+  align-items: flex-start;
+}
+.slw-check:last-child { border-bottom: none; }
+
+.slw-check-icon {
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  border: 0.5px solid rgba(184,150,110,0.35);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: border-color 0.18s cubic-bezier(0.23, 1, 0.32, 1),
+              background  0.18s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.slw-check-icon svg {
+  width: 8px; height: 8px;
+  stroke: var(--gold);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (hover: hover) and (pointer: fine) {
+  .slw-check:hover .slw-check-icon {
+    border-color: rgba(184,150,110,0.7);
+    background: rgba(184,150,110,0.08);
+  }
+  .slw-check:hover .slw-check-title { color: var(--gold-l); }
+}
+
+.slw-check-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+  line-height: 1.3;
+  transition: color 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.slw-check-body {
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.58);
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slw-check-icon, .slw-check-title, .slw-services-link { transition: none !important; }
+}
+</style>
+
+<section class="slw" aria-label="What's included with Student Luxe accommodation in the USA">
+  <div class="slw-grid">
+
+    <!-- ── LEFT ── -->
+    <div class="slw-left">
+      <div>
+        <span class="slw-eyebrow">What's included with each stay</span>
+        <h2 class="slw-heading">
+          Simply unpack<br>and <em>start living.</em>
+        </h2>
+        <p class="slw-sub">Private, furnished &amp; ready to move in apartments in nine cities across the United States.</p>
+        <p class="slw-sub" style="color:rgba(255,255,255,0.6);font-size:15px;">Built for international students: no US paperwork hurdles, no unfurnished leases, everything already taken care of before you land.</p>
+      </div>
+      <div>
+        <a href="https://www.studentluxe.co.uk/services" class="slw-services-link">
+          View all services &amp; amenities
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="width:11px;height:11px;" aria-hidden="true">
+            <line x1="2" y1="7" x2="11" y2="7"/>
+            <polyline points="8,4 11,7 8,10"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- ── RIGHT ── -->
+    <div class="slw-right">
+      <div class="slw-cols">
+
+        <div>
+          <h3 class="slw-col-head">With your apartment</h3>
+          <ul class="slw-list">
+            <li class="slw-check">
+              <div class="slw-check-icon"><svg viewBox="0 0 10 10" aria-hidden="true"><polyline points="2,5 4,7 8,3"/></svg></div>
+              <div>
+                <div class="slw-check-title">Furnished &amp; equipped</div>
+                <div class="slw-check-body">Move in ready living. Furniture, linen, towels, cookware - simply bring your luggage.</div>
+              </div>
+            </li>
+            <li class="slw-check">
+              <div class="slw-check-icon"><svg viewBox="0 0 10 10" aria-hidden="true"><polyline points="2,5 4,7 8,3"/></svg></div>
+              <div>
+                <div class="slw-check-title">Housekeeping available</div>
+                <div class="slw-check-body">Come home to a clean apartment. Schedules vary by property.</div>
+              </div>
+            </li>
+            <li class="slw-check">
+              <div class="slw-check-icon"><svg viewBox="0 0 10 10" aria-hidden="true"><polyline points="2,5 4,7 8,3"/></svg></div>
+              <div>
+                <div class="slw-check-title">Prime locations near campus</div>
+                <div class="slw-check-body">Hand-picked buildings walking distance or a short commute to your university.</div>
+              </div>
+            </li>
+            <li class="slw-check">
+              <div class="slw-check-icon"><svg viewBox="0 0 10 10" aria-hidden="true"><polyline points="2,5 4,7 8,3"/></svg></div>
+              <div>
+                <div class="slw-check-title">Hotel-style amenities</div>
+                <div class="slw-check-body">24hr front desk, gym, pool, rooftop lounges - varies by property.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="slw-col-head">With every booking</h3>
+          <ul class="slw-list">
+            <li class="slw-check">
+              <div class="slw-check-icon"><svg viewBox="0 0 10 10" aria-hidden="true"><polyline points="2,5 4,7 8,3"/></svg></div>
+              <div>
+                <div class="slw-check-title">All bills included</div>
+                <div class="slw-check-body">Electricity, water, Wi-Fi - one price, no surprises.</div>
+              </div>
+            </li>
+            <li class="slw-check">
+              <div class="slw-check-icon"><svg viewBox="0 0 10 10" aria-hidden="true"><polyline points="2,5 4,7 8,3"/></svg></div>
+              <div>
+                <div class="slw-check-title">No US guarantor or credit checks</div>
+                <div class="slw-check-body">No US credit history, no social security number, no co-signer - book like you would a hotel.</div>
+              </div>
+            </li>
+            <li class="slw-check">
+              <div class="slw-check-icon"><svg viewBox="0 0 10 10" aria-hidden="true"><polyline points="2,5 4,7 8,3"/></svg></div>
+              <div>
+                <div class="slw-check-title">Flexible lengths of stay</div>
+                <div class="slw-check-body">Semester, academic year or summer program - you're not locked into a 12 month lease.</div>
+              </div>
+            </li>
+            <li class="slw-check">
+              <div class="slw-check-icon"><svg viewBox="0 0 10 10" aria-hidden="true"><polyline points="2,5 4,7 8,3"/></svg></div>
+              <div>
+                <div class="slw-check-title">Ongoing resident support</div>
+                <div class="slw-check-body">Our guest experience team are always here for you, before and during your stay.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Mobile-only services link, shown below the checklist -->
+      <a href="https://www.studentluxe.co.uk/services" class="slw-services-link slw-services-mobile">
+        View all services &amp; amenities
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="width:11px;height:11px;" aria-hidden="true">
+          <line x1="2" y1="7" x2="11" y2="7"/>
+          <polyline points="8,4 11,7 8,10"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(prefersReduced || !('IntersectionObserver' in window)) return;
+
+  var checks = document.querySelectorAll('.slw-check');
+  checks.forEach(function(el, i){
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(8px)';
+    el.style.transition = 'opacity 0.4s cubic-bezier(0.23,1,0.32,1) ' + (i*50) + 'ms, transform 0.4s cubic-bezier(0.23,1,0.32,1) ' + (i*50) + 'ms';
+  });
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.slw-check').forEach(function(el){
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.slw-right').forEach(function(el){ io.observe(el); });
+})();
+</script>

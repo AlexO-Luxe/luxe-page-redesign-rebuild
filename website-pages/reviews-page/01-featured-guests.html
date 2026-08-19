@@ -1,0 +1,402 @@
+<!-- ============================================================
+     STUDENT LUXE - Chorus Reviews : SECTION 1 - FEATURED GUESTS
+     Self-contained. Paste into its own Code Block on /our-reviews.
+     This is the focal section: header intro + guest tiles, each
+     opening a modal with their video + written testimonial.
+
+     EDIT everything in the GUESTS array in the script:
+       image : guest photo (Squarespace CDN url) - tile + poster
+       video : YouTube link (watch / youtu.be / shorts) OR a direct
+               .mp4 url. Leave '' for a text-only modal.
+       portrait:true if the video is vertical (9:16).
+       quote : testimonial; blank lines start new paragraphs.
+       href  : the existing /guest-reviews/... page (no-JS + SEO
+               fallback - each tile is a real link to it).
+     The modal's video is created only on open and destroyed on
+     close, so playback always stops and stays iOS-Safari-safe.
+     ============================================================ -->
+<style>
+.sl-chorus{
+  --paper:#FBF8F1; --card:#ffffff; --ink:#0d1a2e;
+  --muted:rgba(13,26,46,.52); --hair:rgba(13,26,46,.12);
+  --gold:#B8966E; --gold-hover:#a07d5a; --gold-deep:#8B6E4E;
+  --gold-wash:rgba(184,150,110,.10); --gold-line:rgba(184,150,110,.42);
+  --shadow-card:0 1px 2px rgba(13,26,46,.05),0 12px 34px rgba(13,26,46,.08);
+  --serif:'baskerville-display-pt',Georgia,'Times New Roman',serif;
+  --sans:'dm-sans',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --gara:'adobe-garamond-pro',Georgia,serif;
+  --ease:cubic-bezier(.22,.8,.28,1);
+  font-family:var(--sans); color:var(--ink); -webkit-font-smoothing:antialiased;
+}
+.sl-chorus *{ box-sizing:border-box; }
+.sl-chorus.chorus-section{ padding:8px 24px 40px; }   /* transparent; set the cream on the Squarespace section */
+.sl-chorus .chorus-wrap{ max-width:1180px; margin:0 auto; }
+
+/* header intro */
+.chorus-head{ margin-bottom:30px; }
+.chorus-pill{
+  display:inline-block; margin-bottom:16px; padding:6px 16px; border-radius:100px;
+  background:var(--gold-wash); border:.5px solid var(--gold-line);
+  font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep);
+}
+.chorus-title{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(34px,5.4vw,60px); line-height:1.0; letter-spacing:-.06em; margin:0; color:var(--ink);
+}
+.chorus-title em{ font-style:italic; color:var(--gold); }
+.chorus-sub{
+  font-family:var(--sans); font-size:clamp(14px,2vw,16px); line-height:1.6; letter-spacing:.01em;
+  color:var(--muted); margin:14px 0 0; max-width:70ch;
+}
+
+/* section heading */
+.chorus-sec{ margin:0 0 22px; display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; }
+/* .sl-chorus prefix + !important so "Meet the guests" beats the Squarespace theme heading colour */
+.sl-chorus .chorus-sec-title{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(26px,3.4vw,38px); line-height:1.05; letter-spacing:-.05em; margin:0;
+  color:#0d1a2e !important;
+}
+.sl-chorus .chorus-sec-title em{ font-style:italic; color:var(--gold) !important; }   /* keep "who stayed." gold */
+.chorus-sec-note{ font-family:var(--gara); font-style:italic; font-size:14px; color:#070d14; }
+
+/* trust stats strip - sits above the guest heading */
+.chorus-gg{ width:11px; height:11px; flex-shrink:0; display:inline-block; }
+.chorus-stats{ display:flex; align-items:stretch; flex-wrap:wrap; gap:0; margin:0 0 44px;
+  background:var(--card); border:1px solid var(--hair); border-radius:16px; box-shadow:var(--shadow-card); overflow:hidden; }
+.chorus-stat{ flex:1 1 0; min-width:150px; padding:26px 24px 22px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; text-align:center; border-right:1px solid var(--hair); }
+.chorus-stat:last-child{ border-right:none; }
+.chorus-stat-num{ font-family:var(--serif); font-weight:400; font-size:clamp(30px,3.4vw,40px); line-height:1; letter-spacing:-.04em; color:var(--ink); display:flex; align-items:baseline; gap:6px; }
+.chorus-stat-num .chorus-stat-star{ width:20px; height:20px; fill:var(--gold); align-self:center; }
+.chorus-stat-label{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); display:inline-flex; align-items:center; gap:6px; }
+.chorus-stat-label .chorus-gg{ width:12px; height:12px; }
+.chorus-stat-stars{ display:flex; gap:3px; }
+.chorus-stat-stars svg{ width:15px; height:15px; fill:var(--gold); }
+.chorus-stat-link{ text-decoration:none; transition:background .2s; }
+a.chorus-stat-link:hover{ background:var(--gold-wash); }
+.chorus-stat-cta{ font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:500; color:var(--gold-deep); display:inline-flex; align-items:center; gap:7px; }
+.chorus-stat-cta svg{ width:13px; height:13px; }
+@media (max-width:760px){
+  .chorus-stat{ flex:1 1 50%; min-width:0; border-bottom:1px solid var(--hair); padding:20px 14px 17px; }
+  .chorus-stat:nth-child(2n){ border-right:none; }
+  .chorus-stat:nth-last-child(-n+2){ border-bottom:none; }
+}
+/* mobile: stats become a 2-at-a-time swipe carousel */
+@media (max-width:640px){
+  .chorus-stats{
+    margin-bottom:32px; flex-wrap:nowrap; overflow-x:auto;
+    scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  }
+  .chorus-stats::-webkit-scrollbar{ display:none; }
+  .chorus-stat{
+    flex:0 0 50%; min-width:0; scroll-snap-align:start; padding:20px 14px 17px;
+    border-right:1px solid var(--hair) !important; border-bottom:none !important;
+  }
+  .chorus-stat:last-child{ border-right:none !important; }
+  .chorus-stats-arrow{ display:flex !important; }
+}
+/* scroll chevrons (mobile only) */
+.chorus-stats-wrap{ position:relative; touch-action:manipulation; }
+.chorus-stats-arrow{ display:none; position:absolute; top:50%; transform:translateY(-50%); z-index:4;
+  width:32px; height:32px; border-radius:50%; background:var(--card); border:1px solid var(--hair);
+  box-shadow:0 2px 10px rgba(13,26,46,.16); align-items:center; justify-content:center; cursor:pointer; padding:0;
+  touch-action:manipulation; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; }
+.chorus-stats-arrow.prev{ left:-4px; }
+.chorus-stats-arrow.next{ right:-4px; }
+.chorus-stats-arrow svg{ width:13px; height:13px; stroke:var(--gold-deep); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.chorus-stats-arrow:active{ background:var(--gold-wash); }
+
+/* guest tiles - 4 per row */
+.chorus-guests{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
+.chorus-guest{
+  position:relative; display:block; overflow:hidden;
+  aspect-ratio:4/5; border-radius:12px; border:.5px solid var(--gold-line);
+  background:#1e2228; cursor:pointer; text-decoration:none; opacity:0;
+  transition:opacity .6s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease);
+}
+.chorus-guest.in{ opacity:1; }
+.chorus-guest:hover{ border-color:var(--gold); box-shadow:0 12px 30px rgba(13,26,46,.16); }
+.chorus-guest-img{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:center top; display:block;
+  filter:grayscale(1); transition:filter .5s var(--ease), transform .6s var(--ease);
+}
+@media (hover:hover) and (pointer:fine){
+  .chorus-guest:hover .chorus-guest-img{ filter:grayscale(0); transform:scale(1.05); }
+}
+.chorus-guest-fb{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(160deg, #16263f 0%, #0d1a2e 60%, #0a1424 100%);
+  font-family:var(--serif); font-size:54px; letter-spacing:-.03em; color:rgba(212,184,150,.4);
+}
+.chorus-guest-ov{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(10,16,26,.88) 0%, rgba(13,26,46,.18) 55%, transparent 100%);
+}
+.chorus-guest-info{ position:absolute; left:0; right:0; bottom:0; padding:16px 16px; }
+.chorus-guest-uni{ font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:rgba(212,184,150,.85); margin-bottom:6px; }
+.chorus-guest-name{ font-family:var(--serif); font-weight:400; font-size:clamp(21px,2vw,27px); line-height:1; letter-spacing:-.03em; color:#fff; }
+.chorus-guest-watch{ display:inline-flex; align-items:center; gap:8px; margin-top:11px; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:#E7CDA3; }
+.chorus-guest-watch .chorus-guest-playchip{
+  width:24px; height:24px; border-radius:50%;
+  background:rgba(251,248,241,.14); border:.5px solid rgba(212,184,150,.5);
+  display:flex; align-items:center; justify-content:center;
+}
+.chorus-guest-watch svg{ width:9px; height:9px; fill:#E7CDA3; margin-left:1px; }
+
+/* 3 across on tablet, 2 on mobile */
+@media (max-width:1000px){ .chorus-guests{ grid-template-columns:repeat(3, 1fr); } }
+@media (max-width:640px){
+  .sl-chorus.chorus-section{ padding:8px 16px 0; }
+  .chorus-guests{ grid-template-columns:1fr 1fr; gap:10px; }
+  .chorus-guest{ aspect-ratio:3/4; }
+  .chorus-guest-info{ padding:13px 14px; }
+  .chorus-guest-name{ font-size:20px; }
+  .chorus-guest-watch{ margin-top:9px; }
+}
+
+/* modal - opaque scrim, no backdrop blur (iOS rule 1) */
+.chorus-modal{ position:fixed; inset:0; z-index:9999; display:none; }
+.chorus-modal.open{ display:block; }
+.chorus-modal-scrim{ position:absolute; inset:0; background:rgba(8,14,24,.88); cursor:pointer; }
+.chorus-modal-card{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:min(940px, calc(100% - 32px)); max-height:min(86vh, 720px);
+  background:var(--paper); border-radius:18px; overflow:hidden;
+  display:flex; align-items:stretch; box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+.chorus-modal-media{ flex:0 0 55%; position:relative; background:#0a1424; min-height:420px; }
+.chorus-modal-card.portrait .chorus-modal-media{ flex:0 0 42%; }
+.chorus-modal-media > iframe, .chorus-modal-media > video, .chorus-modal-media > img{
+  position:absolute; inset:0; width:100%; height:100%; border:0; display:block; object-fit:cover; background:#000;
+}
+.chorus-modal-media > iframe{ object-fit:unset; }
+.chorus-modal-body{ flex:1 1 auto; min-width:0; padding:40px 36px 32px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.chorus-modal-stars{ display:flex; gap:3px; margin-bottom:16px; }
+.chorus-modal-stars svg{ width:13px; height:13px; fill:var(--gold); }
+.chorus-modal-uni{ font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:8px; }
+.chorus-modal-name{ font-family:var(--serif); font-weight:400; font-size:clamp(26px,3vw,36px); line-height:1.02; letter-spacing:-.04em; color:var(--ink); margin:0 0 18px; }
+.chorus-modal-quote p{ font-family:var(--gara); font-size:16px; line-height:1.62; letter-spacing:.005em; color:var(--ink); margin:0 0 14px; }
+.chorus-modal-link{
+  display:inline-flex; align-items:center; gap:7px; margin-top:6px;
+  font-family:var(--sans); font-size:10.5px; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--gold-deep); text-decoration:none; transition:color .15s;
+}
+.chorus-modal-link:hover{ color:var(--ink); }
+.chorus-modal-link svg{ width:12px; height:12px; }
+.chorus-modal-close{
+  position:absolute; top:14px; right:14px; z-index:5; width:36px; height:36px; border-radius:50%;
+  background:rgba(10,16,26,.72); color:#F4F0E6; border:.5px solid rgba(251,248,241,.28); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:17px; line-height:1;
+}
+.chorus-modal-close:hover{ background:var(--gold); border-color:var(--gold); }
+@media (max-width:760px){
+  .chorus-modal-card{ flex-direction:column; top:auto; bottom:0; left:0; transform:none; width:100%; max-height:92dvh; border-radius:18px 18px 0 0; }
+  .chorus-modal-media{ flex:0 0 auto; min-height:0; aspect-ratio:16/9; }
+  .chorus-modal-card.portrait .chorus-modal-media{ flex:0 0 auto; aspect-ratio:4/5; max-height:52dvh; }
+  .chorus-modal-body{ padding:26px 22px 30px; }
+}
+@media (prefers-reduced-motion:reduce){
+  .chorus-guest{ opacity:1 !important; transition:none !important; }
+}
+</style>
+
+<div class="sl-chorus chorus-section">
+  <div class="chorus-wrap">
+
+    <div class="chorus-head">
+      <h1 class="chorus-title">Trusted by parents,<br><em>loved by students.</em></h1>
+      <p class="chorus-sub">Every review on this page comes from a real Student Luxe guest, or their parents. Watch their stories, then read what hundreds more have said.</p>
+    </div>
+
+    <div class="chorus-stats-wrap">
+      <button class="chorus-stats-arrow prev" type="button" aria-label="Scroll stats left"><svg viewBox="0 0 14 14"><polyline points="9,2 4,7 9,12"/></svg></button>
+      <div class="chorus-stats" id="chorusStats"></div>
+      <button class="chorus-stats-arrow next" type="button" aria-label="Scroll stats right"><svg viewBox="0 0 14 14"><polyline points="5,2 10,7 5,12"/></svg></button>
+    </div>
+
+    <div class="chorus-sec">
+      <h2 class="chorus-sec-title">Meet the guests <em>who stayed.</em></h2>
+    </div>
+    <div class="chorus-guests" id="chorusGuests"></div>
+
+  </div>
+
+  <div class="chorus-modal" id="chorusModal" aria-hidden="true">
+    <div class="chorus-modal-scrim" data-close></div>
+    <div class="chorus-modal-card" role="dialog" aria-modal="true" aria-label="Guest story">
+      <button class="chorus-modal-close" type="button" data-close aria-label="Close">&#215;</button>
+      <div class="chorus-modal-media" id="chorusModalMedia"></div>
+      <div class="chorus-modal-body" id="chorusModalBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ── GUEST CONFIG - edit here ── */
+  var GUESTS = [
+    { name:'Ludovica', initials:'LV', uni:'ESCP Paris',
+      image:'https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/dab4de4d-12db-42e8-b927-cbc71503d82c/Ludovica.jpg?content-type=image%2Fjpeg', video:'',
+      quote:'Studying abroad sounds glamorous until you realise it means packing up your whole life every few months. London. Madrid. Now Paris. Ludovica is 23, Italian, and doing her master’s at ESCP Business School - one of Europe’e most prestigious, with campuses spread across six cities. A year in London, three months in Madrid, and now she’s settled into her new home in Paris for the next chapter. Moving that often isn’t easy. But somehow, she’s made every city feel like home. With Student Luxe, she never had to choose between comfort and quality, wherever her studies took her. A beautiful apartment, a proper space to study, a kitchen to actually cook in, a terrace for those rare sunny days, and a team she could count on. The kind of home that makes a new city feel a little less new.' },
+    { name:'Emma & Tatum', initials:'E&T', uni:'LSE Summer School',
+      image:'https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/1753184780100-UZ3KMU6751ZIENSMHI1B/guest-testimonial-tatum-and-emma-header-image.jpg?content-type=image%2Fjpeg', video:'', href:'/life-at-luxe/guest-testimonial-tatum-and-emma',
+      quote:'Tatum and Emma came across Student Luxe after a friend ran a Google search for apartment-style housing in London. They were looking for a safe, clean, and well-located alternative to traditional student halls – somewhere modern, with great amenities and a sense of privacy. Mo, our Head of Sales, dealt with their enquiry, and found them Bell Yard House in Holborn – a stylish residence just off the Strand, close to Lincoln’s Inn Fields, LSE, and major London landmarks. From that first interaction, they were sold. “Mo was super helpful and accommodating,” says Tatum. “The booking process was seamless.” Their experience shows how essential it is to find the right LSE summer accommodation early - especially during peak periods.' },
+    { name:'Chantal', initials:'C', uni:'University of Westminster',
+      image:'https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/6b3fe009-5bd5-407b-abad-9667b97bd0c4/Chantal-Guest.jpg?content-type=image%2Fjpeg', video:'https://youtu.be/NpC6EJJeyeQ?si=zu_bDtRmAMl0vYBa',
+      quote:'Chantal booked a 1 year stay at the Albany Residences in Marylebone - and she has extended her stay 3 times with us since. Chantal studies at the University of Westminster, doing an MA Public Relations & BA in Marketing. She wanted to be close to her studies, whilst also living in a Central London neighbourhood near all the big landmarks. She especially loves living next door to the big open green space that is Regent’s Park. Chantal spoke with our Head of Partnerships and Operations Edoardo who presented her multiple options before she decided Albany felt like home!' },
+    { name:'Nurlana', initials:'N', uni:'Queen Mary University London',
+      image:'https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/f0325e96-fc5f-4d34-8c8c-3b85e78b3947/Lana+-+edit.jpg?content-type=image%2Fjpeg', video:'https://youtu.be/ilzHmrvu1lo?si=TQLwbH1pGmOwFIQu',
+      quote:'Nurlana checked in with us in September 2023, booking for a stay of 9 months at our Stratford Park apartments. Lana studies at Queen Mary University of London, undertaking an MSc in International Marketing & Consumer Psychology. She wanted to be close to her studies at Queen Mary University, and wanted an apartment with nice amenities that was just a short distance away. Nurlana spoke with our Head of Sales Mo - who was able to deliver options that perfectly suited her style.' },
+    { name:'Selin & Asya', initials:'S&A', uni:'King’s College London',
+      image:'https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/22905bbd-c8cc-4d1d-ba9e-4576a5ab806e/Selin%2B%26%2BAysa%2BStudent%2BLuxe%2B2026webp.webp?content-type=image%2Fwebp', video:'https://youtu.be/GXKKoos2VDM?si=txfDPZg1d0yFkURb',
+      quote:'Selin and Asya booked a stay for the duration of their Business Management studies at King’s College London. They choose Westminster to be close to KCL, which has its main campus nearby. They love how close Westminster is to central London, including Covent Garden, and the fact that it’s surrounded by great cafes. Selin and Asya spoke with our Head of Partnerships and Operations Edoardo, who booked them a stay in Westminster and remains in close contact with them and Selin’s dad.' },
+    { name:'Arden', initials:'A', uni:'LSE (London School of Economics)',
+      image:'https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/0d53baba-688a-49c4-abd0-5495717245aa/Arden-guest.jpg?content-type=image%2Fjpeg', video:'https://youtu.be/Gr29vQ8zOzc?si=bC7u0cykTobNS-XE',
+      quote:'After speaking with Edoardo, Arden and a friend from back home decided to book a stay with us at Scala Street. She found Student Luxe after some other LSE students who had previously stayed with us recommended our service - and the customer service of Edo. Location was a priority for Arden, and she loves how ‘the best’ parts of London are now just a short walk away from her front door. Arden came to London to study International History at London School of Economics.' },
+    { name:'Oliver', initials:'OV', uni:'Le Cordon Bleu, Paris',
+      image:'https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/33bb3fca-65df-4eb4-8e58-f6b21cd98af4/Oliver.jpg?content-type=image%2Fjpeg', video:'',
+      quote:'Studying abroad sounds glamorous until you realise it means packing up your whole life every few months. London. Madrid. Now Paris. Ludovica is 23, Italian, and doing her master’s at ESCP Business School - one of Europe’e most prestigious, with campuses spread across six cities. A year in London, three months in Madrid, and now she’s settled into her new home in Paris for the next chapter. Moving that often isn’t easy. But somehow, she’s made every city feel like home. With Student Luxe, she never had to choose between comfort and quality, wherever her studies took her. A beautiful apartment, a proper space to study, a kitchen to actually cook in, a terrace for those rare sunny days, and a team she could count on. The kind of home that makes a new city feel a little less new.' },
+    { name:'Fan Yang', initials:'FY', uni:'UCL (University College London)',
+      image:'https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/b2fe9806-f981-4b46-940a-53b9f1bd6a48/Fan%2BYang.jpg?content-type=image%2Fjpeg', video:'https://youtu.be/QHhqjB-Caio?si=BrGx6boMvWgioxpU',
+      quote:'Fan started her apartment research early - messaging us on WeChat via RED 6 months before her check in date. Her enquiry criteria consisted of a quality, spacious apartment that also boasted good security features. Our Chinese Sales & Marketing Specialist Rongrong found Fan an excellent apartment boasting 63m2 of space in Fitzrovia - Scala Street apartments. She booked a 10 month stay for her studies at UCL - and is thoroughly enjoying her student life here in London.' }
+  ];
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function sqImg(u){ return (u && u.indexOf('squarespace-cdn.com')>-1) ? u.split('?')[0]+'?format=750w' : u; }
+  var STAR = '<svg viewBox="0 0 14 14"><polygon points="7,1 8.7,5 13,5.4 9.7,8.3 10.7,12.6 7,10.3 3.3,12.6 4.3,8.3 1,5.4 5.3,5"/></svg>';
+  var PLAY = '<svg viewBox="0 0 24 24"><path d="M7 4.8v14.4c0 .7.8 1.2 1.4.8l11-7.2c.6-.4.6-1.2 0-1.6l-11-7.2c-.6-.4-1.4.1-1.4.8z"/></svg>';
+
+  var io = ('IntersectionObserver' in window)
+    ? new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin:'0px 0px -8% 0px', threshold:0.05 })
+    : null;
+  function reveal(el){ if(io){ io.observe(el); } else { el.classList.add('in'); } }
+
+  var wrap  = document.getElementById('chorusGuests');
+  var modal = document.getElementById('chorusModal');
+  if(!wrap || !modal) return;
+  /* lift the modal to <body> so a Squarespace section's overflow/transform
+     can't clip it - it then always covers the full viewport */
+  if(modal.parentNode !== document.body){ document.body.appendChild(modal); modal.classList.add('sl-chorus'); }
+  var card  = modal.querySelector('.chorus-modal-card');
+  var media = document.getElementById('chorusModalMedia');
+  var body  = document.getElementById('chorusModalBody');
+  var closeBtn = modal.querySelector('.chorus-modal-close');
+  var lastFocus = null;
+
+  function youtubeEmbedUrl(url){
+    var m = String(url).match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{6,})/);
+    return m ? 'https://www.youtube-nocookie.com/embed/' + m[1] + '?autoplay=1&rel=0&modestbranding=1&playsinline=1' : null;
+  }
+  function onKey(e){ if(e.key === 'Escape') closeModal(); }
+
+  function openModal(g){
+    lastFocus = document.activeElement;
+    var yt = g.video ? youtubeEmbedUrl(g.video) : null;
+    var mediaHtml = '';
+    if(yt){
+      mediaHtml = '<iframe src="' + yt + '" title="' + esc(g.name) + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+    } else if(g.video && /\.(mp4|webm|mov)(\?|$)/i.test(g.video)){
+      mediaHtml = '<video src="' + esc(g.video) + '" controls autoplay playsinline' + (g.image ? ' poster="' + esc(sqImg(g.image)) + '"' : '') + '></video>';
+    } else if(g.image){
+      mediaHtml = '<img src="' + esc(sqImg(g.image)) + '" alt="' + esc(g.name) + '">';
+    }
+    media.innerHTML = mediaHtml;
+    card.classList.toggle('portrait', !!g.portrait);
+
+    var quoteHtml = String(g.quote || '').split(/\n\s*\n/).map(function(p){ return p.trim() ? '<p>' + esc(p.trim()) + '</p>' : ''; }).join('');
+    body.innerHTML =
+      '<div class="chorus-modal-stars" aria-label="5 out of 5 stars">' + STAR + STAR + STAR + STAR + STAR + '</div>' +
+      '<div class="chorus-modal-uni">' + esc(g.uni) + '</div>' +
+      '<h3 class="chorus-modal-name">' + esc(g.name) + '</h3>' +
+      '<div class="chorus-modal-quote">' + quoteHtml + '</div>' +
+      (g.href ? '<a class="chorus-modal-link" href="' + esc(g.href) + '">Read the full story' +
+        '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>' : '');
+    body.scrollTop = 0;
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKey);
+    closeBtn.focus();
+  }
+  function closeModal(){
+    media.innerHTML = '';
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', onKey);
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  modal.addEventListener('click', function(e){ if(e.target.closest('[data-close]')) closeModal(); });
+
+  GUESTS.forEach(function(g){
+    var tile = document.createElement('a');
+    tile.className = 'chorus-guest';
+    tile.href = g.href || '#';
+    var photo = g.image
+      ? '<img class="chorus-guest-img" src="' + esc(sqImg(g.image)) + '" alt="' + esc(g.name) + '" loading="lazy" decoding="async">'
+      : '<div class="chorus-guest-fb">' + esc(g.initials || g.name.charAt(0)) + '</div>';
+    tile.innerHTML =
+      photo +
+      '<div class="chorus-guest-ov"></div>' +
+      '<div class="chorus-guest-info">' +
+        '<div class="chorus-guest-uni">' + esc(g.uni) + '</div>' +
+        '<div class="chorus-guest-name">' + esc(g.name) + '</div>' +
+        '<span class="chorus-guest-watch"><span class="chorus-guest-playchip">' + PLAY + '</span>' +
+          (g.video ? 'Watch their story' : 'Read their story') + '</span>' +
+      '</div>';
+    tile.addEventListener('click', function(e){ e.preventDefault(); openModal(g); });
+    wrap.appendChild(tile);
+    reveal(tile);
+  });
+
+  /* ── trust stats strip (above the guest heading) ── */
+  (function(){
+    var googleReviewsUrl = 'https://www.google.com/search?q=Student+Luxe+reviews&rlz=1C5MACD_enGB1077GB1077&oq=student+luxe+&gs_lcrp=EgZjaHJvbWUqCQgAEEUYOxiABDIJCAAQRRg7GIAEMgoIARBFGBYYHhg7MgcIAhAAGIAEMgYIAxBFGDwyBggEEEUYPDIGCAUQRRhBMgYIBhBFGEEyBggHEEUYPNIBCDEyMjRqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8&sei=Vp9PatGbLeGFhbIP7pHesQE#lrd=0x487605281f3287d7:0x32f731e49ea08871,1';
+    var STATS = [
+      { num:'4.9',    label:'Google rating', stars:true },
+      { num:'3,400+', label:'Bookings worldwide' },
+      { num:'2019',   label:'Operational since' },
+      { num:'22',     label:'Cities available' }
+    ];
+    var STAR20 = '<svg class="chorus-stat-star" viewBox="0 0 14 14"><polygon points="7,1 8.7,5 13,5.4 9.7,8.3 10.7,12.6 7,10.3 3.3,12.6 4.3,8.3 1,5.4 5.3,5"/></svg>';
+    var GOOGLE_G = '<svg class="chorus-gg" viewBox="0 0 48 48" aria-hidden="true">' +
+      '<path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>' +
+      '<path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>' +
+      '<path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/>' +
+      '<path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7C13.42 14.62 18.27 10.75 24 10.75z"/></svg>';
+    var wrap = document.getElementById('chorusStats');
+    if(!wrap) return;
+    wrap.innerHTML = STATS.map(function(s){
+      var num = '<div class="chorus-stat-num">' + esc(s.num) + (s.star ? STAR20 : '') + '</div>';
+      var label = '<div class="chorus-stat-label">' + (s.google ? GOOGLE_G : '') + esc(s.label) + '</div>';
+      var stars = s.stars ? '<div class="chorus-stat-stars">' + STAR + STAR + STAR + STAR + STAR + '</div>' : '';
+      return '<div class="chorus-stat">' + num + stars + label + '</div>';
+    }).join('') +
+    '<a class="chorus-stat chorus-stat-link" href="' + esc(googleReviewsUrl) + '" target="_blank" rel="noopener">' +
+      '<div class="chorus-stat-cta">' + GOOGLE_G + ' See all on Google' +
+        '<svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '</div>' +
+    '</a>';
+
+    /* chevrons move one card at a time, looping endlessly at both ends */
+    var box = wrap.parentNode;
+    function page(dir){
+      var first = wrap.querySelector('.chorus-stat');
+      var step = first ? first.offsetWidth : wrap.clientWidth / 2;
+      var max = wrap.scrollWidth - wrap.clientWidth;
+      var x = wrap.scrollLeft, target;
+      if(dir > 0){ target = (x >= max - 4) ? 0 : Math.min(x + step, max); }
+      else { target = (x <= 4) ? max : Math.max(x - step, 0); }
+      wrap.scrollTo({ left: target, behavior:'smooth' });
+    }
+    var prev = box.querySelector('.chorus-stats-arrow.prev');
+    var next = box.querySelector('.chorus-stats-arrow.next');
+    if(prev) prev.addEventListener('click', function(){ page(-1); });
+    if(next) next.addEventListener('click', function(){ page(1); });
+  })();
+})();
+</script>

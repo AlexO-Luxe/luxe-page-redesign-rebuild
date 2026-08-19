@@ -1,0 +1,166 @@
+<!-- ============================================================
+     STUDENT LUXE - USA Page: Final CTA
+     Paste into a Squarespace Code Block, last block on the page.
+     Standalone: no shared styles block required.
+     Background: set to navy (#0d1a2e) in Squarespace.
+     Reskin of the UCL final CTA: explore-more strip removed,
+     eyebrow instead of pill, ghost button anchors to the
+     cities block (#atlas).
+     ============================================================ -->
+<style>
+.slp-cta {
+  --eyebrow-font-size:     10px;
+  --eyebrow-letter-spacing:0.2em;
+  --eyebrow-color:         #D4B896;
+  --title-font-size:       clamp(35px, 6vw, 60px);
+  --title-font-weight:     300;
+  --title-line-height:     1.00;
+  --title-letter-spacing:  -0.04em;
+  --title-color:           #ffffff;
+  --title-em-color:        #D4B896;
+  --body-font-size:        13px;
+  --body-color:            rgba(255,255,255,0.90);
+  --body-line-height:      1.5;
+  --body-max-width:        460px;
+  --serif: 'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+}
+
+.slp-cta * { box-sizing: border-box; margin: 0; padding: 0; }
+.slp-cta {
+  background: transparent;
+  padding: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.slp-cta-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.slp-cta-main {
+  padding: 80px 48px;
+  text-align: center;
+}
+
+/* plain eyebrow, same treatment as the other USA blocks (no pill) */
+.slp-cta-eyebrow-wrap { margin-bottom: 32px; }
+.slp-cta-eyebrow {
+  display: inline-block;
+  font-size: var(--eyebrow-font-size);
+  font-weight: 400;
+  letter-spacing: var(--eyebrow-letter-spacing);
+  text-transform: uppercase;
+  color: var(--eyebrow-color);
+}
+
+.slp-cta-title {
+  font-family: var(--serif);
+  font-size: var(--title-font-size);
+  font-weight: var(--title-font-weight);
+  line-height: var(--title-line-height);
+  letter-spacing: var(--title-letter-spacing);
+  color: var(--title-color);
+  margin: 0 auto 20px;
+  max-width: 700px;
+}
+.slp-cta-title em { font-style: italic; color: var(--title-em-color); }
+
+.slp-cta-body {
+  font-size: var(--body-font-size);
+  color: var(--body-color);
+  line-height: var(--body-line-height);
+  max-width: var(--body-max-width);
+  margin: 0 auto 40px;
+}
+
+.slp-cta-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.slp-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #B8966E;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-family: 'DM Sans', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.15s cubic-bezier(0.23, 1, 0.32, 1),
+              transform 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) {
+  .slp-cta-btn:hover { background: #D4B896; }
+}
+.slp-cta-btn:active { transform: scale(0.97); }
+
+.slp-cta-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px 24px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.12);
+  transition: border-color 0.15s cubic-bezier(0.23, 1, 0.32, 1),
+              background 0.15s cubic-bezier(0.23, 1, 0.32, 1),
+              transform 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+  white-space: nowrap;
+}
+@media (hover: hover) and (pointer: fine) {
+  .slp-cta-btn-ghost:hover {
+    border-color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.2);
+  }
+}
+.slp-cta-btn-ghost:active { transform: scale(0.97); }
+
+@media (prefers-reduced-motion: reduce) {
+  .slp-cta-btn, .slp-cta-btn-ghost { transition: none !important; }
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .slp-cta-main { padding: 36px 24px 24px; }
+  .slp-cta-btns { flex-direction: column; gap: 16px; }
+}
+</style>
+
+<section class="slp-cta">
+  <div class="slp-cta-inner">
+    <div class="slp-cta-main">
+      <div class="slp-cta-eyebrow-wrap">
+        <span class="slp-cta-eyebrow">Get in touch</span>
+      </div>
+      <h2 class="slp-cta-title">
+        Ready to find your<br><em>perfect US apartment?</em>
+      </h2>
+      <p class="slp-cta-body">
+        Speak to a real member of our team today. We'll listen, advise, and find the right apartment for you - no pressure, no placement fee.
+      </p>
+      <div class="slp-cta-btns">
+        <a href="/reservations?type=B" class="slp-cta-btn">Make an enquiry &rarr;</a>
+        <a href="#atlas" class="slp-cta-btn-ghost">Browse cities &uarr;</a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,342 @@
+<!-- ============================================================
+     STUDENT LUXE - USA Page: FAQ
+     Paste into a Squarespace Code Block, after the What's
+     Included block. Standalone, no shared styles required.
+     Background: set to navy (#0d1a2e) in Squarespace.
+     id="faq" recommended on Squarespace section wrapper.
+     Includes FAQPage JSON-LD; answers in the schema mirror the
+     visible text. If you edit a visible answer, edit the schema
+     copy of it too, they must match.
+     ============================================================ -->
+
+<style>
+.slq {
+  --gold:        #B8966E;
+  --gold-l:      #D4B896;
+  --gold-border: rgba(184,150,110,0.18);
+  --heading-size: clamp(30px, 4.5vw, 54px);
+  --serif: 'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+}
+
+.slq * { box-sizing: border-box; margin: 0; padding: 0; }
+.slq {
+  background: transparent;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding: 72px 0 0;
+}
+@media (max-width: 768px) { .slq { padding: 48px 0 0; } }
+
+/* -- OUTER GRID -- */
+.slq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+}
+@media (max-width: 860px) { .slq-grid { grid-template-columns: 1fr; } }
+
+/* -- LEFT COLUMN -- */
+.slq-left {
+  padding: 0 40px 48px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 28px;
+}
+@media (max-width: 860px) {
+  .slq-left { padding: 0 24px 24px; }
+}
+
+/* plain eyebrow, same treatment as the what's-included block (no pill) */
+.slq-eyebrow {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-l);
+  margin-bottom: 20px;
+}
+
+.slq-heading {
+  font-family: var(--serif);
+  font-size: var(--heading-size);
+  font-weight: 300;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  color: #ffffff;
+  margin-bottom: 24px;
+}
+.slq-heading em { font-style: italic; color: var(--gold-l); }
+
+.slq-sub {
+  font-size: 17px;
+  color: #ffffff;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.slq-lead {
+  font-size: 13px;
+  color: rgba(255,255,255,0.78);
+  line-height: 1.65;
+}
+
+.slq-all-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--gold-l);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  margin-top: 12px;
+  transition: color 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .slq-all-link:hover { color: #ffffff; }
+}
+
+/* -- RIGHT COLUMN: ACCORDION -- */
+.slq-right {
+  padding: 0 48px 48px 40px;
+}
+@media (max-width: 860px) {
+  .slq-right { padding: 0 24px 48px; margin-top: -8px; }
+  .slq-heading { font-size: clamp(36px, 8vw, 54px); }
+}
+
+.slq-item {
+  border-bottom: 0.5px solid rgba(184,150,110,0.12);
+}
+.slq-item:first-child { border-top: 0.5px solid var(--gold-border); }
+
+.slq-item summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 2px;
+}
+.slq-item summary::-webkit-details-marker { display: none; }
+
+/* h3 for the document outline, but styled as UI text: font-family pinned so
+   the Squarespace theme's heading font can't restyle it */
+.slq-q {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  transition: color 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .slq-item summary:hover .slq-q { color: var(--gold-l); }
+}
+
+.slq-icon {
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  border: 0.5px solid rgba(184,150,110,0.35);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.18s cubic-bezier(0.23, 1, 0.32, 1),
+              background  0.18s cubic-bezier(0.23, 1, 0.32, 1),
+              transform   0.25s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.slq-icon svg {
+  width: 8px; height: 8px;
+  stroke: var(--gold);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.slq-item[open] .slq-icon {
+  transform: rotate(45deg);
+  border-color: rgba(184,150,110,0.7);
+  background: rgba(184,150,110,0.08);
+}
+@media (hover: hover) and (pointer: fine) {
+  .slq-item summary:hover .slq-icon {
+    border-color: rgba(184,150,110,0.7);
+    background: rgba(184,150,110,0.08);
+  }
+}
+
+.slq-a {
+  padding: 0 32px 20px 2px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.65;
+  max-width: 560px;
+}
+.slq-a a {
+  color: var(--gold-l);
+  text-decoration: none;
+  border-bottom: 0.5px solid rgba(184,150,110,0.35);
+  transition: color 0.15s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .slq-a a:hover { color: #ffffff; border-color: #ffffff; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slq-icon, .slq-q, .slq-all-link, .slq-a a { transition: none !important; }
+}
+</style>
+
+<section class="slq" aria-label="Common questions about luxury student accommodation in the USA">
+  <div class="slq-grid">
+
+    <!-- -- LEFT -- -->
+    <div class="slq-left">
+      <div>
+        <span class="slq-eyebrow">Common questions</span>
+        <h2 class="slq-heading">
+          Studying in the USA,<br><em>answered.</em>
+        </h2>
+        <p class="slq-sub">Everything international students and parents ask us about renting privately in the United States.</p>
+        <p class="slq-lead">Can't find your question? Our reservations team answers every enquiry personally, usually within a few hours.</p>
+      </div>
+      <div>
+        <a href="https://www.studentluxe.co.uk/faqs" class="slq-all-link">
+          View all FAQs
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="width:11px;height:11px;">
+            <line x1="2" y1="7" x2="11" y2="7"/>
+            <polyline points="8,4 11,7 8,10"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- -- RIGHT -- -->
+    <div class="slq-right">
+
+      <details class="slq-item" open>
+        <summary>
+          <h3 class="slq-q">Can international students rent an apartment in the USA without a US guarantor or credit history?</h3>
+          <span class="slq-icon"><svg viewBox="0 0 10 10"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></span>
+        </summary>
+        <p class="slq-a">Yes. Standard US rentals usually ask for a US credit score, a social security number and a co-signer, which most international students don't have. None of our apartments require any of them. You secure your booking with a down payment and pay the rest in flexible instalments, more like booking a hotel than signing a lease.</p>
+      </details>
+
+      <details class="slq-item">
+        <summary>
+          <h3 class="slq-q">Which US cities does Student Luxe cover?</h3>
+          <span class="slq-icon"><svg viewBox="0 0 10 10"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></span>
+        </summary>
+        <p class="slq-a">Nine cities and growing: New York, Boston, Chicago, Washington DC, Los Angeles, Miami, New Orleans, Phoenix and Dallas, with Philadelphia coming soon. In every city we curate luxury buildings within easy reach of the major universities. Pick your city above to browse apartments.</p>
+      </details>
+
+      <details class="slq-item">
+        <summary>
+          <h3 class="slq-q">Are the apartments furnished and are bills included?</h3>
+          <span class="slq-icon"><svg viewBox="0 0 10 10"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></span>
+        </summary>
+        <p class="slq-a">Yes to both. Every apartment comes fully furnished with linen, towels and a fitted kitchen, so you arrive with just your luggage. Electricity, water and Wi-Fi are wrapped into one all-inclusive price, no utility accounts to set up and no surprise bills in a foreign currency.</p>
+      </details>
+
+      <details class="slq-item">
+        <summary>
+          <h3 class="slq-q">Can I book for a semester, summer program or academic year?</h3>
+          <span class="slq-icon"><svg viewBox="0 0 10 10"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></span>
+        </summary>
+        <p class="slq-a">Yes. Unlike standard US leases, which usually lock you into 12 months, our apartments are arranged around your course dates: a single semester, a summer program, an academic year or longer. Tell us your dates and we'll match you with buildings that fit.</p>
+      </details>
+
+      <details class="slq-item">
+        <summary>
+          <h3 class="slq-q">How much does luxury student accommodation in the USA cost?</h3>
+          <span class="slq-icon"><svg viewBox="0 0 10 10"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></span>
+        </summary>
+        <p class="slq-a">Luxury studios start from around $2,500 per month in cities like Phoenix, Dallas and New Orleans, rising to $5,000+ per month in Manhattan, always all-inclusive: rent, utilities and Wi-Fi in one figure, so you can compare cities like for like. Send an enquiry with your city and budget and we'll shortlist options for you.</p>
+      </details>
+
+    </div>
+
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can international students rent an apartment in the USA without a US guarantor or credit history?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Standard US rentals usually ask for a US credit score, a social security number and a co-signer, which most international students don't have. None of our apartments require any of them. You secure your booking with a down payment and pay the rest in flexible instalments, more like booking a hotel than signing a lease."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which US cities does Student Luxe cover?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nine cities and growing: New York, Boston, Chicago, Washington DC, Los Angeles, Miami, New Orleans, Phoenix and Dallas, with Philadelphia coming soon. In every city we curate luxury buildings within easy reach of the major universities. Pick your city above to browse apartments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are the apartments furnished and are bills included?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes to both. Every apartment comes fully furnished with linen, towels and a fitted kitchen, so you arrive with just your luggage. Electricity, water and Wi-Fi are wrapped into one all-inclusive price, no utility accounts to set up and no surprise bills in a foreign currency."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I book for a semester, summer program or academic year?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Unlike standard US leases, which usually lock you into 12 months, our apartments are arranged around your course dates: a single semester, a summer program, an academic year or longer. Tell us your dates and we'll match you with buildings that fit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does luxury student accommodation in the USA cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Luxury studios start from around $2,500 per month in cities like Phoenix, Dallas and New Orleans, rising to $5,000+ per month in Manhattan, always all-inclusive: rent, utilities and Wi-Fi in one figure, so you can compare cities like for like. Send an enquiry with your city and budget and we'll shortlist options for you."
+      }
+    }
+  ]
+}
+</script>
+
+<script>
+(function(){
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(prefersReduced) return;
+
+  var items = document.querySelectorAll('.slq-item');
+  items.forEach(function(el, i){
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(8px)';
+    el.style.transition = 'opacity 0.4s cubic-bezier(0.23,1,0.32,1) ' + (i*50) + 'ms, transform 0.4s cubic-bezier(0.23,1,0.32,1) ' + (i*50) + 'ms';
+  });
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.slq-item').forEach(function(el){
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.slq-right').forEach(function(el){ io.observe(el); });
+})();
+</script>

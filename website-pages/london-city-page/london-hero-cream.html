@@ -1,0 +1,112 @@
+<!-- ============================================================
+     STUDENT LUXE · London Page: Hero (CREAM)
+     Block: sl-uh. Standalone, no enquiry modal.
+     Body positioning paragraph REMOVED; trust badge strip from
+         the navy hero added under the CTA, restyled for cream.
+     Paste into a Squarespace Code Block.
+     Background: set the Squarespace section to cream #FBF8F1
+     (block itself is transparent, like the atlas page).
+     Primary CTA is a native anchor to #apartments.
+     ============================================================ -->
+
+<style>
+  .sl-uh{
+    --h1-ls:-.06em;
+    --ink:#0d1a2e; --gold:#B8966E; --gold-hover:#a07d5a; --gold-deep:#8B6E4E;
+    --gold-line:rgba(184,150,110,.42);
+    --txt:#0d1a2e; --txt-soft:rgba(13,26,46,.62);
+    --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+    --sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --ease:cubic-bezier(.23,1,.32,1);
+    font-family:var(--sans); color:var(--txt); -webkit-font-smoothing:antialiased; text-align:center;
+    max-width:880px; margin:0 auto; padding:10px 20px;
+  }
+  .sl-uh *{box-sizing:border-box; margin:0; padding:0}
+
+  .sl-uh .eyebrow{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-deep)}
+  .sl-uh h1{font-family:var(--serif); font-weight:300; color:var(--ink); letter-spacing:var(--h1-ls); font-size:clamp(40px,6vw,72px); line-height:0.9; margin-top:28px}
+  .sl-uh .h1-sub{font-family:var(--serif); font-weight:300; font-style:italic; color:var(--gold); letter-spacing:-0.03em; font-size:clamp(30px,3.8vw,48px); line-height:1; margin-top:10px}
+
+  .sl-uh .val{margin-top:26px; color:var(--ink); font-size:clamp(19px,1.6vw,21px); min-height:1.4em}
+  .sl-uh .val-rot .item{display:none; will-change:opacity}
+  .sl-uh .val-rot .item:first-child{display:inline}
+  .sl-uh .val-rot b{color:var(--gold-deep); font-weight:500}
+  .sl-uh .val-sub{margin-top:4px; color:var(--txt-soft); font-size:13px; letter-spacing:.02em}
+
+  .sl-uh .cta{display:inline-flex; align-items:center; gap:10px; margin-top:28px; padding:17px 38px; background:var(--gold); color:#fff; font-size:13.5px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; border:none; border-radius:10px; cursor:pointer; font-family:var(--sans); text-decoration:none; box-shadow:0 6px 20px rgba(184,150,110,.28); transition:background .2s var(--ease)}
+  .sl-uh .cta:hover{background:var(--gold-hover); color:#fff}
+
+  /* trust badge strip (from the navy hero, restyled for cream) */
+  .sl-uh .stripB{display:flex; flex-wrap:wrap; gap:14px 22px; justify-content:center; margin-top:30px}
+  .sl-uh .stripB .it{display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:rgba(13,26,46,.72); letter-spacing:.02em}
+  .sl-uh .stripB .it svg{width:16px; height:16px; stroke:var(--gold-deep); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; flex:none}
+
+  @media (max-width:768px){
+    .sl-uh{padding:10px 16px}
+    .sl-uh .val{margin-top:22px}
+    .sl-uh .cta{margin-top:24px}
+    .sl-uh .stripB{margin-top:26px; gap:10px 18px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .sl-uh .cta{transition:none !important}
+  }
+</style>
+
+<div class="sl-uh">
+
+  <div class="eyebrow">Available by enquiry only</div>
+  <h1>Luxury student accommodation in London</h1>
+  <div class="h1-sub">Private, furnished &amp; serviced</div>
+
+  <div class="val">
+    <span class="val-rot" id="slUValRot">
+      <span class="item">Studios from <b>&pound;575 per week</b></span>
+      <span class="item">1 Beds from <b>&pound;800 per week</b></span>
+      <span class="item">2 Beds from <b>&pound;1,150 per week</b></span>
+      <span class="item">3 Beds from <b>&pound;2,000 per week</b></span>
+    </span>
+  </div>
+  <div class="val-sub">&#10003;&nbsp; All bills, utilities &amp; everything included</div>
+
+  <a href="#apartments" class="cta">View apartments &darr;</a>
+
+  <div class="stripB">
+    <span class="it"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><polyline points="8 14 11 17 16 12"/></svg> 3,400+ bookings since 2019</span>
+    <span class="it"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg> 6+ languages</span>
+    <span class="it"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4-3 6.5-7 9-4-2.5-7-5-7-9V6z"/><polyline points="9 12 11.5 14.5 15.5 10"/></svg> ASAP &amp; CHPA accredited</span>
+    <span class="it"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3 14.5 9 21 9.3 16 13.5 17.5 20 12 16.3 6.5 20 8 13.5 3 9.3 9.5 9"/></svg> 4.9 / 5 on Google</span>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var INTERVAL=2500, FADE=550, EASE='ease-in-out';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var rot=document.getElementById('slUValRot');
+  if(rot){
+    var items=Array.prototype.slice.call(rot.querySelectorAll('.item'));
+    if(items.length){
+      var ri=0;
+      function renderVal(fade){
+        items.forEach(function(it,k){
+          if(k===ri){
+            it.style.display='inline';
+            if(fade){ it.style.transition='none'; it.style.opacity='0'; void it.offsetWidth; it.style.transition='opacity '+FADE+'ms '+EASE; it.style.opacity='1'; }
+            else { it.style.transition='none'; it.style.opacity='1'; }
+          } else { it.style.transition='none'; it.style.display='none'; it.style.opacity='0'; }
+        });
+      }
+      renderVal(false);
+      if(items.length>1 && !reduce){
+        setInterval(function(){
+          if(document.hidden) return;
+          var cur=items[ri]; cur.style.transition='opacity '+FADE+'ms '+EASE; cur.style.opacity='0';
+          setTimeout(function(){ ri=(ri+1)%items.length; renderVal(true); }, FADE+20);
+        }, INTERVAL);
+        document.addEventListener('visibilitychange', function(){ if(!document.hidden){ renderVal(false); } });
+      }
+    }
+  }
+})();
+</script>

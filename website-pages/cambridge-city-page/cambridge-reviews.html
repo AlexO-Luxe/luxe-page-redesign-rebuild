@@ -1,0 +1,691 @@
+<!-- ============================================================
+     STUDENT LUXE — Cambridge City Page: Reviews (DARK BG)
+     Manual review carousel with swipe + dots + arrows + autoplay.
+     Paste into a Squarespace Code Block.
+     Standalone: no shared styles block required.
+     Background: set to navy (#0d1a2e) in Squarespace.
+     id="reviews" needed on Squarespace section wrapper.
+     Edit reviews in the REVIEWS array at the top of the script.
+     ============================================================ -->
+<style>
+.slp-reviews {
+  --gold:                  #B8966E;
+  --gold-l:                #D4B896;
+  --pill-font-size:        11px;
+  --pill-letter-spacing:   0.16em;
+  --pill-color:            var(--gold-l);
+  --title-font-size:       clamp(30px, 4.5vw, 54px);
+  --title-font-weight:     300;
+  --title-line-height:     1.00;
+  --title-letter-spacing:  -0.08em;
+  --title-color:           #ffffff;
+  --title-em-color:        var(--gold-l);
+  --body-font-size:        13px;
+  --body-color:            rgba(255,255,255,0.72);
+  --body-line-height:      1.7;
+}
+
+.slp-reviews,
+.slp-reviews *,
+.slp-reviews *::before,
+.slp-reviews *::after { box-sizing: border-box; }
+
+.slp-reviews {
+  background: transparent;
+  padding: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.slp-rev-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+}
+@media (max-width: 768px) { .slp-rev-grid { grid-template-columns: 1fr; } }
+
+/* ── LEFT: Carousel ── */
+.slp-rev-left {
+  background: transparent;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.slp-rev-carousel {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.slp-rev-viewport {
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  border: 0.5px solid rgba(184,150,110,0.32);
+  background: rgba(0,0,0,0.6);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+.slp-rev-viewport:active { cursor: grabbing; }
+
+.slp-rev-track {
+  display: flex;
+  transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+  transform: translate3d(0, 0, 0);
+}
+.slp-rev-track.no-anim { transition: none; }
+
+.slp-rev-slide {
+  flex: 0 0 100%;
+  padding: 28px 28px 24px;
+  box-sizing: border-box;
+}
+
+.slp-rev-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 14px;
+}
+.slp-rev-stars svg {
+  width: 14px; height: 14px;
+  fill: var(--gold-l);
+}
+
+.slp-rev-quote-wrap {
+  position: relative;
+  margin-bottom: 18px;
+}
+.slp-rev-quote {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #ffffff;
+  letter-spacing: -0.005em;
+  margin: 0;
+  /* collapsed: ~5 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.slp-rev-quote-wrap.expanded .slp-rev-quote {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+/* Fade removed — clamp simply cuts off at line 5 */
+.slp-rev-fade {
+  display: none;
+}
+.slp-rev-quote-wrap.expanded .slp-rev-fade,
+.slp-rev-quote-wrap.no-overflow .slp-rev-fade { display: none; }
+
+.slp-rev-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-l);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.slp-rev-toggle svg {
+  width: 9px; height: 9px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s;
+}
+.slp-rev-quote-wrap.expanded .slp-rev-toggle svg { transform: rotate(180deg); }
+.slp-rev-toggle:hover { filter: none !important; }
+@media (hover: hover) and (pointer: fine) {
+  .slp-reviews .slp-rev-toggle:hover { color: #ffffff !important; }
+}
+.slp-rev-quote-wrap.no-overflow .slp-rev-toggle { display: none; }
+
+.slp-rev-attr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+}
+.slp-rev-avatar {
+  width: 32px; height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.slp-rev-attr-text { display: flex; flex-direction: column; gap: 1px; }
+.slp-rev-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.005em;
+}
+.slp-rev-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: var(--gold-l);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.slp-rev-source:hover { filter: none !important; }
+@media (hover: hover) and (pointer: fine) {
+  .slp-reviews .slp-rev-source:hover { color: #ffffff !important; text-decoration: underline; text-underline-offset: 2px; }
+}
+.slp-rev-google-g {
+  width: 11px; height: 11px;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+/* Dots */
+.slp-rev-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+.slp-rev-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.slp-rev-dot.active {
+  background: var(--gold-l);
+  transform: scale(1.25);
+}
+.slp-rev-dot:focus-visible { outline: 2px solid var(--gold-l); outline-offset: 2px; }
+
+/* Arrows (desktop only) */
+.slp-rev-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 0.5px solid rgba(184,150,110,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.20);
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+  z-index: 2;
+}
+.slp-rev-arrow svg { width: 14px; height: 14px; stroke: var(--gold-l); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.slp-rev-arrow.prev { left: -16px; }
+.slp-rev-arrow.next { right: -16px; }
+@media (hover: hover) and (pointer: fine) {
+  .slp-reviews .slp-rev-arrow:hover { background: var(--gold) !important; border-color: var(--gold) !important; }
+  .slp-reviews .slp-rev-arrow:hover svg { stroke: #ffffff; }
+  .slp-rev-arrow:hover { filter: none !important; }
+}
+.slp-rev-arrow:focus-visible { outline: 2px solid var(--gold-l); outline-offset: 2px; }
+
+@media (max-width: 768px) {
+  .slp-rev-arrow { display: none; }
+}
+
+/* ── RIGHT: Editorial ── */
+.slp-rev-right {
+  background: transparent;
+  padding: 52px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.slp-rev-pill-wrap { margin-bottom: 28px; }
+@media (max-width: 768px) { .slp-rev-pill-wrap { margin-bottom: 0; } }
+.slp-rev-pill {
+  display: inline-block;
+  padding: 6px 18px;
+  background: rgba(184,150,110,0.15);
+  border: 0.5px solid rgba(184,150,110,0.35);
+  border-radius: 20px;
+  font-size: var(--pill-font-size);
+  font-weight: 400;
+  letter-spacing: var(--pill-letter-spacing);
+  text-transform: uppercase;
+  color: var(--pill-color);
+}
+
+.slp-rev-title {
+  font-size: var(--title-font-size);
+  font-weight: var(--title-font-weight);
+  line-height: var(--title-line-height);
+  letter-spacing: var(--title-letter-spacing);
+  color: var(--title-color);
+  margin-bottom: 10px;
+}
+.slp-rev-title em { font-style: italic; color: var(--title-em-color); }
+
+.slp-rev-body {
+  font-size: var(--body-font-size);
+  color: var(--body-color);
+  line-height: var(--body-line-height);
+  max-width: 320px;
+  margin-bottom: 32px;
+}
+
+.slp-rev-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-family: 'DM Sans', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.18s;
+  align-self: flex-start;
+  cursor: pointer;
+}
+.slp-reviews .slp-rev-cta:hover { filter: none !important; }
+@media (hover: hover) and (pointer: fine) {
+  .slp-reviews .slp-rev-cta:hover { background: var(--gold-l) !important; color: #fff !important; }
+}
+.slp-rev-cta:active { transform: scale(0.97); }
+.slp-rev-cta-mobile { display: none; }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .slp-reviews { padding: 0; }
+  .slp-rev-left { padding: 0 28px 36px; order: 2; }
+  .slp-rev-right { order: 1; }
+  .slp-rev-right { padding: 36px 28px 28px; }
+  .slp-rev-body { max-width: 100%; }
+  .slp-rev-cta { display: none; }
+  .slp-rev-cta-mobile { display: inline-flex; align-self: center; margin-top: 28px; padding: 10px 22px; }
+  .slp-rev-slide { padding: 24px 22px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slp-rev-track, .slp-rev-dot, .slp-rev-arrow, .slp-rev-cta { transition: none !important; }
+}
+</style>
+
+<section class="slp-reviews">
+  <div class="slp-rev-grid">
+
+    <!-- ── LEFT: Manual review carousel ── -->
+    <div class="slp-rev-left">
+      <div class="slp-rev-carousel" id="slpRevCarousel" aria-roledescription="carousel" aria-label="Customer reviews">
+
+        <button class="slp-rev-arrow prev" type="button" aria-label="Previous review" data-dir="-1">
+          <svg viewBox="0 0 14 14"><polyline points="9,2 4,7 9,12"/></svg>
+        </button>
+
+        <div class="slp-rev-viewport" id="slpRevViewport">
+          <div class="slp-rev-track" id="slpRevTrack">
+            <!-- Slides rendered by JS from REVIEWS array below -->
+          </div>
+        </div>
+
+        <button class="slp-rev-arrow next" type="button" aria-label="Next review" data-dir="1">
+          <svg viewBox="0 0 14 14"><polyline points="5,2 10,7 5,12"/></svg>
+        </button>
+
+        <div class="slp-rev-dots" id="slpRevDots" role="tablist" aria-label="Select review">
+          <!-- Dots rendered by JS -->
+        </div>
+
+      </div>
+
+      <a href="/our-reviews" class="slp-rev-cta slp-rev-cta-mobile">Read all reviews →</a>
+    </div>
+
+    <!-- ── RIGHT: Editorial ── -->
+    <div class="slp-rev-right">
+      <div class="slp-rev-pill-wrap">
+        <span class="slp-rev-pill">Our reviews</span>
+      </div>
+      <h2 class="slp-rev-title">
+        Come for the city.<br><em>Stay for the service.</em>
+      </h2>
+      <p class="slp-rev-body">
+        Since 2019 we've earned the trust of thousands of students and families who demand the very best. Here's what they say.
+      </p>
+      <a href="/our-reviews" class="slp-rev-cta">Read all reviews →</a>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+  // ── REVIEW DATA — add / edit / remove here, everything else auto-updates ──
+  var REVIEWS = [
+    {
+      name: 'Shuai Shao',
+      initials: 'SS',
+      quote: "For Cambridge students, this is unquestionably the best accommodation in Cambridge.",
+      url: 'https://maps.app.goo.gl/BWiuG1rHQWcD6CLQ9?g_st=ic'
+    },
+    {
+      name: 'Laura S.P.',
+      initials: 'LS',
+      quote: "Our student has just returned from London / the LSE Summer School and had a wonderful experience. The accommodations at Bell Yard were ideal for the 7 friends who stayed there together (in 2 apartments) -- location, comfort, convenience, air conditioning (!) are at the top of the list of what they enjoyed / appreciated most. We booked with Student Luxe in January, six months ahead of the LSE program start date and would recommend this to others as housing options fill fast. We cannot say enough about the service and professionalism of Stefan Hrebenciuc throughout the process. From initial inquiry to the final days of the students' occupancy, he was accessible, responsive, helpful, organized, pleasant, affable -- stellar all around! 5+/5 for Stefan and Student Luxe! Would book again and highly recommend!",
+      url: 'https://share.google/K8ONGzcbgVKHh42ni'
+    },
+    {
+      name: 'Felix Oljons',
+      initials: 'FO',
+      quote: "Amazing service and wonderful selection of apartments. They made everything feel seamless. Would highly recommend for students who value higher degree of freedom in contract length and quality apartments to make your time in London truly special.",
+      url: 'https://maps.app.goo.gl/Ktv7X4dspcgu4fVC7'
+    },
+    {
+      name: 'Alina Elena Olariu',
+      initials: 'AO',
+      quote: "Student Luxe has been such a helpful source for us to find accommodation for our daughter while she has been at university. It assures me that she is in a safe and well looked after environment and on top of that offers the best and most central locations! A special thank you goes to Mo for guiding us through the process and remaining at our disposal for two years now!",
+      url: 'https://maps.app.goo.gl/4DYpRd9tYZgupLMf8'
+    },
+    {
+      name: 'Barbie Lee',
+      initials: 'BL',
+      quote: "I had an excellent experience with Student Luxe, especially thanks to the amazing help from Rongrong and Lina. After an unexpected issue with my first accommodation, Rongrong patiently guided me through the process of finding and securing a new place. She was understanding, professional, and made what could have been a stressful situation feel manageable. Once I moved in, Lina provided outstanding follow-up support, particularly with arranging my luggage delivery. She was responsive, proactive, and ensured everything went smoothly. Overall, I’m very grateful for their kindness and efficiency. Highly recommend Student Luxe – and especially Rongrong and Lina – to any student looking for reliable and caring housing support!",
+      url: 'https://maps.app.goo.gl/bydUcsGqHWqHGCqm6'
+    },
+    {
+      name: 'Sher Singh',
+      initials: 'SS',
+      quote: "Katria is an absolute gem! She helped me find the perfect accommodation close to the university, tailored to my son's needs. Not only was she professional and friendly, but she also showed incredible kindness. She even went the extra mile, providing an airfryer when the unit didn't have one! As a foreign parent, I appreciated her understanding and efforts in securing a suitable unit. She regularly checked in to ensure I was happy and resolved any issues promptly. Highly recommend Katria and Student Luxe!",
+      url: 'https://maps.app.goo.gl/wvpWYWQVAqj7TQMz5'
+    },
+    {
+      name: 'Débora Toledo',
+      initials: 'DT',
+      quote: "I had a great experience with Student Luxe. Stefan Hrebenciuc provided VIP service, always attentive and quick to respond, ensuring peace of mind throughout my stay. Truly professional and dedicated!",
+      url: 'https://maps.app.goo.gl/7F5GRmGtPvNzLyCi7'
+    },
+    {
+      name: 'Mahmoud Arif',
+      initials: 'MA',
+      quote: "I arrived in London a day before my program started with a last minute cancellation of my pre-booked accommodation. When I spoke to Stefan at Student Luxe, he was very understanding and patient. It was a refreshing experience especially with the amount of difficult and unavailable agents around the city. Stefan helped find the best option, and give advice on payment, all while being personable and friendly. Thank you, Stefan! I definitely will be contacting Student Luxe again when I’m back in London.",
+      url: 'https://maps.app.goo.gl/UC1uUgu7C6W9Xzrn7'
+    }
+  ];
+
+  var carousel = document.getElementById('slpRevCarousel');
+  if (!carousel) return;
+
+  var viewport = document.getElementById('slpRevViewport');
+  var track    = document.getElementById('slpRevTrack');
+  var dotsWrap = document.getElementById('slpRevDots');
+  var arrows   = carousel.querySelectorAll('.slp-rev-arrow');
+  var total    = REVIEWS.length;
+  var current  = 0;
+  var autoplayTimer = null;
+  var AUTOPLAY_MS = 6500;
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── Render slides + dots from REVIEWS ──
+  var STAR_SVG  = '<svg viewBox="0 0 14 14"><polygon points="7,1 8.7,5 13,5.4 9.7,8.3 10.7,12.6 7,10.3 3.3,12.6 4.3,8.3 1,5.4 5.3,5"/></svg>';
+  var GOOGLE_G  = '<svg class="slp-rev-google-g" viewBox="0 0 48 48" aria-hidden="true">' +
+                  '<path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>' +
+                  '<path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>' +
+                  '<path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/>' +
+                  '<path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7C13.42 14.62 18.27 10.75 24 10.75z"/>' +
+                  '</svg>';
+  var CHEVRON   = '<svg viewBox="0 0 10 10"><polyline points="2,3.5 5,6.5 8,3.5"/></svg>';
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+    });
+  }
+
+  function renderSlide(r, idx){
+    var safeName = escapeHtml(r.name);
+    return '<div class="slp-rev-slide" role="group" aria-roledescription="slide" aria-label="' + (idx+1) + ' of ' + total + '">' +
+             '<div class="slp-rev-stars" aria-label="5 out of 5 stars">' + STAR_SVG + STAR_SVG + STAR_SVG + STAR_SVG + STAR_SVG + '</div>' +
+             '<div class="slp-rev-quote-wrap">' +
+               '<p class="slp-rev-quote">' + escapeHtml(r.quote) + '</p>' +
+               '<div class="slp-rev-fade"></div>' +
+             '</div>' +
+             '<button class="slp-rev-toggle" type="button" aria-expanded="false">' +
+               '<span class="slp-rev-toggle-label">Read more</span>' + CHEVRON +
+             '</button>' +
+             '<div class="slp-rev-attr">' +
+               '<div class="slp-rev-avatar">' + escapeHtml(r.initials) + '</div>' +
+               '<div class="slp-rev-attr-text">' +
+                 '<span class="slp-rev-name">' + safeName + '</span>' +
+                 '<a class="slp-rev-source" href="' + r.url + '" target="_blank" rel="noopener" aria-label="Read ' + safeName + '’s verified review on Google">' +
+                   GOOGLE_G + ' Verified review on Google &rarr;' +
+                 '</a>' +
+               '</div>' +
+             '</div>' +
+           '</div>';
+  }
+
+  function renderDot(idx){
+    return '<button class="slp-rev-dot' + (idx === 0 ? ' active' : '') + '" data-idx="' + idx + '" aria-label="Review ' + (idx+1) + '" type="button"></button>';
+  }
+
+  track.innerHTML    = REVIEWS.map(renderSlide).join('');
+  dotsWrap.innerHTML = REVIEWS.map(function(_, i){ return renderDot(i); }).join('');
+
+  var slides = track.querySelectorAll('.slp-rev-slide');
+  var dots   = dotsWrap.querySelectorAll('.slp-rev-dot');
+
+  function setIndex(i){
+    current = (i + total) % total;
+    track.style.transform = 'translateX(' + (-current * 100) + '%)';
+    dots.forEach(function(d, idx){ d.classList.toggle('active', idx === current); });
+    // Collapse any expanded reviews when navigating
+    collapseAll();
+  }
+
+  function collapseAll(){
+    track.querySelectorAll('.slp-rev-quote-wrap.expanded').forEach(function(w){
+      w.classList.remove('expanded');
+      var btn = w.parentNode.querySelector('.slp-rev-toggle');
+      if (btn) {
+        btn.setAttribute('aria-expanded', 'false');
+        var lbl = btn.querySelector('.slp-rev-toggle-label');
+        if (lbl) lbl.textContent = 'Read more';
+      }
+    });
+  }
+
+  // ── Expand / collapse setup ──
+  var togglesSetup = false;
+  function setupQuoteToggles(){
+    if (togglesSetup) return;
+    togglesSetup = true;
+    slides.forEach(function(slide){
+      var wrap = slide.querySelector('.slp-rev-quote-wrap');
+      var quote = slide.querySelector('.slp-rev-quote');
+      var btn = slide.querySelector('.slp-rev-toggle');
+      if (!wrap || !quote || !btn) return;
+
+      // If clamped content fits already, hide toggle + fade
+      // scrollHeight > clientHeight when text is clamped
+      if (quote.scrollHeight <= quote.clientHeight + 2) {
+        wrap.classList.add('no-overflow');
+      }
+
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var isExpanded = wrap.classList.toggle('expanded');
+        btn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        var lbl = btn.querySelector('.slp-rev-toggle-label');
+        if (lbl) lbl.textContent = isExpanded ? 'Read less' : 'Read more';
+        // Pause autoplay while user is reading
+        if (isExpanded) stopAutoplay(); else { stopAutoplay(); startAutoplay(); }
+      });
+    });
+  }
+
+  // Run after layout settles (web fonts can shift line counts)
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(setupQuoteToggles);
+  } else {
+    setTimeout(setupQuoteToggles, 100);
+  }
+  // Re-check on resize since column width changes line count
+  var resizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function(){
+      requestAnimationFrame(function(){
+        slides.forEach(function(slide){
+          var wrap = slide.querySelector('.slp-rev-quote-wrap');
+          var quote = slide.querySelector('.slp-rev-quote');
+          if (!wrap || !quote) return;
+          if (wrap.classList.contains('expanded')) return; // skip while expanded
+          var fits = quote.scrollHeight <= quote.clientHeight + 2;
+          wrap.classList.toggle('no-overflow', fits);
+        });
+      });
+    }, 200);
+  });
+
+  function next(){ setIndex(current + 1); }
+  function prev(){ setIndex(current - 1); }
+
+  function startAutoplay(){
+    if (prefersReduced) return;
+    stopAutoplay();
+    autoplayTimer = setInterval(next, AUTOPLAY_MS);
+  }
+  function stopAutoplay(){
+    if (autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer = null; }
+  }
+
+  // Dots
+  dots.forEach(function(d){
+    d.addEventListener('click', function(){
+      setIndex(parseInt(d.getAttribute('data-idx'), 10));
+      stopAutoplay(); startAutoplay();
+    });
+  });
+
+  // Arrows
+  arrows.forEach(function(a){
+    a.addEventListener('click', function(){
+      var dir = parseInt(a.getAttribute('data-dir'), 10);
+      setIndex(current + dir);
+      stopAutoplay(); startAutoplay();
+    });
+  });
+
+  // Pause on hover (desktop)
+  carousel.addEventListener('mouseenter', stopAutoplay);
+  carousel.addEventListener('mouseleave', startAutoplay);
+
+  // Pause when off-screen
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) startAutoplay(); else stopAutoplay();
+      });
+    }, { threshold: 0.2 });
+    io.observe(carousel);
+  } else {
+    startAutoplay();
+  }
+
+  // ── Swipe / drag ──
+  var startX = 0, deltaX = 0, dragging = false, pointerId = null;
+  var SWIPE_THRESHOLD = 50; // px
+
+  function onDown(e){
+    // Don't intercept clicks on links or buttons inside slides
+    if (e.target && e.target.closest && e.target.closest('a, button')) return;
+    // Don't intercept gestures when any review is expanded — let the user scroll/read in peace
+    if (track.querySelector('.slp-rev-quote-wrap.expanded')) return;
+    dragging = true;
+    pointerId = e.pointerId;
+    startX = e.clientX;
+    deltaX = 0;
+    track.classList.add('no-anim');
+    try { viewport.setPointerCapture(pointerId); } catch(_){}
+    stopAutoplay();
+  }
+  function onMove(e){
+    if (!dragging) return;
+    deltaX = e.clientX - startX;
+    var pct = (deltaX / viewport.offsetWidth) * 100;
+    track.style.transform = 'translateX(' + (-current * 100 + pct) + '%)';
+  }
+  function onUp(){
+    if (!dragging) return;
+    dragging = false;
+    track.classList.remove('no-anim');
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD){
+      setIndex(current + (deltaX < 0 ? 1 : -1));
+    } else {
+      setIndex(current); // snap back
+    }
+    deltaX = 0;
+    startAutoplay();
+  }
+
+  viewport.addEventListener('pointerdown', onDown);
+  viewport.addEventListener('pointermove', onMove);
+  viewport.addEventListener('pointerup', onUp);
+  viewport.addEventListener('pointercancel', onUp);
+  viewport.addEventListener('pointerleave', function(){ if (dragging) onUp(); });
+  viewport.addEventListener('dragstart', function(e){ e.preventDefault(); });
+
+  // Keyboard
+  carousel.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowLeft') { prev(); stopAutoplay(); startAutoplay(); }
+    else if (e.key === 'ArrowRight') { next(); stopAutoplay(); startAutoplay(); }
+  });
+})();
+</script>

@@ -1,0 +1,368 @@
+<!-- ============================================================
+     STUDENT LUXE — USA Student Landing Page: City tabs (DARK BG)
+     Five city tabs: New York (default), Boston, Washington DC,
+     Chicago, Los Angeles.
+     Dark reskin of the Stay Luxe destinations carousel.
+     Standalone: no enquiry modal needed - CTAs link straight to
+     the reservations form with the city prefilled.
+     Paste into a Squarespace Code Block.
+     Background: set to navy (#0d1a2e) in Squarespace.
+     [CONFIRM] before publishing: per-city "from" prices, the
+     reservations ?city= values, and the photo URLs for Boston,
+     Washington DC, Chicago and LA (currently reusing generic
+     interior shots - marked TODO inline).
+     ============================================================ -->
+
+<style>
+.stl-d{
+  --gold:#B8966E; --gold-d:#8F6E4A; --gold-l:#D4B896;
+  --line:rgba(255,255,255,.12); --gold-border:rgba(184,150,110,.35);
+  --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  font-family:var(--sans); -webkit-font-smoothing:antialiased;
+  background:transparent; padding:72px 24px 32px;
+}
+.stl-d *{box-sizing:border-box; margin:0; padding:0}
+@media(max-width:768px){ .stl-d{padding:48px 18px 24px} }
+
+.stl-d-inner{max-width:1180px; margin:0 auto}
+.stl-d-head{margin-bottom:30px}
+.stl-d-pill{display:inline-block; padding:6px 16px; background:rgba(184,150,110,.15); border:.5px solid rgba(184,150,110,.35); border-radius:20px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-l); margin-bottom:22px}
+.stl-d-heading{font-family:var(--serif); font-weight:300; font-size:clamp(30px,4.5vw,54px); letter-spacing:-.045em; line-height:1; color:#ffffff; margin-bottom:16px}
+.stl-d-heading em{font-style:italic; color:var(--gold-l)}
+.stl-d-sub{font-size:14.5px; letter-spacing:-.010em; color:rgba(255,255,255,.72); line-height:1.55; max-width:760px; margin:0}
+
+/* tabs */
+.stl-d-tabs{display:flex; gap:28px; border-bottom:.5px solid var(--gold-border); margin-bottom:26px; flex-wrap:wrap}
+.stl-d-tab{padding:0 0 12px; background:none; border:none; color:rgba(255,255,255,.45); font-family:var(--sans); font-size:13.5px; letter-spacing:.04em; cursor:pointer; position:relative; transition:color .2s}
+.stl-d-tab:hover{color:rgba(255,255,255,.75)}
+.stl-d-tab.on{color:#ffffff}
+.stl-d-tab.on::after{content:''; position:absolute; left:0; right:0; bottom:-.5px; height:2px; background:var(--gold)}
+@media(max-width:768px){ .stl-d-tabs{gap:20px} }
+
+/* panels */
+.stl-d-panel{display:none}
+.stl-d-panel.on{display:block}
+.stl-d-row{display:grid; grid-template-columns:600px 1fr; gap:50px; align-items:center}
+@media(max-width:768px){ .stl-d-row{grid-template-columns:1fr; gap:22px} }
+/* "Other cities" panel: text only, no carousel */
+.stl-d-row--single{grid-template-columns:1fr; max-width:640px}
+
+/* carousel */
+.stl-d-carousel{position:relative; aspect-ratio:3/2; border-radius:12px; overflow:hidden; background:#1a2c4a}
+.stl-d-slide{position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity .8s ease}
+.stl-d-badge{position:absolute; top:14px; left:14px; z-index:3; background:rgba(13,26,46,.82); color:#fff; font-size:11.5px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; padding:9px 18px; border-radius:100px; border:.5px solid rgba(212,184,150,.5)}
+.stl-d-arrow{position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:32px; height:32px; border-radius:50%; background:rgba(13,26,46,.55); border:.5px solid rgba(255,255,255,.32); color:#fff; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s, background .2s; padding:0}
+.stl-d-carousel:hover .stl-d-arrow{opacity:1}
+.stl-d-arrow:hover{background:rgba(13,26,46,.8)}
+.stl-d-prev{left:10px} .stl-d-next{right:10px}
+.stl-d-dots{position:absolute; bottom:12px; left:0; right:0; z-index:3; display:flex; gap:6px; justify-content:center}
+.stl-d-dot{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.5); cursor:pointer; transition:width .25s, background .25s; padding:0; border:none}
+.stl-d-dot.on{width:18px; border-radius:3px; background:var(--gold-l)}
+
+/* summary */
+.stl-d-summary{display:flex; flex-direction:column; justify-content:center}
+.stl-d-price{font-family:var(--serif); font-weight:300; letter-spacing:-.04em; line-height:1.15; color:#ffffff; font-size:clamp(26px,2.6vw,34px); margin-bottom:14px}
+.stl-d-price b{color:var(--gold-l); font-weight:300}
+.stl-d-desc{font-size:13.5px; line-height:1.6; color:rgba(255,255,255,.72)}
+.stl-d-cta{order:2; align-self:flex-start; margin-top:26px; display:inline-flex; align-items:center; gap:10px; padding:15px 30px; background:var(--gold); color:#fff; font-size:11.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; border:none; border-radius:8px; text-decoration:none; cursor:pointer; transition:background .2s}
+.stl-d-cta:hover{background:var(--gold-l); color:#fff}
+.stl-d-div{height:.5px; background:var(--line); margin:22px 0}
+.stl-d-incl{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:12px 18px}
+.stl-d-incl li{display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(255,255,255,.82)}
+.stl-d-incl svg{width:14px; height:14px; stroke:var(--gold-l); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; flex:none}
+@media(max-width:768px){
+  .stl-d-incl{gap:9px 14px}
+  .stl-d-incl li{font-size:12px; gap:8px}
+  .stl-d-incl svg{width:12px; height:12px}
+  .stl-d-div{margin:20px 0}
+}
+
+@media (prefers-reduced-motion:reduce){ .stl-d-slide{transition:none} }
+</style>
+
+<section class="stl-d" id="stl-destinations" aria-label="Luxury student apartments by US city">
+  <div class="stl-d-inner">
+
+    <div class="stl-d-head stl-d-reveal">
+      <span class="stl-d-pill">Available by enquiry only</span>
+      <h2 class="stl-d-heading">Our most popular <em>US cities</em></h2>
+      <p class="stl-d-sub">The space and privacy of an apartment, with the comforts of a hotel - in some of America's most desirable student neighbourhoods.</p>
+    </div>
+
+    <div class="stl-d-tabs stl-d-reveal" role="tablist" aria-label="City">
+      <button type="button" class="stl-d-tab on" data-city="new-york" role="tab" aria-selected="true">New York</button>
+      <button type="button" class="stl-d-tab" data-city="boston" role="tab" aria-selected="false">Boston</button>
+      <button type="button" class="stl-d-tab" data-city="washington-dc" role="tab" aria-selected="false">Washington DC</button>
+      <button type="button" class="stl-d-tab" data-city="chicago" role="tab" aria-selected="false">Chicago</button>
+      <button type="button" class="stl-d-tab" data-city="los-angeles" role="tab" aria-selected="false">Los Angeles</button>
+      <button type="button" class="stl-d-tab" data-city="other" role="tab" aria-selected="false">Other cities</button>
+    </div>
+
+    <div class="stl-d-stage stl-d-reveal">
+
+      <!-- ===== NEW YORK ===== -->
+      <div class="stl-d-panel on" data-city="new-york" role="tabpanel">
+        <div class="stl-d-row">
+          <div class="stl-d-carousel" aria-label="New York apartment photos">
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/102919c5-c50a-4c61-9909-caab93e80bcc/manhattanville-heights-facilities-17.jpg?format=1000w')" role="img" aria-label="New York student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/d57f53fd-c22d-4cdc-a9f3-c3408351e55f/the-old-avenue-facilities-9.jpeg?format=1000w')" role="img" aria-label="New York student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/56c221b4-bdf8-4400-8e75-da79b1feb635/First-Ave-Residences-1bed-8.jpeg?format=1000w')" role="img" aria-label="New York student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/0e1b8bf0-e77b-4f14-b433-713774afc15b/First-Ave-Residences-2bed-1.jpg?format=1000w')" role="img" aria-label="New York student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1f884ae7-c2d9-44dd-a7f2-9b0ffb758c82/longacre-view-1bed-5.jpeg?format=1000w')" role="img" aria-label="New York student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1754406386788-4M5YGX0XTF6ZD9TWSRFA/chelsea-crown-residence-2.jpeg?format=1000w')" role="img" aria-label="New York student apartment"></div>
+            <span class="stl-d-badge">New York</span>
+            <button type="button" class="stl-d-arrow stl-d-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="stl-d-arrow stl-d-next" aria-label="Next photo">›</button>
+            <div class="stl-d-dots"></div>
+          </div>
+          <div class="stl-d-summary">
+            <p class="stl-d-price">New York, from <b>$5,200</b> per month</p>
+            <p class="stl-d-desc">Study in New York from professionally managed apartments across Manhattan, Hell's Kitchen, Midtown, SoHo and the Financial District, within easy reach of NYU, Columbia, Fordham and The New School. We match you with a fully furnished apartment that suits your course dates, preferred location and budget.</p>
+            <a class="stl-d-cta" href="https://www.studentluxe.co.uk/reservations?type=B&city=new-york">Check New York availability →</a>
+            <div class="stl-d-div"></div>
+            <ul class="stl-d-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Prime New York locations</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BOSTON ===== -->
+      <!-- TODO: replace slide background-image URLs with Boston photos -->
+      <div class="stl-d-panel" data-city="boston" role="tabpanel">
+        <div class="stl-d-row">
+          <div class="stl-d-carousel" aria-label="Boston apartment photos">
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/edebf63b-e4c2-4c79-9cb1-eb3d643a4e27/manhattanville-heights-facilities-13.jpg?format=1000w')" role="img" aria-label="Boston student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/e935bcf3-b48d-4c01-977b-7ff6d6f095cb/the-old-avenue-facilities-3.jpeg?format=1000w')" role="img" aria-label="Boston student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/43a1e908-ed98-492a-8231-48978ffce8cd/manhattanville-heights-facilities-11.jpg?format=1000w')" role="img" aria-label="Boston student apartment"></div>
+            <span class="stl-d-badge">Boston</span>
+            <button type="button" class="stl-d-arrow stl-d-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="stl-d-arrow stl-d-next" aria-label="Next photo">›</button>
+            <div class="stl-d-dots"></div>
+          </div>
+          <div class="stl-d-summary">
+            <p class="stl-d-price">Boston, from <b>$4,300</b> per month</p>
+            <p class="stl-d-desc">Private, fully furnished apartments across Back Bay, Fenway, Downtown and Cambridge, minutes from Harvard, MIT, Boston University and Northeastern. Every residence is set up for term-time living: quiet, secure and ready to move in.</p>
+            <a class="stl-d-cta" href="https://www.studentluxe.co.uk/reservations?type=B&city=boston">Check Boston availability →</a>
+            <div class="stl-d-div"></div>
+            <ul class="stl-d-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Prime Boston locations</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== WASHINGTON DC ===== -->
+      <!-- TODO: replace slide background-image URLs with Washington DC photos -->
+      <div class="stl-d-panel" data-city="washington-dc" role="tabpanel">
+        <div class="stl-d-row">
+          <div class="stl-d-carousel" aria-label="Washington DC apartment photos">
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/ee7cb04e-0443-45e2-8455-ad42b1c3db99/manhattanville-heights-1bed-4.jpg?format=1000w')" role="img" aria-label="Washington DC student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/2d3ca1e5-a33a-44b2-83b7-75dc041876fe/the-kyoto-residences-2bed-quality-1.jpeg?format=1000w')" role="img" aria-label="Washington DC student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/4bf122e1-6611-45a4-8480-cc5a99a40324/spitalfields-living-1bed-openplan-quality-4.jpg?format=1000w')" role="img" aria-label="Washington DC student apartment"></div>
+            <span class="stl-d-badge">Washington DC</span>
+            <button type="button" class="stl-d-arrow stl-d-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="stl-d-arrow stl-d-next" aria-label="Next photo">›</button>
+            <div class="stl-d-dots"></div>
+          </div>
+          <div class="stl-d-summary">
+            <p class="stl-d-price">Washington DC, from <b>$4,100</b> per month</p>
+            <p class="stl-d-desc">Elegant apartments in Foggy Bottom, Georgetown, Dupont Circle and Downtown, walking distance or a short ride from Georgetown, George Washington, American University and Howard. Ideal for semesters, internships and Capitol Hill placements.</p>
+            <a class="stl-d-cta" href="https://www.studentluxe.co.uk/reservations?type=B&city=washington">Check Washington DC availability →</a>
+            <div class="stl-d-div"></div>
+            <ul class="stl-d-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Prime DC locations</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CHICAGO ===== -->
+      <!-- TODO: replace slide background-image URLs with Chicago photos -->
+      <div class="stl-d-panel" data-city="chicago" role="tabpanel">
+        <div class="stl-d-row">
+          <div class="stl-d-carousel" aria-label="Chicago apartment photos">
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/f810a164-d25b-4d2d-8a25-3c19e7ca1e8f/belgravia-heights-2bed-deluxe-12.jpeg?format=1000w')" role="img" aria-label="Chicago student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/82335717-ea39-4b76-8b3b-41065892960c/weymouth-collection-staff-favourite-apartments.jpg?format=1000w')" role="img" aria-label="Chicago student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/9969bf80-421d-4fb1-b026-c897a33a6203/mayfair-mews-3bed-27.jpg?format=1000w')" role="img" aria-label="Chicago student apartment"></div>
+            <span class="stl-d-badge">Chicago</span>
+            <button type="button" class="stl-d-arrow stl-d-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="stl-d-arrow stl-d-next" aria-label="Next photo">›</button>
+            <div class="stl-d-dots"></div>
+          </div>
+          <div class="stl-d-summary">
+            <p class="stl-d-price">Chicago, from <b>$3,700</b> per month</p>
+            <p class="stl-d-desc">Spacious, professionally managed apartments in River North, the South Loop, Lincoln Park and Streeterville, convenient for the University of Chicago, Northwestern, DePaul and UIC. Lake views, doorman buildings and everything set up before you arrive.</p>
+            <a class="stl-d-cta" href="https://www.studentluxe.co.uk/reservations?type=B&city=chicago">Check Chicago availability →</a>
+            <div class="stl-d-div"></div>
+            <ul class="stl-d-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Prime Chicago locations</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== LOS ANGELES ===== -->
+      <!-- TODO: replace slide background-image URLs with Los Angeles photos -->
+      <div class="stl-d-panel" data-city="los-angeles" role="tabpanel">
+        <div class="stl-d-row">
+          <div class="stl-d-carousel" aria-label="Los Angeles apartment photos">
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/1734354371751-N6VZ928EB4SC2211IMXB/bond-street-1bed-deluxe-4.jpg?format=1000w')" role="img" aria-label="Los Angeles student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/7642abc2-f92e-4938-8bb4-9b1b58c77b8a/luxury-apartments-to-rent-belgravia-311.jpg?content-type=image%2Fjpeg&format=1000w')" role="img" aria-label="Los Angeles student apartment"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/5de66dfc5511bf790e4476bd/36115c67-9b19-4abd-be31-c9fc4706284b/lincolns-inn-2bed-08-1.jpg?content-type=image%2Fjpeg&format=1000w')" role="img" aria-label="Los Angeles student apartment"></div>
+            <span class="stl-d-badge">Los Angeles</span>
+            <button type="button" class="stl-d-arrow stl-d-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="stl-d-arrow stl-d-next" aria-label="Next photo">›</button>
+            <div class="stl-d-dots"></div>
+          </div>
+          <div class="stl-d-summary">
+            <p class="stl-d-price">Los Angeles, from <b>$4,300</b> per month</p>
+            <p class="stl-d-desc">Modern, secure apartments across Westwood, Santa Monica, West Hollywood and Downtown LA, close to UCLA, USC and LMU. Pools, gyms and parking come as standard in many buildings, with everything arranged around your course dates.</p>
+            <a class="stl-d-cta" href="https://www.studentluxe.co.uk/reservations?type=B&city=los-angeles">Check Los Angeles availability →</a>
+            <div class="stl-d-div"></div>
+            <ul class="stl-d-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Prime LA locations</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== OTHER CITIES ===== -->
+      <div class="stl-d-panel" data-city="other" role="tabpanel">
+        <div class="stl-d-row">
+          <div class="stl-d-carousel" aria-label="United States apartment photos">
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/102919c5-c50a-4c61-9909-caab93e80bcc/manhattanville-heights-facilities-17.jpg?format=1000w')" role="img" aria-label="Student apartment in the United States"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/0e1b8bf0-e77b-4f14-b433-713774afc15b/First-Ave-Residences-2bed-1.jpg?format=1000w')" role="img" aria-label="Student apartment in the United States"></div>
+            <div class="stl-d-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1754406386788-4M5YGX0XTF6ZD9TWSRFA/chelsea-crown-residence-2.jpeg?format=1000w')" role="img" aria-label="Student apartment in the United States"></div>
+            <span class="stl-d-badge">United States</span>
+            <button type="button" class="stl-d-arrow stl-d-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="stl-d-arrow stl-d-next" aria-label="Next photo">›</button>
+            <div class="stl-d-dots"></div>
+          </div>
+          <div class="stl-d-summary">
+            <p class="stl-d-price">Anywhere in the <b>United States</b></p>
+            <p class="stl-d-desc">We have accommodation options all over the United States. Let us know where you're going and what you're looking for, and we'll respond with hand-picked options and our latest availability, usually within one business day.</p>
+            <a class="stl-d-cta" href="https://www.studentluxe.co.uk/reservations?type=B&city=other">Tell us where you're going →</a>
+            <div class="stl-d-div"></div>
+            <ul class="stl-d-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Coverage nationwide</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+  var INTERVAL    = 4000;
+  var FIRST_DELAY = 1500;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var slice = function(n){ return Array.prototype.slice.call(n); };
+
+  function setupCarousel(car){
+    if(!car || car.getAttribute('data-init')) return null; car.setAttribute('data-init','1');
+    var slides = slice(car.querySelectorAll('.stl-d-slide'));
+    if(!slides.length) return null;
+    slides.forEach(function(s,i){ s.style.opacity = i===0?'1':'0'; });
+    var pn=car.querySelector('.stl-d-next'), pp=car.querySelector('.stl-d-prev');
+    if(slides.length<2){ if(pn) pn.style.display='none'; if(pp) pp.style.display='none'; return { next:function(){}, hovered:function(){ return false; } }; }
+    var dotsWrap=car.querySelector('.stl-d-dots'), dots=[], idx=0, hover=false;
+    function show(n){
+      n=(n+slides.length)%slides.length;
+      slides[idx].style.opacity='0'; if(dots[idx]) dots[idx].classList.remove('on');
+      idx=n;
+      slides[idx].style.opacity='1'; if(dots[idx]) dots[idx].classList.add('on');
+    }
+    if(dotsWrap){
+      slides.forEach(function(s,i){
+        var d=document.createElement('button'); d.type='button'; d.className='stl-d-dot'+(i===0?' on':''); d.setAttribute('aria-label','Photo '+(i+1));
+        d.addEventListener('click', function(){ show(i); resetClock(); });
+        dotsWrap.appendChild(d); dots.push(d);
+      });
+    }
+    if(pn) pn.addEventListener('click', function(){ show(idx+1); resetClock(); });
+    if(pp) pp.addEventListener('click', function(){ show(idx-1); resetClock(); });
+    car.addEventListener('mouseenter', function(){ hover=true; });
+    car.addEventListener('mouseleave', function(){ hover=false; });
+    return { next:function(){ show(idx+1); }, hovered:function(){ return hover; } };
+  }
+
+  var panels={}, tabs=[], active='new-york', clock=null, firstTimer=null;
+
+  function tick(){
+    if(document.hidden) return;
+    var p=panels[active]; if(!p || !p.car) return;
+    if(p.car.hovered()) return;
+    p.car.next();
+  }
+  function clearClock(){ if(firstTimer){ clearTimeout(firstTimer); firstTimer=null; } if(clock){ clearInterval(clock); clock=null; } }
+  function startClock(){ if(reduce) return; firstTimer=setTimeout(function(){ tick(); clock=setInterval(tick, INTERVAL); }, FIRST_DELAY); }
+  function resetClock(){ clearClock(); if(!reduce){ clock=setInterval(tick, INTERVAL); } }
+
+  function activate(city){
+    if(!panels[city]) return;
+    active=city;
+    Object.keys(panels).forEach(function(t){ panels[t].el.classList.toggle('on', t===city); });
+    tabs.forEach(function(tb){ var on=tb.getAttribute('data-city')===city; tb.classList.toggle('on',on); tb.setAttribute('aria-selected', on?'true':'false'); });
+    resetClock();
+  }
+
+  function initReveal(){
+    if(reduce || !('IntersectionObserver' in window)) return;
+    var els = slice(document.querySelectorAll('.stl-d-reveal'));
+    els.forEach(function(el,i){ if(el.getAttribute('data-rev')) return; el.setAttribute('data-rev','1'); el.style.opacity='0'; el.style.transition='opacity .5s cubic-bezier(.23,1,.32,1) '+(i*90)+'ms'; });
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.style.opacity='1'; io.unobserve(e.target); } }); }, {threshold:.15});
+    els.forEach(function(el){ io.observe(el); });
+  }
+
+  function init(){
+    slice(document.querySelectorAll('.stl-d-panel')).forEach(function(el){
+      var t=el.getAttribute('data-city');
+      panels[t]={ el:el, car:setupCarousel(el.querySelector('.stl-d-carousel')) };
+    });
+    tabs = slice(document.querySelectorAll('.stl-d-tab'));
+    tabs.forEach(function(tb){ tb.addEventListener('click', function(){ activate(tb.getAttribute('data-city')); }); });
+    initReveal();
+    active='new-york';
+    startClock();
+  }
+
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', init); }
+  else { init(); }
+})();
+</script>

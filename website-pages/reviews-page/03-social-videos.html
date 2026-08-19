@@ -1,0 +1,188 @@
+<!-- ============================================================
+     STUDENT LUXE - Chorus Reviews : SECTION 3 - SOCIAL VIDEO WALL
+     Self-contained. Paste into its own Code Block.
+     TikTok + Instagram guest videos as lightweight poster "facades":
+     nothing third-party loads until a guest taps play, then exactly
+     one embed iframe exists at a time. Replaces the Elfsight widget
+     safely on iOS Safari.
+
+     EDIT the VIDEOS array in the script:
+       platform : 'tiktok' or 'instagram'
+       url      : the normal public link
+                  (tiktok.com/@handle/video/123..  or
+                   instagram.com/reel/CODE/)
+       poster   : a screenshot uploaded to Squarespace (its CDN url).
+                  Leave '' for the branded fallback card.
+       city/line: label shown on the card.
+     ============================================================ -->
+<style>
+.sl-chorus{
+  --ink:#0d1a2e; --muted:rgba(13,26,46,.52);
+  --gold:#B8966E; --gold-line:rgba(184,150,110,.42);
+  --serif:'baskerville-display-pt',Georgia,'Times New Roman',serif;
+  --sans:'dm-sans',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --gara:'adobe-garamond-pro',Georgia,serif;
+  --ease:cubic-bezier(.22,.8,.28,1);
+  font-family:var(--sans); color:var(--ink); -webkit-font-smoothing:antialiased;
+}
+.sl-chorus *{ box-sizing:border-box; }
+.sl-chorus.chorus-section{ padding:40px 24px; }
+.sl-chorus .chorus-wrap{ max-width:1180px; margin:0 auto; }
+
+.chorus-sec{ margin:0 0 22px; display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; }
+.chorus-sec-title{ font-family:var(--serif); font-weight:400; font-size:clamp(26px,3.4vw,38px); line-height:1.05; letter-spacing:-.05em; margin:0; color:var(--ink); }
+.chorus-sec-title em{ font-style:italic; color:var(--gold); }
+.chorus-sec-note{ font-family:var(--gara); font-style:italic; font-size:14px; color:var(--muted); }
+
+.chorus-vids{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:12px; }
+.chorus-vid{ border-radius:14px; overflow:hidden; border:.5px solid var(--gold-line); background:#101d31; opacity:0; transition:opacity .6s var(--ease); }
+.chorus-vid.in{ opacity:1; }
+.chorus-vid-media{ position:relative; aspect-ratio:9/16; width:100%; background:#101d31; cursor:pointer; }
+.chorus-vid-poster{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
+.chorus-vid-scrim{ position:absolute; inset:0; pointer-events:none; background:linear-gradient(to top, rgba(10,16,26,.82) 0%, rgba(13,26,46,.12) 45%, rgba(10,16,26,.35) 100%); }
+.chorus-vid-fallback{
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  padding-top:22%; gap:10px; background:linear-gradient(160deg, #16263f 0%, #0d1a2e 60%, #0a1424 100%);
+}
+.chorus-vid-fallback svg{ width:34px; height:34px; }
+.chorus-vid-fallback span{ font-family:var(--gara); font-style:italic; font-size:14px; color:rgba(212,184,150,.75); }
+.chorus-vid-play{
+  position:absolute; left:50%; top:50%; margin:-31px 0 0 -31px; width:62px; height:62px; border-radius:50%;
+  background:rgba(251,248,241,.94); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 10px 30px rgba(10,16,26,.45); transition:background .25s var(--ease);
+}
+.chorus-vid-play svg{ width:20px; height:20px; fill:var(--ink); margin-left:3px; }
+.chorus-vid-media:hover .chorus-vid-play{ background:var(--gold); }
+.chorus-vid-media:hover .chorus-vid-play svg{ fill:#fff; }
+.chorus-vid-badge{
+  position:absolute; top:12px; left:12px; display:inline-flex; align-items:center; gap:6px;
+  padding:5px 11px; border-radius:100px; background:rgba(10,16,26,.55); border:.5px solid rgba(251,248,241,.22);
+  font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:#F4F0E6; pointer-events:none;
+}
+.chorus-vid-badge svg{ width:11px; height:11px; fill:#F4F0E6; }
+.chorus-vid-cap{ position:absolute; left:0; right:0; bottom:0; padding:14px 16px; pointer-events:none; }
+.chorus-vid-city{ font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:rgba(212,184,150,.85); margin-bottom:5px; }
+.chorus-vid-line{ font-family:var(--serif); font-weight:400; font-size:17px; line-height:1.15; letter-spacing:-.02em; color:#fff; }
+.chorus-vid-frame{ position:absolute; inset:0; width:100%; height:100%; border:0; display:block; background:#000; }
+.chorus-vid-close{
+  position:absolute; top:10px; right:10px; z-index:3; width:30px; height:30px; border-radius:50%;
+  background:rgba(10,16,26,.72); color:#F4F0E6; border:.5px solid rgba(251,248,241,.28); cursor:pointer;
+  display:none; align-items:center; justify-content:center; font-size:15px; line-height:1;
+}
+.chorus-vid.playing .chorus-vid-close{ display:flex; }
+.chorus-vid.playing .chorus-vid-play,
+.chorus-vid.playing .chorus-vid-badge,
+.chorus-vid.playing .chorus-vid-cap,
+.chorus-vid.playing .chorus-vid-scrim{ display:none; }
+.chorus-vid.playing .chorus-vid-media{ cursor:default; }
+@media (max-width:640px){
+  .sl-chorus.chorus-section{ padding:32px 16px; }
+  .chorus-vids{
+    grid-auto-flow:column; grid-auto-columns:68%; grid-template-columns:unset;
+    overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+    padding-bottom:6px; margin-left:-16px; margin-right:-16px; padding-left:16px; padding-right:16px; scrollbar-width:none;
+  }
+  .chorus-vids::-webkit-scrollbar{ display:none; }
+  .chorus-vid{ scroll-snap-align:center; }
+}
+@media (prefers-reduced-motion:reduce){ .chorus-vid{ opacity:1 !important; transition:none !important; } }
+</style>
+
+<div class="sl-chorus chorus-section">
+  <div class="chorus-wrap">
+    <div class="chorus-sec">
+      <h2 class="chorus-sec-title">Straight from <em>our socials.</em></h2>
+      <span class="chorus-sec-note">Tap a video to play it here</span>
+    </div>
+    <div class="chorus-vids" id="chorusVids"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ── VIDEO CONFIG - edit here ── */
+  var VIDEOS = [
+    { platform:'tiktok',    url:'https://www.tiktok.com/@studentluxe/video/REPLACE_ME_1',
+      poster:'', city:'London',    line:'Georgia’s move-in day at Lincoln’s Inn' },
+    { platform:'instagram', url:'https://www.instagram.com/reel/REPLACE_ME_2/',
+      poster:'', city:'London',    line:'Inside a Luxe two-bed with Amelia' },
+    { platform:'tiktok',    url:'https://www.tiktok.com/@studentluxe/video/REPLACE_ME_3',
+      poster:'', city:'Paris',     line:'A week in our Père Lachaise residence' },
+    { platform:'instagram', url:'https://www.instagram.com/reel/REPLACE_ME_4/',
+      poster:'', city:'New York',  line:'Columbus Residences, guest tour' },
+    { platform:'tiktok',    url:'https://www.tiktok.com/@studentluxe/video/REPLACE_ME_5',
+      poster:'', city:'Madrid',    line:'Sofia’s honest review after one term' },
+    { platform:'instagram', url:'https://www.instagram.com/reel/REPLACE_ME_6/',
+      poster:'', city:'Edinburgh', line:'Old Town living, by our guests' }
+  ];
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function sqImg(u){ return (u && u.indexOf('squarespace-cdn.com')>-1) ? u.split('?')[0]+'?format=750w' : u; }
+  var PLAY = '<svg viewBox="0 0 24 24"><path d="M7 4.8v14.4c0 .7.8 1.2 1.4.8l11-7.2c.6-.4.6-1.2 0-1.6l-11-7.2c-.6-.4-1.4.1-1.4.8z"/></svg>';
+  var ICON_TT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 3c.4 2.2 1.8 3.9 4.4 4.1v3c-1.7 0-3.2-.5-4.4-1.4v6.6c0 3.7-2.6 6.2-6 6.2-3.3 0-5.9-2.4-5.9-5.8 0-3.3 2.6-5.9 6-5.9.3 0 .7 0 1 .1v3.2c-.3-.1-.6-.2-1-.2-1.6 0-2.8 1.2-2.8 2.8 0 1.6 1.2 2.7 2.7 2.7 1.6 0 2.9-1.2 2.9-3.1V3h3.1z"/></svg>';
+  var ICON_IG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.3c2.5 0 2.8 0 3.8.1 1 0 1.5.2 1.8.3.5.2.8.4 1.1.7.3.3.5.7.7 1.1.1.3.3.9.3 1.8.1 1 .1 1.3.1 3.8s0 2.8-.1 3.8c0 1-.2 1.5-.3 1.8-.2.5-.4.8-.7 1.1-.3.3-.7.5-1.1.7-.3.1-.9.3-1.8.3-1 .1-1.3.1-3.8.1s-2.8 0-3.8-.1c-1 0-1.5-.2-1.8-.3-.5-.2-.8-.4-1.1-.7-.3-.3-.5-.7-.7-1.1-.1-.3-.3-.9-.3-1.8-.1-1-.1-1.3-.1-3.8s0-2.8.1-3.8c0-1 .2-1.5.3-1.8.2-.5.4-.8.7-1.1.3-.3.7-.5 1.1-.7.3-.1.9-.3 1.8-.3 1-.1 1.3-.1 3.8-.1M12 2.6c-2.6 0-2.9 0-3.9.1-1 0-1.7.2-2.3.4-.7.3-1.2.6-1.7 1.1-.5.5-.9 1.1-1.1 1.7-.2.6-.4 1.3-.4 2.3-.1 1-.1 1.3-.1 3.9s0 2.9.1 3.9c0 1 .2 1.7.4 2.3.3.7.6 1.2 1.1 1.7.5.5 1.1.9 1.7 1.1.6.2 1.3.4 2.3.4 1 .1 1.3.1 3.9.1s2.9 0 3.9-.1c1 0 1.7-.2 2.3-.4.7-.3 1.2-.6 1.7-1.1.5-.5.9-1.1 1.1-1.7.2-.6.4-1.3.4-2.3.1-1 .1-1.3.1-3.9s0-2.9-.1-3.9c0-1-.2-1.7-.4-2.3-.3-.7-.6-1.2-1.1-1.7-.5-.5-1.1-.9-1.7-1.1-.6-.2-1.3-.4-2.3-.4-1-.1-1.3-.1-3.9-.1zm0 4.6c-2.7 0-4.9 2.2-4.9 4.9s2.2 4.9 4.9 4.9 4.9-2.2 4.9-4.9-2.2-4.9-4.9-4.9zm0 8c-1.7 0-3.1-1.4-3.1-3.1 0-1.7 1.4-3.1 3.1-3.1 1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1zm5-9.3c-.6 0-1.1.5-1.1 1.1s.5 1.1 1.1 1.1 1.1-.5 1.1-1.1-.5-1.1-1.1-1.1z"/></svg>';
+
+  var io = ('IntersectionObserver' in window)
+    ? new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin:'0px 0px -8% 0px', threshold:0.05 })
+    : null;
+  function reveal(el){ if(io){ io.observe(el); } else { el.classList.add('in'); } }
+
+  var wrap = document.getElementById('chorusVids');
+  if(!wrap) return;
+  var open = null;
+
+  function tiktokEmbedUrl(url){ var m = String(url).match(/video\/(\d+)/); return m ? 'https://www.tiktok.com/embed/v2/' + m[1] : null; }
+  function instagramEmbedUrl(url){ var clean = String(url).split('?')[0].replace(/\/+$/,''); return /instagram\.com\/(reel|p|tv)\//.test(clean) ? clean + '/embed/' : null; }
+
+  function closeVideo(cardEl){
+    if(!cardEl) return;
+    var f = cardEl.querySelector('.chorus-vid-frame');
+    if(f) f.parentNode.removeChild(f);
+    cardEl.classList.remove('playing');
+    if(open === cardEl) open = null;
+  }
+  function openVideo(cardEl, v){
+    if(cardEl.classList.contains('playing')) return;
+    var embed = v.platform === 'tiktok' ? tiktokEmbedUrl(v.url) : instagramEmbedUrl(v.url);
+    if(!embed){ window.open(v.url, '_blank', 'noopener'); return; }
+    closeVideo(open);
+    var m = cardEl.querySelector('.chorus-vid-media');
+    var f = document.createElement('iframe');
+    f.className = 'chorus-vid-frame';
+    f.src = embed;
+    f.title = v.line || 'Guest video';
+    f.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
+    f.setAttribute('allowfullscreen', '');
+    m.appendChild(f);
+    cardEl.classList.add('playing');
+    open = cardEl;
+  }
+
+  VIDEOS.forEach(function(v){
+    var cardEl = document.createElement('div');
+    cardEl.className = 'chorus-vid';
+    var badge = '<span class="chorus-vid-badge">' + (v.platform === 'tiktok' ? ICON_TT + ' TikTok' : ICON_IG + ' Instagram') + '</span>';
+    var posterLayer = v.poster
+      ? '<img class="chorus-vid-poster" src="' + esc(sqImg(v.poster)) + '" alt="' + esc(v.line || 'Guest video') + '" loading="lazy" decoding="async"><div class="chorus-vid-scrim"></div>'
+      : '<div class="chorus-vid-fallback"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4L12 3z" fill="rgba(212,184,150,.7)"/></svg><span>Guest video</span></div><div class="chorus-vid-scrim"></div>';
+    cardEl.innerHTML =
+      '<div class="chorus-vid-media" role="button" tabindex="0" aria-label="Play video: ' + esc(v.line || 'Guest video') + '">' +
+        posterLayer + badge +
+        '<button class="chorus-vid-play" type="button" tabindex="-1" aria-hidden="true">' + PLAY + '</button>' +
+        '<button class="chorus-vid-close" type="button" aria-label="Close video">&#215;</button>' +
+        '<div class="chorus-vid-cap">' +
+          (v.city ? '<div class="chorus-vid-city">' + esc(v.city) + '</div>' : '') +
+          (v.line ? '<div class="chorus-vid-line">' + esc(v.line) + '</div>' : '') +
+        '</div>' +
+      '</div>';
+    var m = cardEl.querySelector('.chorus-vid-media');
+    m.addEventListener('click', function(e){ if(e.target.closest('.chorus-vid-close')){ closeVideo(cardEl); return; } openVideo(cardEl, v); });
+    m.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openVideo(cardEl, v); }
+      else if(e.key === 'Escape'){ closeVideo(cardEl); }
+    });
+    wrap.appendChild(cardEl);
+    reveal(cardEl);
+  });
+})();
+</script>

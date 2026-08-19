@@ -1,0 +1,46 @@
+<!-- ============================================================
+     STUDENT LUXE · USA Page: Hero (CREAM)
+     Block: sl-uh (uni hero). Standalone, static, no JS.
+     Reskin of the UCL cream hero for the
+     "Luxury student accommodation in the USA" page.
+     H1 is "Luxury Student Apartments in the USA" (full phrase,
+     second line styled gold italic inside the H1).
+     No rotating prices, no CTA, no nudge: the atlas USA cities
+     block sits directly below and is the call to action.
+     Paste into a Squarespace Code Block.
+     Background: set the Squarespace section to cream #FBF8F1
+     (block itself is transparent, like the atlas page).
+     ============================================================ -->
+
+<style>
+  .sl-uh{
+    --h1-ls:-.06em;
+    --ink:#0d1a2e; --gold:#B8966E; --gold-deep:#8B6E4E;
+    --txt:#0d1a2e;
+    --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+    --sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-family:var(--sans); color:var(--txt); -webkit-font-smoothing:antialiased; text-align:center;
+    max-width:880px; margin:0 auto; padding:10px 20px;
+  }
+  .sl-uh *{box-sizing:border-box; margin:0; padding:0}
+
+  .sl-uh .eyebrow{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-deep)}
+  .sl-uh h1{font-family:var(--serif); font-weight:300; color:var(--ink); letter-spacing:var(--h1-ls); font-size:clamp(40px,6vw,72px); line-height:0.9; margin-top:28px}
+  .sl-uh .h1-sub{display:block; font-weight:300; font-style:italic; color:var(--gold); margin-top:10px}
+
+  .sl-uh .pos{margin:26px auto 0; max-width:560px; font-size:14px; line-height:1.65; color:rgba(13,26,46,.72)}
+
+  @media (max-width:768px){
+    .sl-uh{padding:10px 16px}
+    .sl-uh .pos{font-size:13px}
+  }
+</style>
+
+<div class="sl-uh">
+
+  <div class="eyebrow">Available by enquiry only</div>
+  <h1>Luxury Student Apartments <span class="h1-sub">in the USA</span></h1>
+
+  <p class="pos">A boutique agency, not a listings site. Every apartment is hand-picked, private and arranged around your course dates - the way it should be.</p>
+
+</div>

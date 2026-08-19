@@ -1,0 +1,682 @@
+<!-- ============================================================
+     STUDENT LUXE - Guest Services portal (LIVE)
+     Block: .slpb - one self-contained Squarespace Code Block.
+     Background: set the Squarespace section to cream #FBF8F1.
+
+     This is the wired version of the "Deck" design. Partner data
+     is NOT in this file: it is fetched from the Monday-backed API
+     after the booking reference + surname are verified server side.
+
+     BEFORE PASTING
+     1. Set CONFIG.API_BASE to the Vercel domain running
+        /api/guest-session and /api/guest-partners.
+     2. Add the page URL's origin to GUEST_PORTAL_ORIGINS on Vercel.
+     3. Set the page to "Hide from search engines" in Squarespace
+        page settings (SEO tab). Gated content should not index.
+
+     The session token lives in sessionStorage, not a cookie, so
+     Safari third-party cookie blocking never comes into it. It is
+     sent as `Authorization: Bearer <token>` and dies with the tab.
+     ============================================================ -->
+
+<style>
+  .slpb{
+    --ink:#0d1a2e; --gold:#B8966E; --gold-hover:#a07d5a; --gold-deep:#8B6E4E;
+    --gold-line:rgba(184,150,110,.42);
+    --hair:rgba(184,150,110,.22); --hair-soft:rgba(184,150,110,.12);
+    --txt-soft:rgba(13,26,46,.62); --txt-body:rgba(13,26,46,.74);
+    --paper:#FBF8F1; --ivory:#F4F0E6; --red:#C53026;
+    --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+    --body-serif:'adobe-garamond-pro','Adobe Garamond Pro',Georgia,serif;
+    --sans:'dm-sans','DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --ease:cubic-bezier(.22,.8,.28,1);
+    font-family:var(--sans); color:var(--ink); -webkit-font-smoothing:antialiased;
+    max-width:1240px; margin:0 auto; padding:24px 24px 8px;
+  }
+  .slpb *{box-sizing:border-box; margin:0; padding:0}
+  .slpb button{font-family:inherit}
+  .slpb-eyebrow{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-deep); font-weight:500}
+
+  /* ── GATE: split card ── */
+  .slpb-gate{display:grid; grid-template-columns:1.05fr 1fr; background:#fff; border:1px solid var(--hair-soft); border-radius:20px; overflow:hidden; margin:32px 0 48px; box-shadow:0 18px 50px rgba(13,26,46,.06)}
+  .slpb-gate.hide{display:none}
+  .slpb-gate-art{position:relative; background:var(--ink); min-height:520px; display:flex; flex-direction:column; justify-content:flex-end; padding:44px}
+  .slpb-gate-art img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.55}
+  .slpb-gate-art .veil{position:absolute; inset:0; background:linear-gradient(180deg,rgba(13,26,46,.15) 0%,rgba(13,26,46,.85) 78%)}
+  .slpb-gate-art .inner{position:relative}
+  .slpb-gate-art .slpb-eyebrow{color:#D4B896}
+  .slpb-gate-art h2{font-family:var(--serif); font-weight:300; letter-spacing:-.04em; line-height:.95; font-size:clamp(30px,3.4vw,44px); color:#fff; margin-top:16px}
+  .slpb-gate-art h2 em{font-style:italic; color:#D4B896}
+  .slpb-gate-art ul{list-style:none; margin-top:26px; display:flex; flex-wrap:wrap; gap:8px}
+  .slpb-gate-art li{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.82); border:1px solid rgba(255,255,255,.22); border-radius:100px; padding:8px 14px}
+  .slpb-gate-art li.soon{color:rgba(255,255,255,.46); border-style:dashed}
+
+  .slpb-gate-form{padding:52px 48px; display:flex; flex-direction:column; justify-content:center}
+  .slpb-gate-form h1{font-family:var(--serif); font-weight:300; letter-spacing:-.05em; line-height:.95; font-size:clamp(32px,3.6vw,46px); margin-top:16px}
+  .slpb-gate-form h1 em{font-style:italic; color:var(--gold)}
+  .slpb-gate-form .lede{font-family:var(--body-serif); font-size:16px; line-height:1.6; color:var(--txt-body); margin-top:16px}
+  .slpb-field{margin-top:22px}
+  .slpb-label{display:block; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); font-weight:500; margin-bottom:8px}
+  .slpb-input{width:100%; font-family:var(--sans); font-size:16px; color:var(--ink); background:var(--paper); border:1px solid var(--hair); border-radius:8px; padding:15px 16px; outline:none; transition:border-color .18s var(--ease)}
+  .slpb-input::placeholder{color:rgba(13,26,46,.34)}
+  .slpb-input:focus{border-color:var(--gold); background:#fff}
+  .slpb-hint{font-size:12px; color:var(--txt-soft); margin-top:8px}
+  .slpb-error{display:none; font-size:12.5px; color:var(--red); margin-top:14px; line-height:1.5}
+  .slpb-error.on{display:block}
+  .slpb-submit{width:100%; margin-top:26px; padding:17px 32px; background:var(--gold); color:#fff; font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; border:none; border-radius:8px; cursor:pointer; transition:background .2s var(--ease)}
+  .slpb-submit:hover{background:var(--gold-hover)}
+  .slpb-submit[disabled]{opacity:.6; cursor:default}
+  .slpb-help{font-size:12.5px; color:var(--txt-soft); margin-top:18px; line-height:1.6}
+  .slpb-help a{color:var(--gold-deep); text-decoration:none; border-bottom:1px solid var(--gold-line)}
+
+  /* ── PORTAL ── */
+  .slpb-portal{display:none}
+  .slpb-portal.on{display:block}
+
+  .slpb-top{display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin:16px 0 4px}
+  .slpb-top h1{font-family:var(--serif); font-weight:300; letter-spacing:-.05em; line-height:.95; font-size:clamp(34px,4.4vw,56px); margin-top:14px}
+  .slpb-top h1 em{font-style:italic; color:var(--gold)}
+  .slpb-guest{text-align:right; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--txt-soft); line-height:2}
+  .slpb-guest strong{display:block; font-family:var(--serif); font-weight:400; font-size:19px; letter-spacing:-.02em; text-transform:none; color:var(--ink)}
+  .slpb-out{background:none; border:none; padding:0; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); cursor:pointer; border-bottom:1px solid var(--gold-line)}
+  .slpb-out:hover{color:var(--ink)}
+
+  /* ── SECTION TABS ── */
+  .slpb-tabs{display:flex; align-items:flex-end; gap:0; border-bottom:1px solid var(--hair); margin-top:26px; overflow-x:auto; scrollbar-width:none}
+  .slpb-tabs::-webkit-scrollbar{display:none}
+  .slpb-tab{position:relative; white-space:nowrap; background:none; border:none; border-bottom:2px solid transparent; padding:0 0 13px; margin-right:30px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--txt-soft); cursor:pointer; transition:color .18s var(--ease), border-color .18s var(--ease)}
+  .slpb-tab:last-child{margin-right:0}
+  .slpb-tab:hover{color:var(--ink)}
+  .slpb-tab.on{color:var(--ink); border-bottom-color:var(--gold)}
+  .slpb-tab .tag{margin-left:8px; font-size:8.5px; letter-spacing:.1em; color:var(--gold-deep); background:rgba(184,150,110,.14); border-radius:100px; padding:4px 8px; vertical-align:middle}
+
+  .slpb-sechead{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin:26px 0 18px}
+  .slpb-sechead h2{font-family:var(--serif); font-weight:300; font-style:italic; letter-spacing:-.03em; font-size:26px; color:var(--ink)}
+  .slpb-sechead p{font-family:var(--body-serif); font-size:15.5px; color:var(--txt-body); max-width:520px}
+
+  /* ── CONTROL BAR: opaque, no backdrop blur on a sticky element ── */
+  .slpb-live{display:none}
+  .slpb-live.on{display:block}
+  .slpb-controls{position:sticky; top:0; z-index:5; background:var(--paper); border-top:1px solid var(--hair); border-bottom:1px solid var(--hair); padding:14px 0; display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+  .slpb-pills{display:flex; flex-wrap:wrap; gap:8px; flex:1; min-width:0}
+  .slpb-pill{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep); background:rgba(184,150,110,.10); border:1px solid var(--hair-soft); border-radius:100px; padding:9px 16px; cursor:pointer; transition:background .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease)}
+  .slpb-pill:hover{border-color:var(--gold-line)}
+  .slpb-pill.on{background:var(--ink); border-color:var(--ink); color:#fff}
+  .slpb-city{font-family:var(--sans); font-size:16px; color:var(--ink); background:#fff; border:1px solid var(--hair); border-radius:8px; padding:11px 14px; outline:none}
+  .slpb-count{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--txt-soft); white-space:nowrap}
+
+  /* ── GRID ── */
+  .slpb-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin:36px 0 64px}
+  .slpb-card{background:#fff; border:1px solid var(--hair-soft); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; opacity:0; transition:opacity .5s var(--ease), border-color .25s var(--ease)}
+  .slpb-card.on{opacity:1}
+  .slpb-card.hide{display:none}
+  .slpb-shot{position:relative; aspect-ratio:4/3; background:linear-gradient(140deg,#F4F0E6 0%,rgba(184,150,110,.30) 100%); overflow:hidden}
+  .slpb-shot img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s var(--ease)}
+  .slpb-mono{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-style:italic; font-weight:300; font-size:44px; color:rgba(13,26,46,.22)}
+  .slpb-badge{position:absolute; left:14px; top:14px; z-index:2; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#fff; background:var(--gold); border-radius:100px; padding:8px 14px; box-shadow:0 4px 14px rgba(13,26,46,.16)}
+  .slpb-cat{position:absolute; right:14px; top:14px; z-index:2; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink); background:rgba(251,248,241,.94); border-radius:100px; padding:7px 12px}
+
+  .slpb-cbody{padding:22px 22px 24px; display:flex; flex-direction:column; flex:1}
+  .slpb-cname{font-family:var(--serif); font-weight:400; letter-spacing:-.02em; font-size:22px; line-height:1.2}
+  .slpb-ccity{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--txt-soft); margin-top:8px}
+  .slpb-cblurb{font-family:var(--body-serif); font-size:15px; line-height:1.6; color:var(--txt-body); margin-top:12px; flex:1}
+  .slpb-cterms{font-size:12px; color:var(--txt-soft); line-height:1.5; margin-top:12px; display:none}
+  .slpb-cterms.on{display:block}
+  .slpb-cfoot{display:flex; align-items:center; gap:10px; margin-top:20px; padding-top:18px; border-top:1px solid var(--hair-soft)}
+  .slpb-reveal-btn{flex:1; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:#fff; background:var(--ink); border:none; border-radius:8px; padding:13px 14px; cursor:pointer; transition:background .2s var(--ease)}
+  .slpb-reveal-btn:hover{background:var(--gold)}
+  .slpb-codebox{flex:1; display:none; align-items:center; justify-content:center; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink); background:rgba(184,150,110,.14); border:1px dashed var(--gold-line); border-radius:8px; padding:12px 14px; cursor:pointer}
+  .slpb-codebox.on{display:flex}
+  .slpb-go{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep); text-decoration:none; border:1px solid var(--hair); border-radius:8px; padding:13px 16px; transition:border-color .2s var(--ease), color .2s var(--ease)}
+  .slpb-go:hover{border-color:var(--gold); color:var(--ink)}
+
+  @media (hover:hover) and (pointer:fine){
+    .slpb-card:hover{border-color:var(--gold-line)}
+    .slpb-card:hover .slpb-shot img{transform:scale(1.05)}
+  }
+
+  .slpb-state{display:none; text-align:center; padding:70px 20px; font-family:var(--serif); font-style:italic; font-weight:300; font-size:24px; color:var(--txt-soft)}
+  .slpb-state.on{display:block}
+  .slpb-state .retry{display:inline-block; margin-top:22px; padding:14px 28px; background:var(--ink); color:#fff; font-family:var(--sans); font-style:normal; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; border:none; border-radius:8px; cursor:pointer}
+  .slpb-state .retry:hover{background:var(--gold)}
+
+  /* ── COMING SOON PANEL ── */
+  .slpb-soon{display:none; background:#fff; border:1px solid var(--hair-soft); border-radius:18px; padding:72px 40px 76px; margin:26px 0 64px; text-align:center}
+  .slpb-soon.on{display:block}
+  .slpb-soon h2{font-family:var(--serif); font-weight:300; letter-spacing:-.05em; line-height:.95; font-size:clamp(30px,4vw,46px); margin-top:18px}
+  .slpb-soon h2 em{font-style:italic; color:var(--gold)}
+  .slpb-soon .body{font-family:var(--body-serif); font-size:16px; line-height:1.65; color:var(--txt-body); max-width:460px; margin:18px auto 0}
+  .slpb-soon ul{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:28px auto 0; max-width:640px}
+  .slpb-soon li{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep); background:rgba(184,150,110,.10); border:1px solid var(--hair-soft); border-radius:100px; padding:9px 15px}
+  .slpb-soon .nudge{font-size:13px; color:var(--txt-soft); margin-top:30px; line-height:1.6}
+  .slpb-soon .nudge a{color:var(--gold-deep); text-decoration:none; border-bottom:1px solid var(--gold-line)}
+  .slpb-soon .nudge a:hover{color:var(--ink)}
+  .slpb-back{margin-top:26px; padding:15px 30px; background:var(--ink); color:#fff; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; border:none; border-radius:8px; cursor:pointer; transition:background .2s var(--ease)}
+  .slpb-back:hover{background:var(--gold)}
+
+  /* ── FOOT ── */
+  .slpb-foot{background:var(--ink); border-radius:18px; text-align:center; padding:56px 32px 60px; margin-bottom:56px}
+  .slpb-foot .slpb-eyebrow{color:#D4B896}
+  .slpb-foot h2{font-family:var(--serif); font-weight:300; letter-spacing:-.05em; line-height:.95; font-size:clamp(28px,4vw,44px); color:#fff; margin-top:18px}
+  .slpb-foot h2 em{font-style:italic; color:#D4B896}
+  .slpb-foot p{margin:18px auto 0; max-width:460px; font-size:14px; line-height:1.65; color:rgba(255,255,255,.72)}
+  .slpb-foot a.btn{display:inline-block; margin-top:28px; padding:16px 34px; background:var(--gold); color:#fff; font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; border-radius:8px; text-decoration:none; transition:background .2s var(--ease)}
+  .slpb-foot a.btn:hover{background:var(--gold-hover); color:#fff}
+
+  @media (max-width:1000px){
+    .slpb-grid{grid-template-columns:repeat(2,1fr); gap:20px}
+    .slpb-gate{grid-template-columns:1fr}
+    .slpb-gate-art{min-height:280px; padding:32px}
+    .slpb-gate-form{padding:36px 28px 40px}
+  }
+  @media (max-width:640px){
+    .slpb{padding:16px 20px 8px}
+    .slpb-grid{grid-template-columns:1fr; gap:18px; margin-top:26px}
+    .slpb-top{flex-direction:column; align-items:flex-start; gap:14px; margin-bottom:0}
+    .slpb-guest{text-align:left; line-height:1.7}
+    .slpb-guest strong{margin-bottom:2px}
+    .slpb-tabs{margin-top:20px}
+    .slpb-tab{margin-right:22px; font-size:10.5px}
+    .slpb-sechead{margin:20px 0 14px}
+    .slpb-sechead h2{font-size:22px}
+    .slpb-controls{gap:10px; padding:12px 0}
+    .slpb-pills{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; flex:1 1 100%}
+    .slpb-pills::-webkit-scrollbar{display:none}
+    .slpb-pill{white-space:nowrap}
+    .slpb-city{flex:1 1 auto}
+    .slpb-count{flex:0 0 auto}
+    .slpb-soon{padding:52px 22px 56px; border-radius:14px}
+    .slpb-foot{padding:44px 22px 48px; border-radius:14px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .slpb-card{opacity:1 !important; transition:none !important}
+    .slpb *{transition:none !important}
+  }
+</style>
+
+<div class="slpb">
+
+  <!-- ── SIGN IN ── -->
+  <section class="slpb-gate" id="slpb-gate">
+    <div class="slpb-gate-art">
+      <!-- EDITABLE IMAGE: gate background, kept faint by the opacity rule above -->
+      <img src="https://images.unsplash.com/photo-1628611225398-cd3470b66bee?q=80&amp;w=1169&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.1.0&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'">
+      <div class="veil"></div>
+      <div class="inner">
+        <div class="slpb-eyebrow">Guest services</div>
+        <h2>Everything for your stay,<br><em>one booking reference.</em></h2>
+        <ul>
+          <li>Partner perks</li>
+          <li class="soon">About my stay</li>
+          <li class="soon">Payments</li>
+          <li class="soon">Support</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="slpb-gate-form">
+      <div class="slpb-eyebrow">Guest sign in</div>
+      <h1>Your stay,<br><em>upgraded.</em></h1>
+      <p class="lede">Sign in with the details on your booking confirmation to reach your guest services, starting with every partner rate we hold for residents.</p>
+
+      <form id="slpb-form" novalidate>
+        <div class="slpb-field">
+          <label class="slpb-label" for="slpb-ref">Booking reference</label>
+          <input class="slpb-input" id="slpb-ref" name="ref" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="9038612423" required>
+          <div class="slpb-hint">The Ref # on your booking confirmation.</div>
+        </div>
+        <div class="slpb-field">
+          <label class="slpb-label" for="slpb-name">Surname</label>
+          <input class="slpb-input" id="slpb-name" name="surname" type="text" autocomplete="family-name" placeholder="Obertelli" required>
+        </div>
+        <div class="slpb-error" id="slpb-err"></div>
+        <button class="slpb-submit" type="submit" id="slpb-submit">Enter guest services</button>
+      </form>
+
+      <p class="slpb-help">Lost your reference? <a href="/contact">Message the guest team</a> and we will resend it.</p>
+    </div>
+  </section>
+
+  <!-- ── PORTAL ── -->
+  <div class="slpb-portal" id="slpb-portal">
+
+    <div class="slpb-top">
+      <div>
+        <div class="slpb-eyebrow">Guest services</div>
+        <h1>Your stay,<br><em>looked after.</em></h1>
+      </div>
+      <div class="slpb-guest">
+        <strong id="slpb-guest">Guest</strong>
+        <span id="slpb-guestmeta"></span>
+        <br><button class="slpb-out" type="button" id="slpb-out">Sign out</button>
+      </div>
+    </div>
+
+    <nav class="slpb-tabs" id="slpb-tabs" role="tablist" aria-label="Guest services sections"></nav>
+
+    <!-- LIVE SECTION: partner perks -->
+    <div class="slpb-live" id="slpb-live">
+      <div class="slpb-sechead">
+        <h2 id="slpb-sectitle">Partner perks</h2>
+        <p id="slpb-secblurb"></p>
+      </div>
+
+      <div class="slpb-controls">
+        <div class="slpb-pills" id="slpb-pills" role="group" aria-label="Filter by category"></div>
+        <select class="slpb-city" id="slpb-cityfilter" aria-label="Filter by city"></select>
+        <div class="slpb-count" id="slpb-count"></div>
+      </div>
+
+      <div class="slpb-state on" id="slpb-loading">Opening the book...</div>
+      <div class="slpb-state" id="slpb-failed">
+        We could not load your partners just now.
+        <br><button class="retry" type="button" id="slpb-retry">Try again</button>
+      </div>
+      <div class="slpb-grid" id="slpb-grid"></div>
+      <div class="slpb-state" id="slpb-empty">Nothing in that combination yet. Try another city.</div>
+
+      <section class="slpb-foot">
+        <div class="slpb-eyebrow">Know somewhere we should add?</div>
+        <h2>Tell us who you would like<br><em>on the list.</em></h2>
+        <p>We add partners on guest request. If there is a gym, studio or service near your apartment you would like us to negotiate with, send it over.</p>
+        <a class="btn" href="/contact">Suggest a partner</a>
+      </section>
+    </div>
+
+    <!-- COMING SOON SECTION -->
+    <section class="slpb-soon" id="slpb-soon">
+      <div class="slpb-eyebrow">Coming soon</div>
+      <h2 id="slpb-soon-title"></h2>
+      <p class="body" id="slpb-soon-body"></p>
+      <ul id="slpb-soon-list"></ul>
+      <p class="nudge">Need any of this today? <a href="/contact">Message the guest team</a> and we will sort it by hand.</p>
+      <br>
+      <button class="slpb-back" type="button" id="slpb-back">Back to partner perks</button>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ============================================================
+     CONFIG - editors only ever touch this object.
+     Partner content lives on the Monday partners board, not here.
+     ============================================================ */
+  var CONFIG = {
+    // Vercel deployment running /api/guest-session + /api/guest-partners.
+    API_BASE: 'https://luxe-guest-portal-nine.vercel.app',
+
+    // Guest Services tab bar. state:'live' is the partner deck.
+    sections: [
+      { id:'perks', label:'Partner perks', state:'live',
+        blurb:'Rates and memberships we hold for residents only, across every city we operate in.' },
+      { id:'stay', label:'About my stay', state:'soon',
+        title:'Everything about<br><em>your apartment.</em>',
+        body:'Your address, check in window, building access, Wi-Fi details and the house manual, all in one place instead of buried in an email thread.',
+        list:['Check in and keys','Building access','Wi-Fi and utilities','Housekeeping schedule','House manual'] },
+      { id:'payments', label:'Payments', state:'soon',
+        title:'Invoices and balances,<br><em>always to hand.</em>',
+        body:'See what has been paid, what is due and when, download invoices for your records, and settle a balance without emailing us first.',
+        list:['Payment schedule','Download invoices','Pay a balance','Deposit status'] },
+      { id:'support', label:'Support', state:'soon',
+        title:'Your guest team,<br><em>one tap away.</em>',
+        body:'Report a maintenance issue, request an extra clean or ask about extending your stay, and follow the status without chasing.',
+        list:['Report an issue','Request extra housekeeping','Extend my stay','Message the team'] }
+    ],
+
+    // sessionStorage, not localStorage: the session dies with the tab,
+    // which is the right default on a shared or borrowed device.
+    STORAGE_KEY: 'sl_guest'
+  };
+
+  var root = document.querySelector('.slpb');
+  if(!root) return;
+
+  var gate    = root.querySelector('#slpb-gate');
+  var portal  = root.querySelector('#slpb-portal');
+  var form    = root.querySelector('#slpb-form');
+  var submit  = root.querySelector('#slpb-submit');
+  var err     = root.querySelector('#slpb-err');
+  var tabs    = root.querySelector('#slpb-tabs');
+  var live    = root.querySelector('#slpb-live');
+  var soon    = root.querySelector('#slpb-soon');
+  var grid    = root.querySelector('#slpb-grid');
+  var pills   = root.querySelector('#slpb-pills');
+  var cityEl  = root.querySelector('#slpb-cityfilter');
+  var countEl = root.querySelector('#slpb-count');
+  var loading = root.querySelector('#slpb-loading');
+  var failed  = root.querySelector('#slpb-failed');
+  var empty   = root.querySelector('#slpb-empty');
+
+  var state   = { cat:'all', city:'all' };
+  var session = null;   // { token, guest }
+  var data    = null;   // { partners, categories, cities }
+  var liveId  = (CONFIG.sections.filter(function(s){ return s.state === 'live'; })[0] || {}).id;
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+    });
+  }
+
+  /* Only http(s) links leave this block: partner urls come from a
+     Monday board, and a javascript: url typed into a cell should not
+     become a live link on our site. */
+  function safeUrl(u){
+    var s = String(u || '').trim();
+    return /^https?:\/\//i.test(s) ? s : '';
+  }
+
+  function slug(s){
+    return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'other';
+  }
+
+  // ── SESSION STORAGE ────────────────────────────────────────
+  function saveSession(s){
+    session = s;
+    try { sessionStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(s)); } catch(e){}
+  }
+
+  function loadSession(){
+    try {
+      var raw = sessionStorage.getItem(CONFIG.STORAGE_KEY);
+      if(!raw) return null;
+      var s = JSON.parse(raw);
+      return (s && s.token) ? s : null;
+    } catch(e){ return null; }
+  }
+
+  function clearSession(){
+    session = null;
+    data = null;
+    // Filters belong to the session too: without this a sign out and back
+    // in leaves "Fitness, London" applied while the pills read "Everything".
+    state.cat = 'all';
+    state.city = 'all';
+    try { sessionStorage.removeItem(CONFIG.STORAGE_KEY); } catch(e){}
+  }
+
+  // ── API ────────────────────────────────────────────────────
+  function api(path, options){
+    var opts = options || {};
+    var headers = { 'Content-Type': 'application/json' };
+    if(session && session.token) headers.Authorization = 'Bearer ' + session.token;
+    return fetch(CONFIG.API_BASE + path, {
+      method: opts.method || 'GET',
+      headers: headers,
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function(res){
+      return res.json().catch(function(){ return {}; }).then(function(json){
+        return { ok: res.ok, status: res.status, json: json };
+      });
+    });
+  }
+
+  // ── RENDER ─────────────────────────────────────────────────
+  function renderShell(){
+    tabs.innerHTML = CONFIG.sections.map(function(s){
+      var tag = s.state === 'soon' ? '<span class="tag">Soon</span>' : '';
+      return '<button class="slpb-tab' + (s.id === liveId ? ' on' : '') + '" type="button" role="tab" data-sec="' + esc(s.id) + '">' +
+        esc(s.label) + tag + '</button>';
+    }).join('');
+
+    var liveSec = CONFIG.sections.filter(function(s){ return s.id === liveId; })[0];
+    if(liveSec){
+      root.querySelector('#slpb-sectitle').textContent = liveSec.label;
+      root.querySelector('#slpb-secblurb').textContent = liveSec.blurb || '';
+    }
+
+    var g = (session && session.guest) || {};
+    root.querySelector('#slpb-guest').textContent = g.first || 'Guest';
+    root.querySelector('#slpb-guestmeta').textContent =
+      [g.ref, g.city].filter(Boolean).join(' · ');
+  }
+
+  function renderPartners(){
+    var cats = ['All'].concat(data.categories || []);
+    pills.innerHTML = cats.map(function(c, i){
+      var id = i === 0 ? 'all' : slug(c);
+      return '<button class="slpb-pill' + (i === 0 ? ' on' : '') + '" type="button" data-cat="' + esc(id) + '">' +
+        esc(i === 0 ? 'Everything' : c) + '</button>';
+    }).join('');
+
+    // Partners marked "All cities" on the board show under every filter
+    // already, so that value never becomes its own option.
+    var cityList = (data.cities || []).filter(function(c){
+      return slug(c) !== 'all-cities';
+    });
+    cityEl.innerHTML = ['all'].concat(cityList).map(function(c){
+      return '<option value="' + esc(c) + '">' + (c === 'all' ? 'All cities' : esc(c)) + '</option>';
+    }).join('');
+
+    grid.innerHTML = (data.partners || []).map(function(p){
+      var url = safeUrl(p.url);
+      var img = p.img
+        ? '<img src="' + esc(p.img) + '" alt="" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">'
+        : '';
+      return '<article class="slpb-card" data-cat="' + esc(slug(p.category)) + '" data-city="' + esc(p.city) + '">' +
+        '<div class="slpb-shot">' +
+          '<span class="slpb-mono" aria-hidden="true">' + esc(String(p.name).charAt(0)) + '</span>' +
+          (p.perk ? '<span class="slpb-badge">' + esc(p.perk) + '</span>' : '') +
+          '<span class="slpb-cat">' + esc(p.category) + '</span>' +
+          img +
+        '</div>' +
+        '<div class="slpb-cbody">' +
+          '<h3 class="slpb-cname">' + esc(p.name) + '</h3>' +
+          '<div class="slpb-ccity">' + esc(p.city) + '</div>' +
+          '<p class="slpb-cblurb">' + esc(p.blurb) + '</p>' +
+          (p.terms ? '<p class="slpb-cterms">' + esc(p.terms) + '</p>' : '') +
+          '<div class="slpb-cfoot">' +
+            // Two redemption shapes: a code to reveal and copy, or a link
+            // that already carries the discount (no reveal button at all).
+            (p.redeem === 'code' && p.code
+              ? '<button class="slpb-reveal-btn" type="button">Reveal code</button>' +
+                '<button class="slpb-codebox" type="button" data-code="' + esc(p.code) + '">' + esc(p.code) + '</button>' +
+                (url ? '<a class="slpb-go" href="' + esc(url) + '" target="_blank" rel="noopener">Visit</a>' : '')
+              : (url
+                ? '<a class="slpb-reveal-btn" style="text-align:center;text-decoration:none" href="' + esc(url) + '" target="_blank" rel="noopener">Explore this offer</a>'
+                : '<span class="slpb-reveal-btn" style="text-align:center">Ask the guest team</span>')) +
+          '</div>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+
+    applyFilters();
+    stagger();
+  }
+
+  function applyFilters(){
+    var shown = 0;
+    Array.prototype.forEach.call(grid.children, function(card){
+      // City is a Monday dropdown, so a card can carry "London, Cambridge".
+      // Split and slug each part: casing and spacing are typed by hand, and
+      // a multi-city partner must match every one of its cities.
+      var cardCities = String(card.getAttribute('data-city') || '')
+        .split(',').map(function(c){ return slug(c); });
+      var okCat  = state.cat  === 'all' || card.getAttribute('data-cat') === state.cat;
+      var okCity = state.city === 'all' ||
+                   cardCities.indexOf(slug(state.city)) !== -1 ||
+                   cardCities.indexOf('all-cities') !== -1;
+      var ok = okCat && okCity;
+      card.classList.toggle('hide', !ok);
+      if(ok) shown++;
+    });
+    countEl.textContent = shown + (shown === 1 ? ' partner' : ' partners');
+    empty.classList.toggle('on', shown === 0 && !!data);
+  }
+
+  /* Staggered opacity reveal. No transform, no persistent will-change. */
+  function stagger(){
+    var cards = grid.querySelectorAll('.slpb-card');
+    if(!('IntersectionObserver' in window)){
+      Array.prototype.forEach.call(cards, function(c){ c.classList.add('on'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var el = e.target;
+        var idx = Array.prototype.indexOf.call(grid.children, el) % 6;
+        setTimeout(function(){ el.classList.add('on'); }, idx * 55);
+        io.unobserve(el);
+      });
+    }, { rootMargin:'0px 0px -6% 0px' });
+    Array.prototype.forEach.call(cards, function(c){ io.observe(c); });
+  }
+
+  function showSection(id){
+    var sec = CONFIG.sections.filter(function(s){ return s.id === id; })[0];
+    if(!sec) return;
+
+    Array.prototype.forEach.call(tabs.children, function(t){
+      t.classList.toggle('on', t.getAttribute('data-sec') === id);
+    });
+
+    if(sec.state === 'live'){
+      soon.classList.remove('on');
+      live.classList.add('on');
+      return;
+    }
+
+    live.classList.remove('on');
+    root.querySelector('#slpb-soon-title').innerHTML = sec.title || esc(sec.label);
+    root.querySelector('#slpb-soon-body').textContent = sec.body || '';
+    root.querySelector('#slpb-soon-list').innerHTML = (sec.list || []).map(function(item){
+      return '<li>' + esc(item) + '</li>';
+    }).join('');
+    soon.classList.add('on');
+  }
+
+  // ── FLOW ───────────────────────────────────────────────────
+  function openPortal(){
+    renderShell();
+    gate.classList.add('hide');
+    portal.classList.add('on');
+    showSection(liveId);
+    fetchPartners();
+  }
+
+  function closePortal(message){
+    clearSession();
+    portal.classList.remove('on');
+    gate.classList.remove('hide');
+    grid.innerHTML = '';
+    if(message){ err.textContent = message; err.classList.add('on'); }
+  }
+
+  function fetchPartners(){
+    loading.classList.add('on');
+    failed.classList.remove('on');
+    empty.classList.remove('on');
+
+    api('/api/guest-partners').then(function(r){
+      loading.classList.remove('on');
+      if(r.status === 401){
+        closePortal('Your session timed out. Sign in again.');
+        return;
+      }
+      if(!r.ok || !r.json || !r.json.partners){
+        failed.classList.add('on');
+        return;
+      }
+      data = r.json;
+      renderPartners();
+    }).catch(function(){
+      loading.classList.remove('on');
+      failed.classList.add('on');
+    });
+  }
+
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var ref     = form.ref.value.trim();
+    var surname = form.surname.value.trim();
+
+    if(!ref || !surname){
+      err.textContent = 'Enter both your booking reference and surname.';
+      err.classList.add('on');
+      return;
+    }
+
+    err.classList.remove('on');
+    submit.disabled = true;
+    submit.textContent = 'Checking...';
+
+    api('/api/guest-session', { method:'POST', body:{ ref:ref, surname:surname } })
+      .then(function(r){
+        submit.disabled = false;
+        submit.textContent = 'Enter guest services';
+
+        if(!r.ok || !r.json || !r.json.token){
+          err.textContent = (r.json && r.json.error) ||
+            'We could not match those details. Check the reference and surname exactly as they appear on your confirmation.';
+          err.classList.add('on');
+          return;
+        }
+
+        saveSession({ token: r.json.token, guest: r.json.guest || {} });
+        form.reset();
+        openPortal();
+        window.scrollTo({ top: root.offsetTop - 20, behavior:'smooth' });
+      })
+      .catch(function(){
+        submit.disabled = false;
+        submit.textContent = 'Enter guest services';
+        err.textContent = 'We could not reach the guest system. Check your connection and try again.';
+        err.classList.add('on');
+      });
+  });
+
+  root.querySelector('#slpb-out').addEventListener('click', function(){ closePortal(); });
+  root.querySelector('#slpb-retry').addEventListener('click', fetchPartners);
+  root.querySelector('#slpb-back').addEventListener('click', function(){
+    showSection(liveId);
+    window.scrollTo({ top: root.offsetTop - 20, behavior:'smooth' });
+  });
+
+  tabs.addEventListener('click', function(ev){
+    var t = ev.target.closest ? ev.target.closest('.slpb-tab') : null;
+    if(!t) return;
+    showSection(t.getAttribute('data-sec'));
+    window.scrollTo({ top: root.offsetTop - 20, behavior:'smooth' });
+  });
+
+  pills.addEventListener('click', function(ev){
+    var b = ev.target.closest ? ev.target.closest('.slpb-pill') : null;
+    if(!b) return;
+    Array.prototype.forEach.call(pills.children, function(p){ p.classList.remove('on'); });
+    b.classList.add('on');
+    state.cat = b.getAttribute('data-cat');
+    applyFilters();
+  });
+
+  cityEl.addEventListener('change', function(){ state.city = cityEl.value; applyFilters(); });
+
+  grid.addEventListener('click', function(ev){
+    var t = ev.target;
+    var rev = t.closest ? t.closest('.slpb-reveal-btn') : null;
+    if(rev && rev.tagName === 'BUTTON'){
+      rev.style.display = 'none';
+      rev.nextElementSibling.classList.add('on');
+      var card = rev.closest('.slpb-card');
+      var terms = card && card.querySelector('.slpb-cterms');
+      if(terms) terms.classList.add('on');
+      return;
+    }
+    var box = t.closest ? t.closest('.slpb-codebox') : null;
+    if(box){
+      var code = box.getAttribute('data-code');
+      if(navigator.clipboard){ navigator.clipboard.writeText(code); }
+      var was = box.textContent;
+      box.textContent = 'Copied';
+      setTimeout(function(){ box.textContent = was; }, 1400);
+    }
+  });
+
+  // Same tab, page reload: pick the session back up rather than
+  // asking for the reference again.
+  session = loadSession();
+  if(session) openPortal();
+})();
+</script>

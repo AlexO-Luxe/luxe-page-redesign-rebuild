@@ -1,0 +1,990 @@
+<!-- ============================================================
+     STUDENT LUXE - "Chorus" Reviews Page  (/our-reviews)
+     Paste into a Squarespace Code Block (not Markdown).
+     Fonts (baskerville-display-pt / dm-sans / adobe-garamond-pro)
+     are already loaded site-wide by the header injection.
+
+     Replaces the Elfsight widget (iOS Safari crash source).
+     Everything is self-hosted: reviews render from the CONFIG
+     object below; Instagram / TikTok videos load as lightweight
+     poster "facades" and only inject the real embed iframe when
+     the guest taps play. Zero third-party script on page load.
+
+     EDITING: everything lives in CONFIG at the top of the script.
+     - CONFIG.videos:  paste the public TikTok / Instagram URL,
+       upload a screenshot of the video to Squarespace and paste
+       its CDN URL as `poster` (any size, it gets ?format=750w).
+       No poster? A branded fallback card renders instead.
+     - CONFIG.reviews: name, initials, quote, Google review URL.
+     Set the Squarespace section background to transparent/light.
+     ============================================================ -->
+
+<style>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TOKENS ━━ */
+.chorus{
+  --pg-bg:transparent;
+  --paper:#FBF8F1;
+  --card:#ffffff;
+  --ink:#0d1a2e;
+  --muted:rgba(13,26,46,.52);
+  --hair:rgba(13,26,46,.12);
+  --gold:#B8966E;
+  --gold-hover:#a07d5a;
+  --gold-deep:#8B6E4E;
+  --gold-wash:rgba(184,150,110,.10);
+  --gold-line:rgba(184,150,110,.42);
+  --shadow-card:0 1px 2px rgba(13,26,46,.05), 0 12px 34px rgba(13,26,46,.08);
+
+  --serif:'baskerville-display-pt', Georgia, 'Times New Roman', serif;
+  --sans:'dm-sans', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --gara:'adobe-garamond-pro', Georgia, serif;
+  --ease:cubic-bezier(.22,.8,.28,1);
+}
+
+.chorus{
+  background:var(--pg-bg);
+  padding:8px 24px 96px;
+  font-family:var(--sans);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+.chorus *{ box-sizing:border-box; }
+.chorus-wrap{ max-width:1180px; margin:0 auto; }
+
+/* ── HEADER ── */
+.chorus-head{ margin-bottom:30px; }
+.chorus-pill{
+  display:inline-block; margin-bottom:16px;
+  padding:6px 16px; border-radius:100px;
+  background:var(--gold-wash); border:.5px solid var(--gold-line);
+  font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep);
+}
+.chorus-title{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(34px,5.4vw,60px); line-height:1.0; letter-spacing:-.06em;
+  margin:0; color:var(--ink);
+}
+.chorus-title em{ font-style:italic; color:var(--gold); }
+.chorus-sub{
+  font-family:var(--sans); font-size:clamp(14px,2vw,16px); line-height:1.6; letter-spacing:.01em;
+  color:var(--muted); margin:14px 0 0; max-width:70ch;
+}
+
+/* ── TRUST STATS STRIP ── */
+.chorus-stats{
+  display:flex; align-items:stretch; flex-wrap:wrap; gap:0;
+  margin:0 0 56px;
+  background:var(--card);
+  border:1px solid var(--hair); border-radius:16px;
+  box-shadow:var(--shadow-card);
+  overflow:hidden;
+}
+.chorus-stat{
+  flex:1 1 0; min-width:150px;
+  padding:26px 24px 22px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px;
+  text-align:center;
+  border-right:1px solid var(--hair);
+}
+.chorus-stat:last-child{ border-right:none; }
+.chorus-stat-num{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(30px,3.4vw,40px); line-height:1; letter-spacing:-.04em; color:var(--ink);
+  display:flex; align-items:baseline; gap:6px;
+}
+.chorus-stat-num .chorus-stat-star{ width:20px; height:20px; fill:var(--gold); align-self:center; }
+.chorus-stat-label{
+  font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted);
+  display:inline-flex; align-items:center; gap:6px;
+}
+.chorus-stat-label .chorus-gg{ width:12px; height:12px; }
+.chorus-stat-stars{ display:flex; gap:3px; }
+.chorus-stat-stars svg{ width:15px; height:15px; fill:var(--gold); }
+.chorus-stat-link{
+  text-decoration:none; transition:background .2s;
+}
+a.chorus-stat-link:hover{ background:var(--gold-wash); }
+.chorus-stat-cta{
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:500;
+  color:var(--gold-deep); display:inline-flex; align-items:center; gap:7px;
+}
+.chorus-stat-cta svg{ width:13px; height:13px; }
+@media (max-width:760px){
+  .chorus-stats{ flex-wrap:wrap; }
+  .chorus-stat{ flex:1 1 50%; min-width:0; border-bottom:1px solid var(--hair); padding:20px 14px 17px; }
+  .chorus-stat:nth-child(2n){ border-right:none; }
+  .chorus-stat:nth-last-child(-n+2){ border-bottom:none; }
+}
+
+/* ── SECTION HEADINGS ── */
+.chorus-sec{ margin:0 0 22px; display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; }
+.chorus-sec-title{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(26px,3.4vw,38px); line-height:1.05; letter-spacing:-.05em;
+  margin:0; color:var(--ink);
+}
+.chorus-sec-title em{ font-style:italic; color:var(--gold); }
+.chorus-sec-note{
+  font-family:var(--gara); font-style:italic; font-size:14px; color:var(--muted);
+}
+
+/* ── FEATURED GUESTS (focal section) ── */
+.chorus-guests{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+  gap:12px; margin-bottom:72px;
+}
+.chorus-guest{
+  position:relative; display:block; overflow:hidden;
+  aspect-ratio:4/5; border-radius:12px;
+  border:.5px solid var(--gold-line);
+  background:#1e2228; cursor:pointer; text-decoration:none;
+  opacity:0;
+  transition:opacity .6s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease);
+}
+.chorus-guest.in{ opacity:1; }
+.chorus-guest:hover{ border-color:var(--gold); box-shadow:0 12px 30px rgba(13,26,46,.16); }
+.chorus-guest-img{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:center top; display:block;
+  filter:grayscale(1);
+  transition:filter .5s var(--ease), transform .6s var(--ease);
+}
+@media (hover:hover) and (pointer:fine){
+  .chorus-guest:hover .chorus-guest-img{ filter:grayscale(0); transform:scale(1.05); }
+}
+.chorus-guest-fb{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(160deg, #16263f 0%, #0d1a2e 60%, #0a1424 100%);
+  font-family:var(--serif); font-size:64px; letter-spacing:-.03em;
+  color:rgba(212,184,150,.4);
+}
+.chorus-guest-ov{
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(10,16,26,.88) 0%, rgba(13,26,46,.18) 55%, transparent 100%);
+  pointer-events:none;
+}
+.chorus-guest-info{ position:absolute; left:0; right:0; bottom:0; padding:18px 20px; }
+.chorus-guest-uni{
+  font-size:9px; letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(212,184,150,.85); margin-bottom:6px;
+}
+.chorus-guest-name{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(24px,2.6vw,32px); line-height:1; letter-spacing:-.03em; color:#fff;
+}
+.chorus-guest-watch{
+  display:inline-flex; align-items:center; gap:8px; margin-top:12px;
+  font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#E7CDA3;
+}
+.chorus-guest-watch .chorus-guest-playchip{
+  width:26px; height:26px; border-radius:50%;
+  background:rgba(251,248,241,.14); border:.5px solid rgba(212,184,150,.5);
+  display:flex; align-items:center; justify-content:center;
+}
+.chorus-guest-watch svg{ width:9px; height:9px; fill:#E7CDA3; margin-left:1px; }
+@media (max-width:640px){
+  .chorus-guests{ grid-template-columns:1fr 1fr; gap:10px; margin-bottom:56px; }
+  .chorus-guest{ aspect-ratio:3/4; }
+  .chorus-guest-info{ padding:13px 14px; }
+  .chorus-guest-name{ font-size:20px; }
+  .chorus-guest-watch{ margin-top:9px; }
+}
+
+/* ── GUEST MODAL ── */
+/* Opaque scrim, no backdrop blur (iOS rule 1). Video/iframe exists only
+   while the modal is open; closing destroys it. */
+.chorus-modal{ position:fixed; inset:0; z-index:9999; display:none; }
+.chorus-modal.open{ display:block; }
+.chorus-modal-scrim{ position:absolute; inset:0; background:rgba(8,14,24,.88); cursor:pointer; }
+.chorus-modal-card{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:min(940px, calc(100% - 32px));
+  max-height:min(86vh, 720px);
+  background:var(--paper); border-radius:18px; overflow:hidden;
+  display:flex; align-items:stretch;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+.chorus-modal-media{
+  flex:0 0 55%; position:relative; background:#0a1424; min-height:420px;
+}
+.chorus-modal-card.portrait .chorus-modal-media{ flex:0 0 42%; }
+.chorus-modal-media > iframe,
+.chorus-modal-media > video,
+.chorus-modal-media > img{
+  position:absolute; inset:0; width:100%; height:100%; border:0; display:block;
+  object-fit:cover; background:#000;
+}
+.chorus-modal-media > iframe{ object-fit:unset; }
+.chorus-modal-body{
+  flex:1 1 auto; min-width:0; padding:40px 36px 32px;
+  overflow-y:auto; -webkit-overflow-scrolling:touch;
+}
+.chorus-modal-stars{ display:flex; gap:3px; margin-bottom:16px; }
+.chorus-modal-stars svg{ width:13px; height:13px; fill:var(--gold); }
+.chorus-modal-uni{
+  font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--gold-deep); margin-bottom:8px;
+}
+.chorus-modal-name{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(26px,3vw,36px); line-height:1.02; letter-spacing:-.04em;
+  color:var(--ink); margin:0 0 18px;
+}
+.chorus-modal-quote p{
+  font-family:var(--gara); font-size:16px; line-height:1.62; letter-spacing:.005em;
+  color:var(--ink); margin:0 0 14px;
+}
+.chorus-modal-link{
+  display:inline-flex; align-items:center; gap:7px; margin-top:6px;
+  font-family:var(--sans); font-size:10.5px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);
+  text-decoration:none; transition:color .15s;
+}
+.chorus-modal-link:hover{ color:var(--ink); }
+.chorus-modal-link svg{ width:12px; height:12px; }
+.chorus-modal-close{
+  position:absolute; top:14px; right:14px; z-index:5;
+  width:36px; height:36px; border-radius:50%;
+  background:rgba(10,16,26,.72); color:#F4F0E6;
+  border:.5px solid rgba(251,248,241,.28); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; line-height:1;
+}
+.chorus-modal-close:hover{ background:var(--gold); border-color:var(--gold); }
+@media (max-width:760px){
+  .chorus-modal-card{
+    flex-direction:column;
+    top:auto; bottom:0; left:0; transform:none;
+    width:100%; max-height:92dvh;
+    border-radius:18px 18px 0 0;
+  }
+  .chorus-modal-media{ flex:0 0 auto; min-height:0; aspect-ratio:16/9; }
+  .chorus-modal-card.portrait .chorus-modal-media{ flex:0 0 auto; aspect-ratio:4/5; max-height:52dvh; }
+  .chorus-modal-body{ padding:26px 22px 30px; }
+}
+
+/* ── VIDEO WALL (facade embeds) ── */
+.chorus-vids{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr));
+  gap:12px; margin-bottom:72px;
+}
+.chorus-vid{
+  border-radius:14px; overflow:hidden;
+  border:.5px solid var(--gold-line);
+  background:#101d31;
+  opacity:0; transition:opacity .6s var(--ease);   /* opacity-only reveal: card holds a tap target */
+}
+.chorus-vid.in{ opacity:1; }
+.chorus-vid-media{
+  position:relative; aspect-ratio:9/16; width:100%;
+  background:#101d31; cursor:pointer;
+}
+.chorus-vid-poster{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:center; display:block;
+}
+.chorus-vid-scrim{
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(10,16,26,.82) 0%, rgba(13,26,46,.12) 45%, rgba(10,16,26,.35) 100%);
+  pointer-events:none;
+}
+/* fallback poster when no screenshot supplied; content sits in the upper
+   third so it never collides with the centred play button */
+.chorus-vid-fallback{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  padding-top:22%; gap:10px;
+  background:linear-gradient(160deg, #16263f 0%, #0d1a2e 60%, #0a1424 100%);
+}
+.chorus-vid-fallback svg{ width:34px; height:34px; }
+.chorus-vid-fallback span{
+  font-family:var(--gara); font-style:italic; font-size:14px; color:rgba(212,184,150,.75);
+}
+.chorus-vid-play{
+  position:absolute; left:50%; top:50%; margin:-31px 0 0 -31px;
+  width:62px; height:62px; border-radius:50%;
+  background:rgba(251,248,241,.94); border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 10px 30px rgba(10,16,26,.45);
+  transition:background .25s var(--ease);
+}
+.chorus-vid-play svg{ width:20px; height:20px; fill:var(--ink); margin-left:3px; }
+.chorus-vid-media:hover .chorus-vid-play{ background:var(--gold); }
+.chorus-vid-media:hover .chorus-vid-play svg{ fill:#fff; }
+.chorus-vid-badge{
+  position:absolute; top:12px; left:12px;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:5px 11px; border-radius:100px;
+  background:rgba(10,16,26,.55); border:.5px solid rgba(251,248,241,.22);
+  font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:#F4F0E6;
+  pointer-events:none;
+}
+.chorus-vid-badge svg{ width:11px; height:11px; fill:#F4F0E6; }
+.chorus-vid-cap{
+  position:absolute; left:0; right:0; bottom:0; padding:14px 16px;
+  pointer-events:none;
+}
+.chorus-vid-city{
+  font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:rgba(212,184,150,.85);
+  margin-bottom:5px;
+}
+.chorus-vid-line{
+  font-family:var(--serif); font-weight:400;
+  font-size:17px; line-height:1.15; letter-spacing:-.02em; color:#fff;
+}
+.chorus-vid-frame{
+  position:absolute; inset:0; width:100%; height:100%;
+  border:0; display:block; background:#000;
+}
+.chorus-vid-close{
+  position:absolute; top:10px; right:10px; z-index:3;
+  width:30px; height:30px; border-radius:50%;
+  background:rgba(10,16,26,.72); color:#F4F0E6;
+  border:.5px solid rgba(251,248,241,.28); cursor:pointer;
+  display:none; align-items:center; justify-content:center;
+  font-size:15px; line-height:1;
+}
+.chorus-vid.playing .chorus-vid-close{ display:flex; }
+.chorus-vid.playing .chorus-vid-play,
+.chorus-vid.playing .chorus-vid-badge,
+.chorus-vid.playing .chorus-vid-cap,
+.chorus-vid.playing .chorus-vid-scrim{ display:none; }
+.chorus-vid.playing .chorus-vid-media{ cursor:default; }
+
+/* mobile: swipeable snap row (native scroll, iOS-safe) */
+@media (max-width:640px){
+  .chorus-vids{
+    display:grid; grid-auto-flow:column; grid-auto-columns:68%;
+    grid-template-columns:unset;
+    overflow-x:auto; overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+    padding-bottom:6px; margin-left:-16px; margin-right:-16px;
+    padding-left:16px; padding-right:16px;
+    scrollbar-width:none;
+  }
+  .chorus-vids::-webkit-scrollbar{ display:none; }
+  .chorus-vid{ scroll-snap-align:center; }
+}
+
+/* ── REVIEWS WALL ── */
+.chorus-grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+  gap:12px; align-items:start;
+}
+@media (max-width:640px){ .chorus-grid{ grid-template-columns:1fr; } }
+
+.chorus-card{
+  background:var(--card);
+  border:1px solid var(--hair); border-radius:14px;
+  padding:24px 24px 20px;
+  box-shadow:var(--shadow-card);
+  opacity:0; transition:opacity .6s var(--ease);   /* opacity-only reveal (tap targets inside) */
+}
+.chorus-card.in{ opacity:1; }
+.chorus-card-stars{ display:flex; gap:3px; margin-bottom:13px; }
+.chorus-card-stars svg{ width:13px; height:13px; fill:var(--gold); }
+.chorus-quote{
+  font-family:var(--gara); font-size:16px; line-height:1.58; letter-spacing:.005em;
+  color:var(--ink); margin:0;
+  display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden;
+}
+.chorus-card.expanded .chorus-quote{ display:block; -webkit-line-clamp:unset; overflow:visible; }
+.chorus-toggle{
+  display:inline-flex; align-items:center; gap:5px;
+  margin-top:9px; padding:0; background:none; border:none; cursor:pointer;
+  font-family:var(--sans); font-size:10px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);
+  transition:color .15s;
+}
+.chorus-toggle:hover{ color:var(--ink); }
+.chorus-toggle svg{
+  width:9px; height:9px; stroke:currentColor; fill:none;
+  stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+  transition:transform .2s;
+}
+.chorus-card.expanded .chorus-toggle svg{ transform:rotate(180deg); }
+.chorus-card.no-overflow .chorus-toggle{ display:none; }
+.chorus-attr{
+  display:flex; align-items:center; gap:11px;
+  margin-top:16px; padding-top:15px; border-top:1px solid var(--hair);
+}
+.chorus-avatar{
+  width:34px; height:34px; min-width:34px; border-radius:50%;
+  background:var(--gold); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:600; letter-spacing:.02em;
+}
+.chorus-attr-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.chorus-name{ font-size:13px; font-weight:600; color:var(--ink); letter-spacing:-.005em; }
+.chorus-source{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:10.5px; color:var(--gold-deep); letter-spacing:.02em; text-decoration:none;
+  transition:color .15s;
+}
+.chorus-source:hover{ color:var(--ink); text-decoration:underline; text-underline-offset:2px; }
+.chorus-gg{ width:11px; height:11px; flex-shrink:0; display:inline-block; }
+
+/* load more */
+.chorus-more-wrap{ text-align:center; margin:34px 0 0; }
+.chorus-more{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 30px; border-radius:8px;
+  background:transparent; color:var(--ink);
+  border:1px solid var(--ink); cursor:pointer;
+  font-family:var(--sans); font-size:11px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase;
+  transition:background .2s var(--ease), color .2s var(--ease);
+}
+.chorus-more:hover{ background:var(--ink); color:var(--paper); }
+.chorus-more svg{ width:13px; height:13px; }
+.chorus-more.done{ display:none; }
+
+/* ── CLOSING CTA BAND ── */
+.chorus-cta{
+  margin-top:80px;
+  background:var(--ink);
+  border-radius:18px;
+  padding:clamp(44px,6vw,72px) clamp(24px,5vw,64px);
+  text-align:center;
+  position:relative; overflow:hidden;
+}
+.chorus-cta::before{
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(90% 130% at 50% 115%, rgba(184,150,110,.22) 0%, transparent 60%);
+  pointer-events:none;
+}
+.chorus-cta-eyebrow{
+  position:relative;
+  font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:rgba(212,184,150,.85);
+  margin-bottom:16px;
+}
+.chorus-cta-title{
+  position:relative;
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(28px,4.4vw,48px); line-height:1.02; letter-spacing:-.05em;
+  color:#F4F0E6; margin:0 0 12px;
+}
+.chorus-cta-title em{ font-style:italic; color:#D4B896; }
+.chorus-cta-sub{
+  position:relative;
+  font-family:var(--sans); font-size:14px; line-height:1.6; color:rgba(244,240,230,.62);
+  max-width:52ch; margin:0 auto 30px;
+}
+.chorus-cta-row{
+  position:relative;
+  display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;
+}
+.chorus-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 28px; border-radius:8px; text-decoration:none; cursor:pointer;
+  font-family:var(--sans); font-size:11px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase;
+  transition:background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+}
+.chorus-btn svg{ width:14px; height:14px; }
+.chorus-btn-gold{ background:var(--gold); color:#fff; border:1px solid var(--gold); }
+.chorus-btn-gold:hover{ background:var(--gold-hover); border-color:var(--gold-hover); color:#fff; }
+.chorus-btn-ghost{ background:transparent; color:#F4F0E6; border:1px solid rgba(244,240,230,.35); }
+.chorus-btn-ghost:hover{ border-color:#D4B896; color:#D4B896; }
+
+/* ── RESPONSIVE / MOTION ── */
+@media (max-width:640px){
+  .chorus{ padding:8px 16px 72px; }
+  .chorus-stats{ margin-bottom:44px; }
+  .chorus-vids{ margin-bottom:56px; }
+  .chorus-cta{ margin-top:60px; border-radius:16px; }
+}
+@media (prefers-reduced-motion:reduce){
+  .chorus-vid, .chorus-card, .chorus-toggle svg, .chorus-more, .chorus-btn{ transition:none !important; }
+  .chorus-vid, .chorus-card{ opacity:1; }
+}
+</style>
+
+<section class="chorus" id="chorus">
+  <div class="chorus-wrap">
+
+    <!-- ── HEADER ── -->
+    <div class="chorus-head">
+      <span class="chorus-pill">Guest reviews</span>
+      <h1 class="chorus-title">Trusted by students,<br><em>loved by parents.</em></h1>
+      <p class="chorus-sub">Every review below was written by a real Student Luxe guest, or their parents, and is verified on Google. No widgets, no filters: this is what living with us is actually like.</p>
+    </div>
+
+    <!-- ── FEATURED GUESTS (focal) ── -->
+    <div class="chorus-sec">
+      <h2 class="chorus-sec-title">Meet the guests <em>who stayed.</em></h2>
+      <span class="chorus-sec-note">Tap a guest to watch their story</span>
+    </div>
+    <div class="chorus-guests" id="chorusGuests"></div>
+
+    <!-- ── TRUST STATS ── -->
+    <div class="chorus-stats" id="chorusStats"></div>
+
+    <!-- ── VIDEO WALL ── -->
+    <div class="chorus-sec">
+      <h2 class="chorus-sec-title">Straight from <em>our socials.</em></h2>
+      <span class="chorus-sec-note">Tap a video to play it here</span>
+    </div>
+    <div class="chorus-vids" id="chorusVids"></div>
+
+    <!-- ── REVIEWS WALL ── -->
+    <div class="chorus-sec">
+      <h2 class="chorus-sec-title">In their <em>own words.</em></h2>
+      <span class="chorus-sec-note">Verified Google reviews</span>
+    </div>
+    <div class="chorus-grid" id="chorusGrid"></div>
+    <div class="chorus-more-wrap">
+      <button class="chorus-more" id="chorusMore" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Show more reviews
+      </button>
+    </div>
+
+    <!-- ── CLOSING CTA ── -->
+    <div class="chorus-cta">
+      <div class="chorus-cta-eyebrow">Your turn</div>
+      <h2 class="chorus-cta-title">Ready to live<br><em>the Luxe way?</em></h2>
+      <p class="chorus-cta-sub">Tell us your city, university and budget, and our team will curate a shortlist of serviced apartments made for you.</p>
+      <div class="chorus-cta-row">
+        <a class="chorus-btn chorus-btn-gold" id="chorusEnquire" href="#">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Make an enquiry
+        </a>
+        <a class="chorus-btn chorus-btn-ghost" id="chorusGoogleCta" href="#" target="_blank" rel="noopener">
+          Read us on Google
+          <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <noscript>
+      <p style="font-family:Georgia,serif;color:#0d1a2e;">
+        Read our verified guest reviews on
+        <a href="https://www.google.com/search?q=Student+Luxe+reviews">Google</a>.
+      </p>
+    </noscript>
+
+  </div>
+
+  <!-- ── GUEST MODAL (filled by JS on open, emptied on close) ── -->
+  <div class="chorus-modal" id="chorusModal" aria-hidden="true">
+    <div class="chorus-modal-scrim" data-close></div>
+    <div class="chorus-modal-card" role="dialog" aria-modal="true" aria-label="Guest story">
+      <button class="chorus-modal-close" type="button" data-close aria-label="Close">&#215;</button>
+      <div class="chorus-modal-media" id="chorusModalMedia"></div>
+      <div class="chorus-modal-body" id="chorusModalBody"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+
+/* ╔════════════════════════════════════════════════════════════════╗
+   ║  CONFIG - edit here only.                                        ║
+   ║                                                                  ║
+   ║  stats:   headline trust numbers shown in the strip.             ║
+   ║  videos:  platform 'tiktok' or 'instagram'; url is the normal    ║
+   ║           public link (tiktok.com/@handle/video/123... or        ║
+   ║           instagram.com/reel/CODE/). poster is a screenshot      ║
+   ║           uploaded to Squarespace (its CDN URL); leave '' for    ║
+   ║           the branded fallback card. line + city label the card. ║
+   ║  reviews: shown 6 at a time, in the order listed.                ║
+   ╚════════════════════════════════════════════════════════════════╝ */
+
+var CONFIG = {
+
+  googleReviewsUrl: 'https://www.google.com/search?q=Student+Luxe+reviews',   /* swap for the g.page review link */
+  enquiryUrl: '/contact-us',
+
+  /* Featured guests: the focal section. Each tile opens a modal.
+     video:  YouTube link (watch / youtu.be / shorts) or a direct .mp4 URL
+             (e.g. a Squarespace-hosted video file). Leave '' for text-only.
+     portrait:true if the video is vertical (9:16), omit for landscape.
+     image:  guest photo from Squarespace CDN (used on tile + as poster).
+     quote:  their testimonial; blank lines create paragraphs.
+     href:   the existing /guest-reviews/... page (no-JS + SEO fallback). */
+  guests: [
+    { name:'Emma & Tatum', initials:'E&T', uni:'LSE Summer School',
+      image:'', video:'', href:'/guest-reviews/emma-tatum',
+      quote:'REPLACE: paste Emma and Tatum’s testimonial here.\n\nBlank lines become new paragraphs.' },
+    { name:'Chantal', initials:'C', uni:'University of Westminster',
+      image:'', video:'', href:'/guest-reviews/chantal',
+      quote:'REPLACE: paste Chantal’s testimonial here.' },
+    { name:'Nurlana', initials:'N', uni:'Queen Mary University London',
+      image:'', video:'', href:'/guest-reviews/nurlana',
+      quote:'REPLACE: paste Nurlana’s testimonial here.' },
+    { name:'Selin & Asya', initials:'S&A', uni:'King’s College London',
+      image:'', video:'', href:'/guest-reviews/selin-asya',
+      quote:'REPLACE: paste Selin and Asya’s testimonial here.' },
+    { name:'Arden', initials:'A', uni:'LSE (London School of Economics)',
+      image:'', video:'', href:'/guest-reviews/arden',
+      quote:'REPLACE: paste Arden’s testimonial here.' },
+    { name:'Fan Yang', initials:'FY', uni:'UCL (University College London)',
+      image:'', video:'', href:'/guest-reviews/fan-yang',
+      quote:'REPLACE: paste Fan Yang’s testimonial here.' }
+  ],
+
+  stats: [
+    { num:'4.9', star:true,  label:'Google rating', stars:true },
+    { num:'200+',            label:'Verified reviews', google:true },
+    { num:'2019',            label:'Trusted since' },
+    { num:'6',               label:'Cities worldwide' }
+  ],
+
+  videos: [
+    { platform:'tiktok',    url:'https://www.tiktok.com/@studentluxe/video/REPLACE_ME_1',
+      poster:'', city:'London',  line:'Georgia’s move-in day at Lincoln’s Inn' },
+    { platform:'instagram', url:'https://www.instagram.com/reel/REPLACE_ME_2/',
+      poster:'', city:'London',  line:'Inside a Luxe two-bed with Amelia' },
+    { platform:'tiktok',    url:'https://www.tiktok.com/@studentluxe/video/REPLACE_ME_3',
+      poster:'', city:'Paris',   line:'A week in our Père Lachaise residence' },
+    { platform:'instagram', url:'https://www.instagram.com/reel/REPLACE_ME_4/',
+      poster:'', city:'New York', line:'Columbus Residences, guest tour' },
+    { platform:'tiktok',    url:'https://www.tiktok.com/@studentluxe/video/REPLACE_ME_5',
+      poster:'', city:'Madrid',  line:'Sofia’s honest review after one term' },
+    { platform:'instagram', url:'https://www.instagram.com/reel/REPLACE_ME_6/',
+      poster:'', city:'Edinburgh', line:'Old Town living, by our guests' }
+  ],
+
+  reviews: [
+    { name:'Holly Clarke', initials:'HC',
+      quote:'We used Student Luxe housing for our daughter who was studying abroad in London. They were very helpful during the search process to listen to our needs and help us find the perfect place. We chose a location that was a combo boutique hotel / residence which gave her the best of both worlds. The location was fantastic. The Student Luxe team was responsive and literally took care of everything. Everything was exactly as advertised. They made the process very easy. I highly recommend them.',
+      url:'https://maps.app.goo.gl/7n5h5Y9ehEHEy4Ga6' },
+    { name:'Felix Oljons', initials:'FO',
+      quote:'Amazing service and wonderful selection of apartments. They made everything feel seamless. Would highly recommend for students who value higher degree of freedom in contract length and quality apartments to make your time in London truly special.',
+      url:'https://maps.app.goo.gl/Ktv7X4dspcgu4fVC7' },
+    { name:'Alina Elena Olariu', initials:'AO',
+      quote:'Student Luxe has been such a helpful source for us to find accommodation for our daughter while she has been at university. It assures me that she is in a safe and well looked after environment and on top of that offers the best and most central locations! A special thank you goes to Mo for guiding us through the process and remaining at our disposal for two years now!',
+      url:'https://maps.app.goo.gl/4DYpRd9tYZgupLMf8' },
+    { name:'Barbie Lee', initials:'BL',
+      quote:'I had an excellent experience with Student Luxe, especially thanks to the amazing help from Rongrong and Lina. After an unexpected issue with my first accommodation, Rongrong patiently guided me through the process of finding and securing a new place. She was understanding, professional, and made what could have been a stressful situation feel manageable. Once I moved in, Lina provided outstanding follow-up support, particularly with arranging my luggage delivery. She was responsive, proactive, and ensured everything went smoothly. Overall, I’m very grateful for their kindness and efficiency. Highly recommend Student Luxe, and especially Rongrong and Lina, to any student looking for reliable and caring housing support!',
+      url:'https://maps.app.goo.gl/bydUcsGqHWqHGCqm6' },
+    { name:'Sher Singh', initials:'SS',
+      quote:'Katria is an absolute gem! She helped me find the perfect accommodation close to the university, tailored to my son’s needs. Not only was she professional and friendly, but she also showed incredible kindness. She even went the extra mile, providing an airfryer when the unit didn’t have one! As a foreign parent, I appreciated her understanding and efforts in securing a suitable unit. She regularly checked in to ensure I was happy and resolved any issues promptly. Highly recommend Katria and Student Luxe!',
+      url:'https://maps.app.goo.gl/wvpWYWQVAqj7TQMz5' },
+    { name:'Débora Toledo', initials:'DT',
+      quote:'I had a great experience with Student Luxe. Stefan Hrebenciuc provided VIP service, always attentive and quick to respond, ensuring peace of mind throughout my stay. Truly professional and dedicated!',
+      url:'https://maps.app.goo.gl/7F5GRmGtPvNzLyCi7' },
+    { name:'Mahmoud Arif', initials:'MA',
+      quote:'I arrived in London a day before my program started with a last minute cancellation of my pre-booked accommodation. When I spoke to Stefan at Student Luxe, he was very understanding and patient. It was a refreshing experience especially with the amount of difficult and unavailable agents around the city. Stefan helped find the best option, and give advice on payment, all while being personable and friendly. Thank you, Stefan! I definitely will be contacting Student Luxe again when I’m back in London.',
+      url:'https://maps.app.goo.gl/UC1uUgu7C6W9Xzrn7' }
+  ]
+};
+
+var REVIEWS_PER_PAGE = 6;
+
+/* ── shared bits ── */
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+var STAR = '<svg viewBox="0 0 14 14"><polygon points="7,1 8.7,5 13,5.4 9.7,8.3 10.7,12.6 7,10.3 3.3,12.6 4.3,8.3 1,5.4 5.3,5"/></svg>';
+var GOOGLE_G = '<svg class="chorus-gg" viewBox="0 0 48 48" aria-hidden="true">' +
+  '<path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>' +
+  '<path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>' +
+  '<path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/>' +
+  '<path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7C13.42 14.62 18.27 10.75 24 10.75z"/></svg>';
+var ICON_TT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 3c.4 2.2 1.8 3.9 4.4 4.1v3c-1.7 0-3.2-.5-4.4-1.4v6.6c0 3.7-2.6 6.2-6 6.2-3.3 0-5.9-2.4-5.9-5.8 0-3.3 2.6-5.9 6-5.9.3 0 .7 0 1 .1v3.2c-.3-.1-.6-.2-1-.2-1.6 0-2.8 1.2-2.8 2.8 0 1.6 1.2 2.7 2.7 2.7 1.6 0 2.9-1.2 2.9-3.1V3h3.1z"/></svg>';
+var ICON_IG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.3c2.5 0 2.8 0 3.8.1 1 0 1.5.2 1.8.3.5.2.8.4 1.1.7.3.3.5.7.7 1.1.1.3.3.9.3 1.8.1 1 .1 1.3.1 3.8s0 2.8-.1 3.8c0 1-.2 1.5-.3 1.8-.2.5-.4.8-.7 1.1-.3.3-.7.5-1.1.7-.3.1-.9.3-1.8.3-1 .1-1.3.1-3.8.1s-2.8 0-3.8-.1c-1 0-1.5-.2-1.8-.3-.5-.2-.8-.4-1.1-.7-.3-.3-.5-.7-.7-1.1-.1-.3-.3-.9-.3-1.8-.1-1-.1-1.3-.1-3.8s0-2.8.1-3.8c0-1 .2-1.5.3-1.8.2-.5.4-.8.7-1.1.3-.3.7-.5 1.1-.7.3-.1.9-.3 1.8-.3 1-.1 1.3-.1 3.8-.1M12 2.6c-2.6 0-2.9 0-3.9.1-1 0-1.7.2-2.3.4-.7.3-1.2.6-1.7 1.1-.5.5-.9 1.1-1.1 1.7-.2.6-.4 1.3-.4 2.3-.1 1-.1 1.3-.1 3.9s0 2.9.1 3.9c0 1 .2 1.7.4 2.3.3.7.6 1.2 1.1 1.7.5.5 1.1.9 1.7 1.1.6.2 1.3.4 2.3.4 1 .1 1.3.1 3.9.1s2.9 0 3.9-.1c1 0 1.7-.2 2.3-.4.7-.3 1.2-.6 1.7-1.1.5-.5.9-1.1 1.1-1.7.2-.6.4-1.3.4-2.3.1-1 .1-1.3.1-3.9s0-2.9-.1-3.9c0-1-.2-1.7-.4-2.3-.3-.7-.6-1.2-1.1-1.7-.5-.5-1.1-.9-1.7-1.1-.6-.2-1.3-.4-2.3-.4-1-.1-1.3-.1-3.9-.1zm0 4.6c-2.7 0-4.9 2.2-4.9 4.9s2.2 4.9 4.9 4.9 4.9-2.2 4.9-4.9-2.2-4.9-4.9-4.9zm0 8c-1.7 0-3.1-1.4-3.1-3.1 0-1.7 1.4-3.1 3.1-3.1 1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1zm5-9.3c-.6 0-1.1.5-1.1 1.1s.5 1.1 1.1 1.1 1.1-.5 1.1-1.1-.5-1.1-1.1-1.1z"/></svg>';
+var PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.8v14.4c0 .7.8 1.2 1.4.8l11-7.2c.6-.4.6-1.2 0-1.6l-11-7.2c-.6-.4-1.4.1-1.4.8z"/></svg>';
+var CHEV = '<svg viewBox="0 0 10 10"><polyline points="2,3.5 5,6.5 8,3.5"/></svg>';
+
+/* opacity-only reveal via IntersectionObserver (no scroll handlers, no transforms) */
+var revealIO = ('IntersectionObserver' in window)
+  ? new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); revealIO.unobserve(e.target); }
+      });
+    }, { rootMargin:'0px 0px -8% 0px', threshold:0.05 })
+  : null;
+function reveal(el){ if(revealIO){ revealIO.observe(el); } else { el.classList.add('in'); } }
+
+/* ── links ── */
+document.getElementById('chorusEnquire').href = CONFIG.enquiryUrl;
+document.getElementById('chorusGoogleCta').href = CONFIG.googleReviewsUrl;
+
+/* ── stats strip ── */
+(function buildStats(){
+  var wrap = document.getElementById('chorusStats');
+  wrap.innerHTML = CONFIG.stats.map(function(s){
+    var num = '<div class="chorus-stat-num">' + esc(s.num) +
+      (s.star ? '<svg class="chorus-stat-star" viewBox="0 0 14 14"><polygon points="7,1 8.7,5 13,5.4 9.7,8.3 10.7,12.6 7,10.3 3.3,12.6 4.3,8.3 1,5.4 5.3,5"/></svg>' : '') +
+      '</div>';
+    var label = '<div class="chorus-stat-label">' + (s.google ? GOOGLE_G : '') + esc(s.label) + '</div>';
+    var stars = s.stars ? '<div class="chorus-stat-stars">' + STAR + STAR + STAR + STAR + STAR + '</div>' : '';
+    return '<div class="chorus-stat">' + num + stars + label + '</div>';
+  }).join('') +
+  '<a class="chorus-stat chorus-stat-link" href="' + esc(CONFIG.googleReviewsUrl) + '" target="_blank" rel="noopener">' +
+    '<div class="chorus-stat-cta">' + GOOGLE_G + ' See all on Google' +
+      '<svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    '</div>' +
+  '</a>';
+})();
+
+/* ── featured guests + modal ──
+   The modal's video/iframe is created only when a tile is opened and
+   destroyed on close, so at most one embed exists and playback always
+   stops. Tiles are real links to the guest pages (no-JS fallback). */
+function youtubeEmbedUrl(url){
+  var m = String(url).match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{6,})/);
+  return m ? 'https://www.youtube-nocookie.com/embed/' + m[1] + '?autoplay=1&rel=0&modestbranding=1&playsinline=1' : null;
+}
+
+(function buildGuests(){
+  var wrap  = document.getElementById('chorusGuests');
+  var modal = document.getElementById('chorusModal');
+  var card  = modal.querySelector('.chorus-modal-card');
+  var media = document.getElementById('chorusModalMedia');
+  var body  = document.getElementById('chorusModalBody');
+  var closeBtn = modal.querySelector('.chorus-modal-close');
+  var lastFocus = null;
+
+  function squarespaceSized(u){
+    return (u && u.indexOf('squarespace-cdn.com') > -1) ? u.split('?')[0] + '?format=750w' : u;
+  }
+
+  function onKey(e){ if(e.key === 'Escape') closeModal(); }
+
+  function openModal(g){
+    lastFocus = document.activeElement;
+
+    var yt = g.video ? youtubeEmbedUrl(g.video) : null;
+    var mediaHtml = '';
+    if(yt){
+      mediaHtml = '<iframe src="' + yt + '" title="' + esc(g.name) + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+    } else if(g.video && /\.(mp4|webm|mov)(\?|$)/i.test(g.video)){
+      mediaHtml = '<video src="' + esc(g.video) + '" controls autoplay playsinline' +
+                  (g.image ? ' poster="' + esc(squarespaceSized(g.image)) + '"' : '') + '></video>';
+    } else if(g.image){
+      mediaHtml = '<img src="' + esc(squarespaceSized(g.image)) + '" alt="' + esc(g.name) + '">';
+    }
+    media.innerHTML = mediaHtml;
+    card.classList.toggle('portrait', !!g.portrait);
+
+    var quoteHtml = String(g.quote || '').split(/\n\s*\n/).map(function(p){
+      return p.trim() ? '<p>' + esc(p.trim()) + '</p>' : '';
+    }).join('');
+    body.innerHTML =
+      '<div class="chorus-modal-stars" aria-label="5 out of 5 stars">' + STAR + STAR + STAR + STAR + STAR + '</div>' +
+      '<div class="chorus-modal-uni">' + esc(g.uni) + '</div>' +
+      '<h3 class="chorus-modal-name">' + esc(g.name) + '</h3>' +
+      '<div class="chorus-modal-quote">' + quoteHtml + '</div>' +
+      (g.href ? '<a class="chorus-modal-link" href="' + esc(g.href) + '">Read the full story' +
+        '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>' : '');
+    body.scrollTop = 0;
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKey);
+    closeBtn.focus();
+  }
+
+  function closeModal(){
+    media.innerHTML = '';                 /* destroys the iframe/video, stops playback */
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', onKey);
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  modal.addEventListener('click', function(e){
+    if(e.target.closest('[data-close]')) closeModal();
+  });
+
+  CONFIG.guests.forEach(function(g){
+    var tile = document.createElement('a');
+    tile.className = 'chorus-guest';
+    tile.href = g.href || '#';
+
+    var photo = g.image
+      ? '<img class="chorus-guest-img" src="' + esc(squarespaceSized(g.image)) + '" alt="' + esc(g.name) + '" loading="lazy" decoding="async">'
+      : '<div class="chorus-guest-fb">' + esc(g.initials || g.name.charAt(0)) + '</div>';
+
+    tile.innerHTML =
+      photo +
+      '<div class="chorus-guest-ov"></div>' +
+      '<div class="chorus-guest-info">' +
+        '<div class="chorus-guest-uni">' + esc(g.uni) + '</div>' +
+        '<div class="chorus-guest-name">' + esc(g.name) + '</div>' +
+        '<span class="chorus-guest-watch">' +
+          '<span class="chorus-guest-playchip">' + PLAY + '</span>' +
+          (g.video ? 'Watch their story' : 'Read their story') +
+        '</span>' +
+      '</div>';
+
+    tile.addEventListener('click', function(e){
+      e.preventDefault();
+      openModal(g);
+    });
+
+    wrap.appendChild(tile);
+    reveal(tile);
+  });
+})();
+
+/* ── video wall: facade pattern ──
+   Nothing third-party loads until the guest taps play; then exactly one
+   embed iframe exists at a time (opening another closes the first).
+   This is what keeps the page iOS-Safari-safe where Elfsight wasn't. */
+function tiktokEmbedUrl(url){
+  var m = String(url).match(/video\/(\d+)/);
+  return m ? 'https://www.tiktok.com/embed/v2/' + m[1] : null;
+}
+function instagramEmbedUrl(url){
+  var clean = String(url).split('?')[0].replace(/\/+$/,'');
+  return /instagram\.com\/(reel|p|tv)\//.test(clean) ? clean + '/embed/' : null;
+}
+
+(function buildVideos(){
+  var wrap = document.getElementById('chorusVids');
+  var open = null;   /* the card currently playing */
+
+  function posterUrl(p){
+    if(!p) return '';
+    return p.indexOf('squarespace-cdn.com') > -1 ? p.split('?')[0] + '?format=750w' : p;
+  }
+
+  function closeVideo(card){
+    if(!card) return;
+    var f = card.querySelector('.chorus-vid-frame');
+    if(f) f.parentNode.removeChild(f);
+    card.classList.remove('playing');
+    if(open === card) open = null;
+  }
+
+  function openVideo(card, v){
+    if(card.classList.contains('playing')) return;
+    var embed = v.platform === 'tiktok' ? tiktokEmbedUrl(v.url) : instagramEmbedUrl(v.url);
+    if(!embed){ window.open(v.url, '_blank', 'noopener'); return; }
+    closeVideo(open);
+    var media = card.querySelector('.chorus-vid-media');
+    var f = document.createElement('iframe');
+    f.className = 'chorus-vid-frame';
+    f.src = embed;
+    f.title = v.line || 'Guest video';
+    f.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
+    f.setAttribute('allowfullscreen', '');
+    media.appendChild(f);
+    card.classList.add('playing');
+    open = card;
+  }
+
+  CONFIG.videos.forEach(function(v){
+    var card = document.createElement('div');
+    card.className = 'chorus-vid';
+
+    var badge = '<span class="chorus-vid-badge">' +
+      (v.platform === 'tiktok' ? ICON_TT + ' TikTok' : ICON_IG + ' Instagram') + '</span>';
+
+    var posterLayer = v.poster
+      ? '<img class="chorus-vid-poster" src="' + esc(posterUrl(v.poster)) + '" alt="' + esc(v.line || 'Guest video') + '" loading="lazy" decoding="async">' +
+        '<div class="chorus-vid-scrim"></div>'
+      : '<div class="chorus-vid-fallback"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4L12 3z" fill="rgba(212,184,150,.7)"/></svg><span>Guest video</span></div>' +
+        '<div class="chorus-vid-scrim"></div>';
+
+    card.innerHTML =
+      '<div class="chorus-vid-media" role="button" tabindex="0" aria-label="Play video: ' + esc(v.line || 'Guest video') + '">' +
+        posterLayer +
+        badge +
+        '<button class="chorus-vid-play" type="button" tabindex="-1" aria-hidden="true">' + PLAY + '</button>' +
+        '<button class="chorus-vid-close" type="button" aria-label="Close video">&#215;</button>' +
+        '<div class="chorus-vid-cap">' +
+          (v.city ? '<div class="chorus-vid-city">' + esc(v.city) + '</div>' : '') +
+          (v.line ? '<div class="chorus-vid-line">' + esc(v.line) + '</div>' : '') +
+        '</div>' +
+      '</div>';
+
+    var media = card.querySelector('.chorus-vid-media');
+    media.addEventListener('click', function(e){
+      if(e.target.closest('.chorus-vid-close')){ closeVideo(card); return; }
+      openVideo(card, v);
+    });
+    media.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openVideo(card, v); }
+      else if(e.key === 'Escape'){ closeVideo(card); }
+    });
+
+    wrap.appendChild(card);
+    reveal(card);
+  });
+})();
+
+/* ── reviews wall ── */
+(function buildReviews(){
+  var grid = document.getElementById('chorusGrid');
+  var moreBtn = document.getElementById('chorusMore');
+  var shown = 0;
+  var cards = [];
+
+  function buildCard(r){
+    var card = document.createElement('article');
+    card.className = 'chorus-card';
+    var safeName = esc(r.name);
+    card.innerHTML =
+      '<div class="chorus-card-stars" aria-label="5 out of 5 stars">' + STAR + STAR + STAR + STAR + STAR + '</div>' +
+      '<p class="chorus-quote">' + esc(r.quote) + '</p>' +
+      '<button class="chorus-toggle" type="button" aria-expanded="false">' +
+        '<span class="chorus-toggle-label">Read more</span>' + CHEV +
+      '</button>' +
+      '<div class="chorus-attr">' +
+        '<div class="chorus-avatar" aria-hidden="true">' + esc(r.initials) + '</div>' +
+        '<div class="chorus-attr-text">' +
+          '<span class="chorus-name">' + safeName + '</span>' +
+          '<a class="chorus-source" href="' + esc(r.url) + '" target="_blank" rel="noopener" aria-label="Read ' + safeName + '’s verified review on Google">' +
+            GOOGLE_G + ' Verified on Google &rarr;' +
+          '</a>' +
+        '</div>' +
+      '</div>';
+
+    var quote = card.querySelector('.chorus-quote');
+    var btn = card.querySelector('.chorus-toggle');
+    btn.addEventListener('click', function(){
+      var expanded = card.classList.toggle('expanded');
+      btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      btn.querySelector('.chorus-toggle-label').textContent = expanded ? 'Read less' : 'Read more';
+    });
+    card._checkClamp = function(){
+      if(card.classList.contains('expanded')) return;
+      card.classList.toggle('no-overflow', quote.scrollHeight <= quote.clientHeight + 2);
+    };
+    return card;
+  }
+
+  function checkClamps(){
+    cards.forEach(function(c){ c._checkClamp(); });
+  }
+
+  function showNext(){
+    var batch = CONFIG.reviews.slice(shown, shown + REVIEWS_PER_PAGE);
+    batch.forEach(function(r){
+      var card = buildCard(r);
+      cards.push(card);
+      grid.appendChild(card);
+      reveal(card);
+    });
+    shown += batch.length;
+    if(shown >= CONFIG.reviews.length) moreBtn.classList.add('done');
+    requestAnimationFrame(checkClamps);
+  }
+
+  moreBtn.addEventListener('click', showNext);
+  showNext();
+
+  /* web fonts shift line counts; recheck once they land, and on resize */
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(checkClamps); }
+  var rt;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ requestAnimationFrame(checkClamps); }, 200);
+  });
+})();
+
+})();
+</script>

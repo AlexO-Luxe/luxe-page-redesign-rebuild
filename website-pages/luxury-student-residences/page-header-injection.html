@@ -1,0 +1,157 @@
+<!-- ============================================================
+     STUDENT LUXE — /luxury-student-residences Page Header Injection
+     Paste into: Page Settings > Advanced > Page Header Code Injection.
+     This is the COMPLETE injection for this page. It contains ONLY:
+       1) the site header / nav kill
+       2) the floating enquiry widget
+     No landing footer, nothing else.
+     Requires the site-wide Aperture header with the SL_HIDE_HEADER
+     kill switch (July 2026 version or later).
+     ============================================================ -->
+
+<!-- ── 1) KILL THE SITE HEADER / NAV ── -->
+<!-- The flag stops Aperture from ever building; the CSS line is a
+     belt-and-braces fallback. -->
+<script>window.SL_HIDE_HEADER = true;</script>
+<style>
+  #sl-ap { display: none !important; }
+  /* Squarespace native chrome */
+  #header,
+  .header,
+  .sqs-announcement-bar-dropzone {
+    display: none !important;
+  }
+  /* If the page bleeds content up under the sticky header with a negative margin, reset it */
+  #sections,
+  .page-section:first-child {
+    margin-top: 0 !important;
+  }
+</style>
+
+<!-- ── 2) FLOATING ENQUIRY WIDGET ── -->
+<!-- Navy "Make an enquiry" pill fixed bottom right. Opens a panel with
+     a 2x2 grid of apartment-type chips (Studio £600 / 1 Bed £900 /
+     2 Bed £1,800 / 3 Bed £2,400 per week). Tapping a chip opens the
+     page's enquiry modal (#slEnqModal from the header code block) with
+     that apartment type pre-selected. "Tell us your requirements"
+     opens the modal blank. Falls back to /reservations?apt= when no
+     modal exists on the page.
+     CSS is hardened with a scoped reset + explicit !important values
+     because the nav kill removes the styles that otherwise shield
+     widgets from raw theme button/heading rules.
+     Prices are hard-coded in the TYPES array, keep in sync with the
+     hero. The sitewide floating widget already hides itself on this
+     page (HIDDEN_PAGES in the footer injection), so no clash. -->
+
+<style>
+.slfw, .slfw *, .slfw *::before, .slfw *::after{box-sizing:border-box !important;margin:0 !important;line-height:1.35 !important;text-shadow:none !important}
+.slfw{position:fixed !important;right:20px !important;bottom:20px !important;left:auto !important;top:auto !important;z-index:99999 !important;font-family:'DM Sans',system-ui,sans-serif !important;-webkit-font-smoothing:antialiased;width:auto !important;max-width:none !important;display:block !important}
+.slfw button{-webkit-appearance:none !important;appearance:none !important;min-height:0 !important;min-width:0 !important;width:auto !important;height:auto !important;text-shadow:none !important;box-shadow:none !important}
+.slfw-fab{display:flex !important;align-items:center !important;gap:10px !important;background:#0d1a2e !important;color:#fff !important;border:1px solid rgba(184,150,110,.65) !important;border-radius:99px !important;padding:14px 22px !important;cursor:pointer;box-shadow:0 8px 24px rgba(13,26,46,.35) !important;font-family:'DM Sans',system-ui,sans-serif !important;font-size:11px !important;font-weight:500 !important;letter-spacing:.12em !important;text-transform:uppercase !important;transition:background .2s}
+.slfw-fab:hover{background:#1a2c4a !important;color:#fff !important}
+.slfw-fab svg{width:16px !important;height:16px !important;stroke:#D4B896;fill:none;stroke-width:1.5;flex-shrink:0}
+.slfw-fab .slfw-x{display:none !important}
+.slfw.open .slfw-fab .slfw-mail{display:none !important}
+.slfw.open .slfw-fab .slfw-x{display:block !important}
+.slfw-panel{position:absolute !important;bottom:calc(100% + 12px) !important;right:0 !important;left:auto !important;width:330px !important;max-width:calc(100vw - 40px) !important;background:#FBF8F2 !important;border:.5px solid rgba(184,150,110,.5) !important;border-radius:16px !important;box-shadow:0 18px 50px rgba(13,26,46,.32) !important;overflow:hidden !important;display:none !important}
+.slfw.open .slfw-panel{display:block !important;animation:slfwIn .28s cubic-bezier(.22,.8,.28,1)}
+@keyframes slfwIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.slfw.open .slfw-panel{animation:none}.slfw-fab{transition:none}}
+.slfw-head{padding:16px 18px 14px !important;background:#0d1a2e !important}
+.slfw-head h4{font-family:'baskerville-display-pt','Baskerville Display PT',Baskerville,Georgia,serif !important;font-size:19px !important;font-weight:400 !important;letter-spacing:-.01em !important;color:#fff !important;margin:0 0 3px !important;text-transform:none !important}
+.slfw-head p{font-size:11.5px !important;color:rgba(255,255,255,.65) !important;margin:0 !important;letter-spacing:0 !important;text-transform:none !important}
+.slfw-grid{display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;padding:14px 16px !important}
+.slfw-chip{border:.5px solid rgba(184,150,110,.45) !important;border-radius:12px !important;padding:12px 12px 11px !important;background:#fff !important;cursor:pointer;text-align:left !important;font-family:'DM Sans',system-ui,sans-serif !important;display:block !important;transition:border-color .15s,background .15s}
+.slfw-chip:hover{border-color:#B8966E !important;background:#F7F2EB !important}
+.slfw-chip:active{background:rgba(184,150,110,.22) !important}
+.slfw-chip:focus-visible{outline:2px solid #8B6E4E;outline-offset:2px}
+.slfw-chip b{display:block !important;font-family:'baskerville-display-pt','Baskerville Display PT',Baskerville,Georgia,serif !important;font-weight:400 !important;font-size:15px !important;color:#0d1a2e !important;letter-spacing:-.01em !important;text-transform:none !important}
+.slfw-chip span{display:block !important;font-size:11px !important;color:#8B6E4E !important;font-weight:500 !important;margin-top:3px !important;letter-spacing:0 !important;text-transform:none !important}
+.slfw-foot{padding:0 16px 14px !important;text-align:center !important;font-size:11.5px !important;color:rgba(13,26,46,.65) !important}
+.slfw-foot button{background:none !important;border:none !important;padding:0 !important;font-family:'DM Sans',system-ui,sans-serif !important;font-size:11.5px !important;font-weight:500 !important;color:#8B6E4E !important;text-decoration:underline !important;text-underline-offset:2px;cursor:pointer;text-transform:none !important;letter-spacing:0 !important;display:inline !important}
+.slfw-foot button:hover{color:#0d1a2e !important}
+.slfw-foot button:focus-visible{outline:2px solid #8B6E4E;outline-offset:2px}
+@media(max-width:500px){.slfw{right:14px !important;bottom:14px !important}}
+</style>
+
+<script>
+(function(){
+  function init(){
+    if(document.getElementById('slfwWidget')) return;
+
+    var TYPES=[
+      {apt:'studio', label:'Studio',    price:'from £600 /wk'},
+      {apt:'1bed',   label:'1 Bedroom', price:'from £900 /wk'},
+      {apt:'2bed',   label:'2 Bedroom', price:'from £1,800 /wk'},
+      {apt:'3bed',   label:'3 Bedroom', price:'from £2,400 /wk'}
+    ];
+
+    var wrap = document.createElement('div');
+    wrap.className = 'slfw';
+    wrap.id = 'slfwWidget';
+    wrap.innerHTML =
+      '<div class="slfw-panel" role="menu" aria-label="Make an enquiry">' +
+        '<div class="slfw-head">' +
+          '<h4>Make an enquiry</h4>' +
+          '<p>Tap your apartment type to begin</p>' +
+        '</div>' +
+        '<div class="slfw-grid">' +
+          TYPES.map(function(t){
+            return '<button type="button" class="slfw-chip" role="menuitem" data-apt="'+t.apt+'"><b>'+t.label+'</b><span>'+t.price+'</span></button>';
+          }).join('') +
+        '</div>' +
+        '<div class="slfw-foot">Not sure yet? <button type="button" data-apt="">Tell us your requirements</button></div>' +
+      '</div>' +
+      '<button type="button" class="slfw-fab" id="slfwFab" aria-expanded="false" aria-label="Make an enquiry">' +
+        '<svg class="slfw-mail" viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><polyline points="2.5,4.5 8,9 13.5,4.5"/></svg>' +
+        '<svg class="slfw-x" viewBox="0 0 16 16"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>' +
+        'Make an enquiry' +
+      '</button>';
+    document.body.appendChild(wrap);
+
+    var fab = document.getElementById('slfwFab');
+
+    function close(){
+      wrap.classList.remove('open');
+      fab.setAttribute('aria-expanded', 'false');
+    }
+
+    fab.addEventListener('click', function(){
+      var open = wrap.classList.toggle('open');
+      fab.setAttribute('aria-expanded', String(open));
+    });
+
+    document.addEventListener('click', function(e){
+      if(!wrap.contains(e.target)) close();
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') close();
+    });
+
+    function openEnquiry(apt){
+      var modal = document.getElementById('slEnqModal');
+      if(modal){
+        if(apt){
+          var sel = document.getElementById('slAptType');
+          if(sel){ sel.value = apt; sel.dispatchEvent(new Event('change')); }
+        }
+        modal.classList.add('sl-open');
+        document.body.style.overflow = 'hidden';
+      } else {
+        window.location.href = '/reservations?type=B&city=london' + (apt ? '&apt=' + encodeURIComponent(apt) : '');
+      }
+    }
+
+    wrap.querySelectorAll('[data-apt]').forEach(function(el){
+      el.addEventListener('click', function(){
+        close();
+        openEnquiry(el.getAttribute('data-apt'));
+      });
+    });
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>

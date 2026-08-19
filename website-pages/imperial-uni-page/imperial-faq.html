@@ -1,0 +1,477 @@
+<!-- ============================================================
+     STUDENT LUXE — Imperial Uni Page: FAQ (LIGHT BG)
+     v1 — reskin of Cambridge FAQ. SEO targets:
+     "apartments near Imperial College London",
+     "private accommodation near Imperial".
+     NOTE: deliberately avoids the uni-name + "accommodation"
+     exact-match phrase; always "apartments near ..." instead.
+     Schema mirrors visible answers exactly.
+     Paste into a Squarespace Code Block.
+     Background: set to cream/light in Squarespace.
+     CONFIRM before publishing: Imperial prices and areas
+     covered. Marked [CONFIRM] inline.
+     ============================================================ -->
+
+<style>
+.sll-faq * { box-sizing: border-box; margin: 0; padding: 0; }
+.sll-faq {
+  background: transparent;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding: 64px 0 80px;
+
+  --gold:         #B8966E;
+  --gold-d:       #8F6E4A;
+  --navy:         #0F1923;
+  --gold-border:  rgba(184,150,110,0.32);
+  --rule:         rgba(15,25,35,0.10);
+  --muted:        rgba(15,25,35,0.55);
+  --answer-color: rgba(15,25,35,0.72);
+  --title-size:   clamp(30px, 4.5vw, 54px);
+}
+
+.sll-faq-inner { width: 100%; padding: 0 48px; }
+@media (max-width: 768px) { .sll-faq-inner { padding: 0 24px; } }
+
+/* ── HEADER ── */
+.sll-faq-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+.sll-faq-eyebrow {
+  display: inline-block;
+  padding: 6px 18px;
+  background: rgba(184,150,110,0.12);
+  border: 0.5px solid rgba(184,150,110,0.45);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-d);
+  margin-bottom: 20px;
+}
+.sll-faq-title {
+  font-size: var(--title-size);
+  font-weight: 300;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  color: var(--navy);
+}
+.sll-faq-title em { font-style: italic; color: var(--gold-d); }
+
+
+/* ── FAQ LIST ── */
+.sll-faq-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 64px;
+}
+@media (max-width: 768px) { .sll-faq-list { grid-template-columns: 1fr; } }
+
+.sll-faq-item {
+  border-top: 0.5px solid var(--rule);
+  padding: 0;
+  overflow: hidden;
+}
+.sll-faq-item:first-child,
+.sll-faq-item:nth-child(2) { border-top: none; }
+.sll-faq-item:last-child,
+.sll-faq-item:nth-last-child(2) { border-bottom: none; }
+@media (max-width: 768px) {
+  .sll-faq-list .sll-faq-item:nth-child(2) { border-top: 0.5px solid var(--rule); }
+  .sll-faq-item:nth-last-child(2) { border-bottom: 0.5px solid var(--rule); }
+  .sll-faq-item:first-child { border-top: none; }
+  .sll-faq-item:last-child { border-bottom: none; }
+}
+
+.sll-faq-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: none;
+  border: none;
+  padding: 20px 0;
+  cursor: pointer;
+  text-align: left;
+  -webkit-appearance: none;
+}
+.sll-faq .sll-faq-btn:hover { filter: none !important; }
+@media (hover: hover) and (pointer: fine) {
+  .sll-faq .sll-faq-btn:hover .sll-faq-q { color: var(--gold-d); }
+  .sll-faq .sll-faq-btn:hover .sll-faq-icon { border-color: var(--gold-d); }
+}
+
+.sll-faq-q {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  transition: color 0.15s;
+}
+
+.sll-faq-icon {
+  width: 22px;
+  height: 22px;
+  border: 0.5px solid var(--gold-border);
+  background: rgba(184,150,110,0.06);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s, background 0.2s, transform 0.25s;
+  color: var(--gold-d);
+  font-size: 14px;
+  line-height: 1;
+}
+.sll-faq-item.sll-open .sll-faq-icon {
+  transform: rotate(45deg);
+  border-color: var(--gold);
+  background: rgba(184,150,110,0.14);
+}
+
+.sll-faq-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+.sll-faq-item.sll-open .sll-faq-body { opacity: 1; }
+
+.sll-faq-answer {
+  font-size: 14px;
+  color: var(--answer-color);
+  line-height: 1.75;
+  padding-bottom: 22px;
+  max-width: 680px;
+}
+.sll-faq-answer strong { color: var(--navy); font-weight: 600; }
+.sll-faq-answer a {
+  color: var(--gold-d);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(143,110,74,0.45);
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+.sll-faq .sll-faq-answer a:hover { filter: none !important; }
+@media (hover: hover) and (pointer: fine) {
+  .sll-faq .sll-faq-answer a:hover { color: var(--navy) !important; text-decoration-color: var(--navy); }
+}
+</style>
+
+<section class="sll-faq" aria-label="Frequently asked questions about apartments near Imperial College London">
+  <div class="sll-faq-inner">
+
+    <div class="sll-faq-header">
+      <div>
+        <span class="sll-faq-eyebrow">FAQ</span>
+        <h2 class="sll-faq-title">Imperial questions<br><em>answered.</em></h2>
+      </div>
+    </div>
+
+    <div class="sll-faq-list" id="sllFaqList">
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">How much do apartments near Imperial College London cost?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer">Private apartments near Imperial College London with Student Luxe <strong>start from £2,850 per month (around £655 per week)</strong>. The exact price depends on the size, amenities and location of the apartment, with larger apartments and penthouses priced higher. Every rate is all-inclusive, so you can compare options like for like. Tell us your budget and our team will guide you through the best options.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">What is included in the rent?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer"><strong>All bills are included</strong> in our rates. Utilities, council tax, Wi-Fi, weekly housekeeping and linen are all covered in one price. There are no hidden extras and no additional fees.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">What is the minimum length of stay?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer">Our standard minimum stay is <strong>21 nights</strong>. The average length of stay is between 6 and 9 months, with full academic-year stays from September to June being our most common booking pattern for Imperial students.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">What areas near Imperial do Student Luxe apartments cover?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer">Our professionally-managed, independent Imperial accommodation options are anchored in <strong>South Kensington, Knightsbridge, Chelsea and Earl's Court</strong>, within walking distance of Imperial's main South Kensington campus, the museum quarter and Hyde Park. Many buildings offer facilities like 24-hour reception, gyms and concierge teams.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">Where is the best area to live near Imperial College London?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer">The best area depends on your priorities. <strong>South Kensington</strong> puts you minutes from the main campus, the museums and Hyde Park. <strong>Knightsbridge and Chelsea</strong> offer larger residences and a quieter pace within a short walk or bus ride. <strong>Earl's Court</strong> offers strong value with quick Piccadilly and District line connections. Students based at the <strong>White City campus</strong> are well served by apartments with fast Central line access.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">How do I book an apartment near Imperial College London?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer">All our apartments are <strong>available by enquiry only</strong>. Online booking is not available. Submit an enquiry above and our sales and reservations team will respond within one business day with availability, pricing and next steps. You can also reach us by phone, WhatsApp or email.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">Can international students book apartments near Imperial?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer"><strong>Yes, international students make up a large share of our guests.</strong> We do not require UK guarantors, UK credit checks or UK references, which makes us a straightforward option for students arriving from overseas. Bookings can be made entirely remotely, and our team can guide you through the process in your timezone. Payments can be split into up to four instalments.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">Is Student Luxe only for students?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer"><strong>Not at all.</strong> While we started out hosting students looking for more space and flexibility than traditional options, we also host visiting academics, working professionals, corporate clients and medical stays. Anyone seeking a high-quality, fully-managed London apartment for 3 weeks or more is welcome.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">Can parents or guardians book on behalf of a student?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer">Yes. Many of our bookings for Imperial students are made by parents. Select <strong>Parent or guardian</strong> as your purpose of stay when enquiring and our team will guide you through the process. We do not require UK guarantors or credit checks, and payments can be split into up to four instalments.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">Are the apartments fully furnished?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer"><strong>Yes.</strong> All Student Luxe apartments come fully furnished with hotel-standard bedding and linen, fully-equipped kitchens with pots, pans, cutlery and glassware, and everything you need to move straight in. Just bring yourself.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">Is housekeeping included?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer"><strong>Yes.</strong> Weekly housekeeping is included with every Student Luxe stay, covering cleaning, fresh linen for the bedroom and fresh towels and toiletries for the bathroom.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">What is the cancellation policy?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer">If you cancel less than 30 days before your check-in date, the first 90 days of the reservation will be charged. If you cancel after checking in, the break clause applies from the 90th night onwards, and up to 28 nights' rent may be chargeable. If you're unsure, just ask us and we'll walk you through it. Building-specific cancellation policies may apply, and we will always guide you through this and discuss your options.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">Are apartments near Imperial available for summer stays?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer">Yes. London is our most popular summer destination, with summer school students, interns and visiting researchers staying between June and September. Summer availability around South Kensington is limited, so we recommend enquiring early.</p>
+        </div>
+      </div>
+
+      <div class="sll-faq-item">
+        <button class="sll-faq-btn" aria-expanded="false">
+          <h3 class="sll-faq-q">Is a security deposit required?</h3>
+          <span class="sll-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sll-faq-body">
+          <p class="sll-faq-answer">Some apartments require a security deposit and some do not. This will be confirmed during your conversations with our reservations team. Where a deposit is required, it is managed by an independent third party (usually the Deposit Protection Service).</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+  var items = document.querySelectorAll('.sll-faq-item');
+
+  function openItem(item){
+    item.classList.add('sll-open');
+    var btn = item.querySelector('.sll-faq-btn');
+    var body = item.querySelector('.sll-faq-body');
+    btn.setAttribute('aria-expanded','true');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+
+  items.forEach(function(item){
+    var btn = item.querySelector('.sll-faq-btn');
+    var body = item.querySelector('.sll-faq-body');
+    btn.addEventListener('click', function(){
+      var isOpen = item.classList.contains('sll-open');
+      items.forEach(function(i){
+        i.classList.remove('sll-open');
+        i.querySelector('.sll-faq-btn').setAttribute('aria-expanded','false');
+        i.querySelector('.sll-faq-body').style.maxHeight = '0';
+      });
+      if(!isOpen){
+        openItem(item);
+      }
+    });
+  });
+})();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much do apartments near Imperial College London cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Private apartments near Imperial College London with Student Luxe start from £2,850 per month (around £655 per week). The exact price depends on the size, amenities and location of the apartment, with larger apartments and penthouses priced higher. Every rate is all-inclusive, so you can compare options like for like. Tell us your budget and our team will guide you through the best options."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is included in the rent?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All bills are included in our rates. Utilities, council tax, Wi-Fi, weekly housekeeping and linen are all covered in one price. There are no hidden extras and no additional fees."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the minimum length of stay?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Our standard minimum stay is 21 nights. The average length of stay is between 6 and 9 months, with full academic-year stays from September to June being our most common booking pattern for Imperial students."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What areas near Imperial do Student Luxe apartments cover?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Our professionally-managed, independent Imperial accommodation options are anchored in South Kensington, Knightsbridge, Chelsea and Earl's Court, within walking distance of Imperial's main South Kensington campus, the museum quarter and Hyde Park. Many buildings offer facilities like 24-hour reception, gyms and concierge teams."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is the best area to live near Imperial College London?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The best area depends on your priorities. South Kensington puts you minutes from the main campus, the museums and Hyde Park. Knightsbridge and Chelsea offer larger residences and a quieter pace within a short walk or bus ride. Earl's Court offers strong value with quick Piccadilly and District line connections. Students based at the White City campus are well served by apartments with fast Central line access."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I book an apartment near Imperial College London?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All our apartments are available by enquiry only. Online booking is not available. Submit an enquiry above and our sales and reservations team will respond within one business day with availability, pricing and next steps. You can also reach us by phone, WhatsApp or email."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can international students book apartments near Imperial?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, international students make up a large share of our guests. We do not require UK guarantors, UK credit checks or UK references, which makes us a straightforward option for students arriving from overseas. Bookings can be made entirely remotely, and our team can guide you through the process in your timezone. Payments can be split into up to four instalments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Student Luxe only for students?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not at all. While we started out hosting students looking for more space and flexibility than traditional options, we also host visiting academics, working professionals, corporate clients and medical stays. Anyone seeking a high-quality, fully-managed London apartment for 3 weeks or more is welcome."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can parents or guardians book on behalf of a student?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Many of our bookings for Imperial students are made by parents. Select Parent or guardian as your purpose of stay when enquiring and our team will guide you through the process. We do not require UK guarantors or credit checks, and payments can be split into up to four instalments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are the apartments fully furnished?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. All Student Luxe apartments come fully furnished with hotel-standard bedding and linen, fully-equipped kitchens with pots, pans, cutlery and glassware, and everything you need to move straight in. Just bring yourself."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is housekeeping included?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Weekly housekeeping is included with every Student Luxe stay, covering cleaning, fresh linen for the bedroom and fresh towels and toiletries for the bathroom."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the cancellation policy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If you cancel less than 30 days before your check-in date, the first 90 days of the reservation will be charged. If you cancel after checking in, the break clause applies from the 90th night onwards, and up to 28 nights' rent may be chargeable. If you're unsure, just ask us and we'll walk you through it. Building-specific cancellation policies may apply, and we will always guide you through this and discuss your options."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are apartments near Imperial available for summer stays?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. London is our most popular summer destination, with summer school students, interns and visiting researchers staying between June and September. Summer availability around South Kensington is limited, so we recommend enquiring early."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a security deposit required?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Some apartments require a security deposit and some do not. This will be confirmed during your conversations with our reservations team. Where a deposit is required, it is managed by an independent third party (usually the Deposit Protection Service)."
+      }
+    }
+  ]
+}
+</script>

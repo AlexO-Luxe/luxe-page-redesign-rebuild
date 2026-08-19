@@ -1,0 +1,524 @@
+<!-- ============================================================
+     STUDENT LUXE — Terms of Service (LIGHT BG, dynamic)
+     Redesign of /terms-of-service:
+       - sticky table of contents with scroll-spy (desktop)
+       - numbered accordion sections with Expand all control
+       - deep links (#s1 ... #s15 open that section)
+       - ALL legal copy verbatim from the live page, static in
+         the DOM (search engines and screen readers see it all)
+     Paste into a Squarespace Code Block.
+     Background: set the page section to cream #FBF8F1.
+     Update the "Last updated" line when the terms change.
+     ============================================================ -->
+
+<style>
+.slt{
+  --ink:#0d1a2e; --gold:#B8966E; --gold-deep:#8B6E4E;
+  --hair:rgba(184,150,110,.32); --hair-soft:rgba(184,150,110,.14);
+  --txt-soft:rgba(13,26,46,.62); --txt-body:rgba(13,26,46,.74);
+  --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+  --sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --ease:cubic-bezier(.23,1,.32,1);
+  font-family:var(--sans); color:var(--ink); -webkit-font-smoothing:antialiased;
+  max-width:1120px; margin:0 auto; padding:40px 24px 80px;
+}
+.slt *{box-sizing:border-box; margin:0; padding:0}
+
+/* ── HEADER ── */
+.slt-header{max-width:720px; margin-bottom:56px}
+.slt-eyebrow{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-deep)}
+.slt-header h1{font-family:var(--serif); font-weight:300; letter-spacing:-.05em; line-height:.95; font-size:clamp(38px,5.5vw,64px); margin-top:22px}
+.slt-header h1 em{font-style:italic; color:var(--gold)}
+.slt-updated{margin-top:16px; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--txt-soft)}
+.slt-preface{margin-top:22px; font-size:14px; line-height:1.7; color:var(--txt-body)}
+.slt-preface p + p{margin-top:10px}
+
+/* ── LAYOUT ── */
+.slt-layout{display:grid; grid-template-columns:250px 1fr; gap:56px; align-items:start}
+@media(max-width:900px){ .slt-layout{grid-template-columns:1fr; gap:28px} }
+
+/* ── TOC (sticky, plain background - no blur per iOS rules) ── */
+.slt-toc{position:sticky; top:96px}
+.slt-toc-title{font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); font-weight:500; padding-bottom:12px; border-bottom:1px solid var(--hair); margin-bottom:6px}
+.slt-toc a{display:block; padding:7px 0 7px 12px; font-size:12.5px; line-height:1.35; color:var(--txt-soft); text-decoration:none; border-left:2px solid transparent; transition:color .15s var(--ease), border-color .15s var(--ease)}
+.slt-toc a.on{color:var(--ink); border-left-color:var(--gold); font-weight:500}
+/* beat the Squarespace theme's gold link hover */
+.slt .slt-toc a:hover{color:var(--ink) !important; opacity:1 !important; filter:none !important}
+@media(max-width:900px){ .slt-toc{position:static; top:auto} .slt-toc-links{display:none} }
+
+/* mobile jump select */
+.slt-jump{display:none}
+@media(max-width:900px){
+  .slt-jump{display:block; width:100%; height:46px; padding:0 14px; font-size:15px; font-family:var(--sans); color:var(--ink); background:rgba(255,255,255,.6); border:1px solid var(--hair); border-radius:10px; appearance:none; -webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 16 16'%3E%3Cpolyline points='2,5 8,11 14,5' fill='none' stroke='%238B6E4E' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center; padding-right:36px;}
+  .slt-jump:focus{font-size:16px}
+}
+
+/* ── EXPAND-ALL CONTROL ── */
+.slt-tools{display:flex; justify-content:flex-end; margin-bottom:10px}
+.slt-expand{background:none; border:none; padding:0; font-family:var(--sans); font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep); cursor:pointer; transition:color .15s}
+@media(hover:hover) and (pointer:fine){ .slt-expand:hover{color:var(--ink)} }
+
+/* ── SECTIONS (accordion) ── */
+.slt-sec{border-top:1px solid var(--hair-soft); scroll-margin-top:110px}
+.slt-sec:first-of-type{border-top:1px solid var(--hair)}
+.slt-sec:last-of-type{border-bottom:1px solid var(--hair-soft)}
+
+.slt-sec-btn{width:100%; display:flex; align-items:baseline; gap:18px; background:none; border:none; padding:20px 0; cursor:pointer; text-align:left; -webkit-appearance:none}
+.slt-num{font-family:var(--serif); font-style:italic; font-weight:300; color:var(--gold); font-size:15px; min-width:28px; flex:none}
+.slt-sec-btn h2{font-family:var(--serif); font-weight:400; letter-spacing:-.02em; font-size:21px; line-height:1.25; color:var(--ink); flex:1; transition:color .15s}
+.slt-chev{align-self:center; flex:none; width:22px; height:22px; border:.5px solid var(--hair); background:rgba(184,150,110,.06); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--gold-deep); font-size:14px; line-height:1; transition:transform .25s var(--ease), border-color .2s, background .2s}
+.slt-sec.open .slt-chev{transform:rotate(45deg); border-color:var(--gold); background:rgba(184,150,110,.14)}
+@media(hover:hover) and (pointer:fine){
+  .slt-sec-btn:hover h2{color:var(--gold-deep)}
+  .slt-sec-btn:hover .slt-chev{border-color:var(--gold-deep)}
+}
+
+.slt-body{max-height:0; overflow:hidden; opacity:0; transition:max-height .45s var(--ease), opacity .3s var(--ease)}
+.slt-sec.open .slt-body{opacity:1}
+.slt-body-inner{padding:0 0 26px 46px; max-width:680px}
+@media(max-width:600px){ .slt-body-inner{padding-left:0} }
+
+.slt-body p{font-size:14px; line-height:1.75; color:var(--txt-body); margin-bottom:12px}
+.slt-body p:last-child{margin-bottom:0}
+.slt-body strong{color:var(--ink); font-weight:600}
+.slt-body ul{list-style:none; margin-bottom:12px}
+.slt-body ul li{position:relative; padding-left:18px; font-size:14px; line-height:1.7; color:var(--txt-body); margin-bottom:8px}
+.slt-body ul li::before{content:''; position:absolute; left:0; top:.62em; width:6px; height:6px; border-radius:50%; background:rgba(184,150,110,.55)}
+.slt-def{margin-bottom:12px}
+.slt-def dt{font-size:13.5px; font-weight:600; color:var(--ink); margin-top:14px}
+.slt-def dd{font-size:13.5px; line-height:1.7; color:var(--txt-body); margin-top:3px}
+.slt-body a{color:var(--gold-deep); font-weight:500; text-decoration:none; border-bottom:1px solid rgba(184,150,110,.42); padding-bottom:1px; transition:color .15s, border-color .15s}
+@media(hover:hover) and (pointer:fine){ .slt-body a:hover{color:var(--ink); border-color:rgba(13,26,46,.4)} }
+
+.slt-contact{margin-top:40px; font-size:13.5px; color:var(--txt-soft); line-height:1.7}
+.slt-contact a{color:var(--gold-deep); font-weight:500; text-decoration:none; border-bottom:1px solid rgba(184,150,110,.42); padding-bottom:1px}
+
+@media(prefers-reduced-motion:reduce){
+  .slt-body, .slt-chev, .slt-toc a, .slt-expand{transition:none !important}
+}
+</style>
+
+<div class="slt">
+
+  <header class="slt-header">
+    <div class="slt-eyebrow">Legal</div>
+    <h1>Terms of <em>Service.</em></h1>
+    <p class="slt-updated">Last updated July 2026</p>
+    <div class="slt-preface">
+      <p>Firstly, welcome to our website's terms and conditions. We've included a wide range of conditions below to cover the diverse types of apartments on our website, and the many possible scenarios that could arise. Even if some situations seem extremely rare or unlikely, it's important for us to include them to ensure transparency and cover all bases to protect both parties.</p>
+      <p>Please have a read of the terms outlined below, and if there is anything you need greater clarity on, you can message your dedicated account manager. We're here to help and guide you through the process.</p>
+    </div>
+  </header>
+
+  <div class="slt-layout">
+
+    <!-- ── TOC ── -->
+    <nav class="slt-toc" aria-label="Terms of service contents">
+      <div class="slt-toc-title">Contents</div>
+      <select class="slt-jump" id="sltJump" aria-label="Jump to section">
+        <option value="">Jump to a section…</option>
+      </select>
+      <div class="slt-toc-links" id="sltTocLinks"></div>
+    </nav>
+
+    <!-- ── SECTIONS ── -->
+    <div class="slt-main">
+      <div class="slt-tools">
+        <button type="button" class="slt-expand" id="sltExpandAll">Expand all</button>
+      </div>
+
+      <section class="slt-sec" id="s0" data-title="Introduction">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">§</span>
+          <h2>Introduction</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>These Booking Terms and Conditions (the "Terms and Conditions"), along with the information set out in your Booking Confirmation Email set out the terms on which Student Luxe Limited ("we" "our") agrees to make available to you booking services through our Website.</p>
+          <p>The booking services we make available by the Website can only be used by clients and guests who have first read these Terms and Conditions and accept them unconditionally.</p>
+          <p>Clients and guests undertake to fulfil the obligations contained within these Terms and Conditions. The agreement between clients/guests and the applicable property owner/manager(s) comes into force as soon as we provide the client/guest with the Booking Confirmation Email.</p>
+          <p>Clients and guests should save and/or print a copy of these Terms and Conditions for future reference when making a booking.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s1" data-title="Interpretation">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">01</span>
+          <h2>Interpretation</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>In these Terms and Conditions the following words and phrases shall have the following meanings unless the context otherwise requires:</p>
+          <dl class="slt-def">
+            <dt>"Additional Charge"</dt><dd>means a charge or fee that is additional to the Booking Fee and includes those specified as an 'additional charge' in these Terms and Conditions or in the Booking Form, and also any other reasonable charge or fee incurred by you under these Terms and Conditions.</dd>
+            <dt>"Agreement"</dt><dd>means these Terms and Conditions and the accepted and counter-signed Booking Form as returned by way of our Booking Confirmation Email, in respect of a Booking made for an Apartment for the duration of the Booking Term for the Booking Fee.</dd>
+            <dt>"Apartment"</dt><dd>means the fully furnished and equipped apartment, which is offered for booking by Student Luxe Limited on behalf of its owner/manager. Such Apartment is accessed by corridors, stairwells and any common part of the Property, and the Booking Fee includes the Inclusive Services.</dd>
+            <dt>"Booking"</dt><dd>means an offer from you to book an apartment for a proposed Booking Term, for the proposed Booking Fee on the terms of the Agreement following your provision of sufficient information to enable us to complete our telephone or Website provisional booking process.</dd>
+            <dt>"Booking agent" ("us" or "we")</dt><dd>means Student Luxe Limited, promoting and offering Apartments on behalf of the owners/managers of Properties/Apartments.</dd>
+            <dt>"Booking Confirmation Email"</dt><dd>means our email reply to the Client approving the request for a Booking, and attaching the applicable counter-signed Booking Form. Upon delivery of the Booking Confirmation Email to the Client, the Client and ourselves become bound to the Agreement.</dd>
+            <dt>"Booking Fee"</dt><dd>means the fee to be paid by the Client in respect of the applicable Booking.</dd>
+            <dt>"Booking Term"</dt><dd>means the period for the Booking (from check-in to check-out) as requested on the Booking Form.</dd>
+            <dt>"Client" (and "you", "your")</dt><dd>means the person making the Booking on behalf of the party who will be staying in the Apartment during the applicable Booking Term. The Client could also be the Guest if the Client is making the Booking for itself.</dd>
+            <dt>"Data Controller"</dt><dd>shall bear the meaning set out in the Data Protection Legislation.</dd>
+            <dt>"Data Processor"</dt><dd>shall bear the meaning set out in the Data Protection Legislation.</dd>
+            <dt>"Data Protection Legislation"</dt><dd>means all applicable data protection laws, including: (i) UK Data Protection Act 2018, Privacy and Electronic Communications Regulations 2011, EU privacy Directive 2002/58/EC; and (ii) Regulation 2016/679 of the European Parliament and of the Council on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (General Data Protection Regulation), as and in relation to (iii) any data protection laws in any European Union Member State including laws implementing such Regulation and (iv) any national implementing laws, regulations and secondary legislation, as amended or updated from time to time, in the UK and (v) any successor legislation to the GDPR or the UK Data Protection Act 2018.</dd>
+            <dt>"Data Subject"</dt><dd>shall bear the meaning set out in the Data Protection Legislation.</dd>
+            <dt>"General Data Protection Legislation" or "GDPR"</dt><dd>means Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data.</dd>
+            <dt>"Guest" (and "you" "your")</dt><dd>means any adult authorised by us to reside at the Apartment which is the subject of the appropriate Booking - they could also be the Client.</dd>
+            <dt>"Inclusive Services"</dt><dd>means housekeeping service, cleaning, linen and towel change, use of electricity, gas, water, drainage and sewerage, council tax, TV licence.</dd>
+            <dt>"Parties"</dt><dd>means each of us, the Client and the Guest.</dd>
+            <dt>"Personal Data"</dt><dd>has the meaning given to that term in the Data Protection Legislation in force from time to time.</dd>
+            <dt>"Property"</dt><dd>means the building within which is (are) located the Apartment(s) which is(are) the subject of a Booking.</dd>
+            <dt>"Rules and Restrictions"</dt><dd>means the terms and conditions applicable to the Properties and Apartments provided by the applicable owner/manager.</dd>
+            <dt>"Website"</dt><dd>means www.studentluxe.co.uk</dd>
+          </dl>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s2" data-title="Scope">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">02</span>
+          <h2>Scope</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>We operate the Website which acts as an interface between you and the various owners/managers of the presented properties and apartments. When you make a booking for an Apartment using the Website, you will be entering into an agreement with the appropriate owner/manager once you receive our Booking Confirmation Email.</p>
+          <p>These Terms and Conditions apply to the offering and providing of apartments via the Website and shall incorporate any applicable Rules and Restrictions which are made available to you before any booking is completed and which you also accept at the moment that a booking is actually placed. It is your responsibility to familiarise yourself with these Terms and Conditions and applicable Rules and Restrictions.</p>
+          <p>We can change the Terms and Conditions at any time without prior notice, although such changes will not apply to bookings that we have already accepted on behalf of the applicable property or apartment owners/managers concerned. It is therefore essential that you read, save and/or print a copy of the Terms and Conditions at the time the booking is placed, in order to be aware of the provisions in force.</p>
+          <p>Your stay through us at the Apartment is not intended to confer exclusive possession on you nor to create the relationship of landlord and tenant between either: (i) Student Luxe Limited and you; nor (ii) owner/manager of the applicable Property/Apartment and you. You agree that the purpose of the letting is for a student accommodation or other form of transient lodging, and therefore that you will not be entitled to any rights under any statutory provision including, without prejudice to the foregoing generality, the Rent Act 1977, any assured tenancy or assured shorthold tenancy under the Housing Act 1988, or any tenancy arising under or in terms of, or regulated by the Housing (Scotland) Act 1988, Housing (Scotland) Act 2006, Housing (Scotland) Act 2014, Private Housing (Tenancies) (Scotland) Act 2016, including in each case any amendment or re-enactment of any such statute for the time being in force.</p>
+          <p>Our rates are subject to change without notice. VAT is charged as appropriate.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s3" data-title="Agreement for Occupation">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">03</span>
+          <h2>Agreement for Occupation</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>You will be permitted to occupy the Apartment as student accommodation or other form of transient lodging for the Booking Term only and subject to these Terms and Conditions and applicable Rules and Restrictions, such only occupation being either by you personally or such guests named in the Booking. The actions and omissions of any visitor to the Apartment are your responsibility. See also your obligations under paragraph 11 below.</p>
+          <p>You must be 18 years or over when you make the Booking, and you must be legally authorised to enter into contractual obligations as the time of you making the Booking, and also have the requisite consent or authority to act for or on behalf of any persons included in the Booking and must use the Website in accordance with these Terms and Conditions. Children of any age are only allowed to stay if they are accompanied by a responsible adult or carer.</p>
+          <p>We reserve the right to refuse to accept any booking for whatever reason. We accept your Booking when we issue our Booking Confirmation email.</p>
+          <p>You are to arrive at the Apartment no earlier than 4pm (except if stated differently) on the first day of your Booking Term and, unless otherwise agreed, you must leave by 10am on the last day of your Booking Term. If you fail to arrive by midnight on the first day of your Booking Term and do not advise us of a late arrival, we may treat your Booking as being cancelled by you and we shall be entitled to re-sell the Apartment for the same period.</p>
+          <p>If you want to increase the length of your Booking Term, we will use reasonable endeavours to try to accommodate your request, subject to availability of accommodation. It must be borne in mind that this may not always be possible.</p>
+          <p>If the number of people permitted to occupy the Apartment is in breach of the number of people authorised under applicable health and safety regulations for the lodging industry in the UK, we reserve the right to move excess occupants and charge for additional apartments or require the excess occupants to vacate the Apartment.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s4" data-title="Paying for your Accommodation">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">04</span>
+          <h2>Paying for your Accommodation</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>The following terms apply to payment:</p>
+          <p>To create your Booking an initial payment is required. The initial amount due will be the first week rent. Should the check in date be less than 4 weeks ahead of the booking date, the initial payment required may increase to 2 or even 4 weeks, depending how soon the check in date is.</p>
+          <p>Once this initial payment has been made, the booking is secured. This payment is not refundable, should you wish to cancel at a later date.</p>
+          <p>The balance of the first instalment will be due within 5 days of the booking date. If your Booking is for a Booking Term of more than 90 days, payment in respect of the first 90 days of the Booking Term (the "Initial Booking Term") shall be as per the previous sentence of this paragraph 4.1.1, and payment in respect of the remainder of the Booking Term (from day 91 until the end of the Booking Term) shall be paid in full by the 60th day of the Initial Booking Term. Booking Terms longer than 180 days will be split into 3 invoices, and payment in respect of the third invoice (in respect of the Booking Term from day 181 onwards) will be due on the 150th day of the Booking Term. All prices advised to you are inclusive of booking fees and charges unless stated otherwise.</p>
+          <p>Should the payment of the full Booking Fee amount not reach us at least 3 days before the start of the Booking Term, we reserve the right to cancel the Booking. Any deposit paid in respect of such Booking will be forfeited.</p>
+          <p>If you fail to pay any sum when due, then you will pay us, on demand, interest on the unpaid sum at 4% above the Royal Bank of Scotland's base rate from time to time. Such interest shall accrue on a daily basis from the due date until we receive payment in full cleared funds, whether before or after any judgement.</p>
+          <p>You shall leave the Apartment in a reasonable state on departure, including rubbish being placed in rubbish bins, and soiled dishes being placed in the dishwasher. If, at our discretion (or that of the owner/manager of the Apartment), additional cleaning is required on departure, the cost of this cleaning will be charged as an Additional Charge.</p>
+          <p><strong>Smoking:</strong> UK legislation provides that smoking is not permitted in either the Property or the Apartment. Smokers must vacate the building should they wish to smoke. Where there is evidence of guests smoking within either the Apartment or the Property, a cleaning and restoration fee will be applied to the guest's account. The violation of the non-smoking policy may lead to eviction with immediate effect without a refund, subject to the discretion of management.</p>
+          <p><strong>Illegal substances:</strong> Anyone found using or under the influence of illegal drugs or substances classified under the Misuse of Drugs Act (1971) will be reported to the police and asked to leave the Property. Any evidence or suspicion of drug use at the Property will also be reported immediately to the police.</p>
+          <p><strong>Falsified Bookings:</strong> Any Booking obtained under false pretence will be subject to forfeiture of advance payment, deposit and/or rental money, and the party will not be permitted to check in.</p>
+          <p><strong>Pets:</strong> Pets are permitted only in specific units or with prior written approval. An Additional Charge may apply depending on the property. Any pet charges will be quoted at the time of booking. The Pet Addendum has to be signed and returned to the owner/manager of the Apartment at least 2 days prior to arrival to allow pets into the Property. Outside of the Apartment, all pets must be leashed at all times. Pet owners are responsible for cleaning up any/all pet refuse. Pets are not allowed on furniture at any time. Any evidence of pets on furniture may incur extra cleaning fees. All pets must be up-to-date on rabies and all other vaccinations before the commencement of the Booking Term. Heartworm prevention is highly recommended. All pets are to be treated with Advantage or similar flea and tick repellent three (3) days before the commencement of the Booking Term. Fleas and ticks are very rampant and can cause harmful/fatal illness to humans and pets. All items above are the sole responsibility of the pet owner. We assume no responsibility for illness or injury that humans or pets may incur while on the Property, unless it results from an act or omission on our part.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s5" data-title="Loss and Damage; Security Deposit">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">05</span>
+          <h2>Loss and Damage; Security Deposit</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>Please ensure that you inspect the Apartment on check-in. Unless we receive notification otherwise within two working days following check-in, we will be entitled to assume that you have fully accepted that the condition of the Apartment is in good repair, condition and in a clean and tidy state and you will waive any right to claim otherwise.</p>
+          <p>Risk of damage to the Apartment and its contents will pass to you on check-in and remain with you until the Apartment is returned to the owner/manager of the Apartment at the expiry of the Booking Term. You shall be liable for all loss or damage (except fair wear and tear) caused during the Booking Term, and for any reasonable loss of rental resulting from such loss or damage.</p>
+          <p>A security deposit to cover your obligations may be taken at or prior to check-in. This may be in the form of a payment or an authorisation to deduct payment from your debit or credit card used to make the Booking. Any security deposit paid will be returned to you in full (or any payment authorisation cancelled) upon the Apartment being returned to us in accordance with the terms of this Agreement. Where you are liable for loss or damage under paragraph 5.2, we may withhold some or all of your deposit to cover the same as well as our administration fees associated with repairing or dealing with the loss or damage. These will be Additional Charges.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s6" data-title="Additional Charges">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">06</span>
+          <h2>Additional Charges</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>The Additional Charges which may be payable shall be those specified during the Booking process as Additional Charges or as special requirements, and any specified in these Terms and Conditions.</p>
+          <p>Where Additional Charges are payable, you hereby authorise us to take them from the credit or debit card used to make the Booking. If no credit or debit card was used in the Booking, you must pay Additional Charges by another means acceptable to us. All Additional Charges are due on the check-out date, unless the context otherwise requires.</p>
+          <p>If you fail to pay any Additional Charge within 14 days of the date of our invoice requiring payment of the same, you will incur an administration fee of £50 to cover the costs of sending you our debt collection letter, which will follow.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s7" data-title="Changes to your booking by us">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">07</span>
+          <h2>Changes to your booking by us</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>In the unlikely event we have to cancel or make any changes to your Booking, we will use all reasonable efforts to contact you as soon as possible to explain what has happened and inform you of the cancellation or change. If possible, we will offer alternatives, but should these alternatives be unacceptable to you, the Booking will be treated as cancelled and we will refund any money you have paid to us within 14 days of any cancellation.</p>
+          <p>We shall not be liable for changes, cancellations or any other effect on your Booking due to events beyond our reasonable control (force majeure), including (by way of example only and without limiting the generality of the foregoing) terrorist activity, industrial disputes, natural or manmade disasters, fire, and adverse weather conditions.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s8" data-title="Cancellation / Alteration by you">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">08</span>
+          <h2>Cancellation / Alteration of your booking by you</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>Once your Reservation has been confirmed by our Apartment Provider, your right to make a change to your Reservation or to make a cancellation will be subject to:</p>
+          <ul>
+            <li>A minimum of 30 days prior to your arrival date, or in the case of a no-show, the first 90 days of the reservation will be charged.</li>
+            <li>For cancellations made prior to check-in but less than 30 days before your arrival date, or after the check in date has passed, the first 90 days of the reservation will be charged. After the initial 90 nights have elapsed, the cancellation terms become 30 nights. Unless stated differently in the Apartment Reservation Confirmation, or indicated to you in writing during the Reservation process.</li>
+            <li>If you would like to make a cancellation or make any change to your Reservation, please contact us.</li>
+            <li>Please note that if you contact us outside of our normal office hours, your request will only be classed to have been received on the next working day.</li>
+          </ul>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s9" data-title="Our liability">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">09</span>
+          <h2>Our liability</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>We own and operate the Website which acts as an interface between you and the owner/manager who provides the Apartment to you. When making a Booking you enter into a contract with the Apartment owner/manager. We will not be liable in respect of the accommodation services that the applicable Apartment owner/manager makes available to you or for the acts, errors, omissions, representations, warranties or negligence of any such Apartment owner/manager.</p>
+          <p>Except as expressly set out in these Terms and Conditions, all the information and detail concerning the Properties/Apartments displayed on the Website is provided without any warranty (either express or implied) or implied term of any kind, including but not limited to any implied warranties or implied terms of satisfactory quality, fitness for a particular purpose or non-infringement. All such implied terms and warranties are excluded from the Agreement. The inclusion or offering of Apartments on the Website does not constitute any endorsement or recommendation of such Apartments by ourselves or any of our affiliates.</p>
+          <p>The owners/managers of the various Properties / Apartments provide us with the information describing the Properties/Apartments which we display on the Website, such as photographs and rates. It is the responsibility of the applicable Property/Apartment owners/managers to ensure that such information provided to us is accurate, complete and up-to-date. We will not be liable for any inaccuracies of such information, unless and only to the extent that we have directly caused such inaccuracies.</p>
+          <p>Any guest using their own electrical appliances (hairdryers, curlers, tongs, shavers, personal computers, personal stereos etc.) must use the appropriate adaptor. Non-UK plugs used without the appropriate adaptor/transformer are a serious fire risk. Please ensure that all heated appliances are switched off and stored safely before leaving the Apartment. Guests found to be in breach of this rule may be asked to leave with immediate effect.</p>
+          <p>You must take all necessary steps to safeguard your personal property and we accept no liability to you in respect of damage to, or loss of, such property. Cars and their contents are parked at their owners' risk. Please ensure that cars are locked and possessions are left out of sight.</p>
+          <p>Property left in the Property/Apartment will be kept for 1 week after the end of the Booking Term and forwarded at your (or the guest's) expense. If it is not reclaimed within 1 week after the end of the Booking Term, we and the owner/manager of the Property/Apartment, shall have the discretion to discard or sell the appropriate items, and where sold we (or the owner/manager of the Property/Apartment, as applicable) shall be entitled to retain any proceeds of the sale.</p>
+          <p>We shall have no liability for: (i) any loss which was not foreseeable before we entered this Agreement; or (ii) losses not caused by our negligence, acts, omissions to act or our breach of this Agreement, and, if you are entering this Agreement in the course of a business, we shall have no liability for any loss of profit, loss of or damage to goodwill, increased costs, loss of anticipated savings, loss of business, or any special, indirect or consequential loss to your business (whether arising through breach of contract, tort including (without limitation) negligence, or breach of statutory duty). Save in respect of fraud, personal injury, loss of property and death which is directly attributable to our acts or omissions to act, our total liability to you under this Agreement is limited to the total cost of your Booking.</p>
+          <p>All descriptions and photographs of the Apartment are for illustration only and we do not warrant that they are accurate or complete, although we do use all reasonable endeavours to ensure that they are.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s10" data-title="Keys">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">10</span>
+          <h2>Keys</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>Unless otherwise agreed, the owner/manager of the Apartment will issue to the client or guest one set of keys to the Property and the Apartment. If at any time the client or guest loses the keys, they must notify the owner/manager as soon as possible and they will instruct a locksmith to change the lock/key(s) and charge the client or guest.</p>
+          <p>If the guest locks him or herself out of the Property and/or the Apartment and requires the owners' assistance to reenter the property, the owner/manager shall reserve the right to charge an administration fee, as an Additional Charge.</p>
+          <p>The owner/manager of the Property will retain a set of keys and will access the Property to provide any necessary maintenance and also to inspect the Property and carry out repairs to the structure, roof, exterior or any services, appliances or equipment therein.</p>
+          <p>On check-out, keys must be left in the keybox or on the kitchen table (or the same place as the guest collected them from) and the Apartment must be left locked. Loss of keys will incur an Additional Charge.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s11" data-title="Client's Obligation">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">11</span>
+          <h2>Client's Obligation</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>The client warrants the following in respect of its Booking:</p>
+          <ul>
+            <li>It has the requisite consent or authority to act for and on behalf of all guests in respect of the Booking.</li>
+            <li>All details provided for all clients and guests are full and accurate, and that all Parties agree to be bound by the Terms and Conditions.</li>
+            <li>It shall be responsible for the Booking and for paying the deposit and the full price, making any amendment and cancellation requests, for paying Additional Charges and for all other matters concerning the Booking.</li>
+            <li>Save as permitted under paragraph 4.1.9, guests will not keep any animals, insects, birds or reptiles in the Property or the Apartment, without our prior written permission.</li>
+            <li>When guests with small children occupy the Apartment, the guest undertakes to provide all suitable childproofing safety equipment.</li>
+            <li>Guests will not do or permit any act reasonably likely to make any insurance policy on the Property and/or the Apartment void or voidable or increase the premium.</li>
+            <li>Guests will not do anything that may cause a nuisance or annoyance to the owners or to any other occupier or guest of adjoining properties or do anything at the Property and/or the Apartment that is illegal or immoral. Noise disturbance after 11pm and before 7am can be reported to the local Council.</li>
+            <li>At the end of the Booking Term the Property and the Apartment are cleared of the guest's effects and left in good repair and clean condition. The client will pay for the repair or replacement of such items of the fixtures, furniture, furnishings and other effects as shall be broken, lost, damaged, or destroyed save for reasonable wear and tear.</li>
+            <li>Guests will use the Apartment for private residential purposes only and for hybrid 'working from home' purposes, where they cannot attend their usual place of work.</li>
+            <li>Guests will not make any alterations to the Apartment or the Property, or attempt to make any repairs.</li>
+            <li>The client will not assign, underlet, sub-license, charge or part with possession of whole or any part of the Apartment, take in lodgers or share occupation of the Apartment with any person in any way.</li>
+            <li>Guests will not sell, loan, charge or otherwise dispose of or part with possession of any of the contents located at the Apartment including without limitation the owners' furniture and effects.</li>
+            <li>Guests will not hang on the outside of the Property or the Apartment any flower pot or similar object or any clothes or other articles.</li>
+            <li>Guests will not block or put noxious or damaging substances into the sinks, baths and lavatory cisterns or waste or soil pipes in the Property or the Apartment or allow them to overflow, and will immediately report any such blockage etc. to us.</li>
+            <li>Guests will not leave the entrance door or windows to the Apartment open and will ensure that all doors and window locks are properly engaged at all times. All windows must be closed when the guest is not in the Apartment or during bad weather.</li>
+            <li>Guests will take all reasonable precautions to prevent condensation by keeping the Apartment adequately ventilated and heated. Extractor fans located in the bathrooms and en-suites must be switched on at all times to prevent damage to the Apartment.</li>
+            <li>Guests will not change any lock to the Property or the Apartment or have any duplicate keys made.</li>
+            <li>Guests will notify us as soon as is practicably possible of (a) any plumbing, electrical or general problem or (b) any damage to the Property or the Apartment or its contents, and shall desist from attempting to remedy such problem on their own.</li>
+            <li>Guests will notify us of any damage to the Property or the Apartment or its contents as soon as is practicably possible.</li>
+            <li>Guests will maintain properly insured, to their full replacement value, all of their personal property which is kept either at the Property or the Apartment or on the guest's person.</li>
+            <li>Guests will use all equipment provided at the Property and the Apartment strictly in accordance with its operating instructions and not for any purpose other than its intended use.</li>
+            <li>Guests will not leave or store any valuable personal possessions anywhere in the Property or the Apartment where they can be easily viewed by third parties.</li>
+            <li>Guests will not play ball games inside or within the grounds of the Property.</li>
+            <li>The number of people occupying the Apartment during the Booking Term does not at any time exceed the maximum number of permitted occupants as set out in your Booking.</li>
+            <li>Guests will use any cleaning products, liquids, tablets etc. strictly in accordance with their usage instructions and ensure that such products are kept out of reach of children. We accept no liability for misuse of products supplied.</li>
+            <li>Guests will not install any portable cooking appliances, camping stoves or similar items in the Property or the Apartment.</li>
+            <li>You will indemnify us and will keep us indemnified on demand for all claims, liabilities, losses, costs and expenses (including legal fees) incurred or suffered by us (except any incurred as a result of our default) in connection with this Agreement, except for personal injury or death caused by our act or omission.</li>
+            <li>Guests will ensure they take photos during CHECK IN of any existing damage if they are concerned that it may affect their security deposit and should email them on the day of check-in to <a href="mailto:hello@studentluxe.co.uk">hello@studentluxe.co.uk</a>. If photos are not received, any new damage (holes or dents in walls/ spillages on fabric throughout the apartment/damage to electrical goods/fixtures/fittings/flooring/surfaces etc.) discovered post check-out will be charged against the security deposit.</li>
+          </ul>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s12" data-title="Termination of this Agreement">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">12</span>
+          <h2>Termination of this Agreement</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>This Agreement may be ended by us with immediate effect if:</p>
+          <ul>
+            <li>the Booking Fee is not paid in accordance with the provisions of paragraphs 4.1.1 to 4.1.3 inclusive); or</li>
+            <li>you are in breach of any of the Terms or Conditions; or</li>
+            <li>The guest becomes bankrupt, has an administration order made against him or her or has a judgment enforced or entered against him or her.</li>
+          </ul>
+          <p>We may also terminate your Booking at any time and for any reason on giving the guest reasonable prior written notice.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s13" data-title="Data Protection">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">13</span>
+          <h2>Data Protection</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>We are required to gather certain Data for the purposes of satisfying legal obligations. To the extent the Data Protection Legislation applies to the Data, the Parties hereby agree as follows:</p>
+          <p>Client (or Guest if the Client is the Guest) (the "Client Data Controller") hereby appoints us as a Data Processor on its behalf to process that Personal Data of each Guest for the purposes of performing the Booking ("Data"). The Client Data Controller will comply with its obligations under Data Protection Legislation;</p>
+          <p>We shall process the Data as a Data Processor necessary to perform our obligations under the Agreement and in accordance with the reasonable documented instructions of the Client Data Controller ("Permitted Purpose"), except where otherwise required by applicable law in which case we shall inform the Client Data Controller prior to such processing unless we are prohibited by law from doing so. In no event shall we process the Data for our own purposes or those of any third party, unless and until a Data Subject consents to such processing. We shall promptly inform the Client Data Controller if in our opinion an instruction of the Client Data Controller infringes Data Protection Legislation;</p>
+          <p>The Client Data Controller hereby consents to the transfer by us of Data outside of the United Kingdom to other entities within our group (if applicable) and to service providers who have executed standard contractual clauses adopted or approved by the European Commission or the appropriate governmental or regulatory body, or who otherwise can lawfully make such transfer in accordance with Data Protection Legislation.</p>
+          <p>We will ensure that any person we authorise to process the Data (each an "Authorised Person") shall be subject to a strict duty of confidentiality (whether a contractual duty or a statutory duty) and we shall not permit any person to process the Data who is not under such a duty of confidentiality. We shall instruct all Authorised Persons to process the Data only as necessary for the Permitted Purpose.</p>
+          <p>We shall implement appropriate technical and organisational measures to protect the Data: (i) from accidental or unlawful destruction, and (ii) from loss, alteration, unauthorised disclosure of, or access to the Data (a "Security Incident"). We shall provide such assistance as the Client Data Controller may reasonably require for the purpose of the Client Data Controller's compliance with its obligations under the Data Protection Legislation to protect the Data against a Security Incident;</p>
+          <p>The Client Data Controller hereby acknowledges that (and consents to) we may appoint third parties to sub-process the Data for the Permitted Purpose;</p>
+          <p>We shall provide the Client Data Controller with all reasonable and timely assistance (including by appropriate technical and organisational measures) (at the Client Data Controller's expense) to enable the Client Data Controller to respond to: (i) any request from a Data Subject to exercise any of its rights under the Data Protection Legislation (including its rights of access, correction, objection, erasure and data portability, as applicable); and (ii) any other correspondence, enquiry or complaint received from a Data Subject, regulator or other third party in connection with the processing of the Data. In the event that any such request, correspondence, enquiry or complaint is made directly to the Client Data Controller, the Client Data Controller shall promptly inform us providing full details of the same;</p>
+          <p>If we believe or become aware that our processing of the Data is likely to result in a high risk to the data protection rights and freedoms of Data Subjects, we shall promptly inform the Client Data Controller and provide the Client Data Controller with all such reasonable and timely assistance as the Client Data Controller may require in order to conduct a data protection impact assessment and, if necessary, consult with its relevant data protection authority;</p>
+          <p>If we become aware of a Security Incident, we shall inform the Client Data Controller without undue delay and shall provide all such timely information and cooperation as the Client Data Controller may reasonably require in order for the Client Data Controller to fulfil its data breach reporting obligations under (and in accordance with the timescales required by) the Data Protection Legislation. We shall further take all such reasonable measures and actions as are reasonably necessary to remedy or mitigate the effects of the Security Incident and shall keep the Client Data Controller informed of all material developments in connection with the Security Incident;</p>
+          <p>Upon termination or expiry of the Agreement, we shall (at the Client Data Controller's written election) delete, destroy or return to the Client Data Controller all Data (including all copies of the Data) in our possession or control (and shall instruct all our sub-processors to do the same). This requirement shall not apply to the extent that (i) we have become a Data Controller of any Data, (ii) we are required by any applicable law to retain some or all of the Data, in which event we shall use our reasonable endeavours to isolate and protect the Data from any further processing except to the extent required by such law;</p>
+          <p>We shall permit the Client Data Controller (or its appointed third party professional auditors) to audit our compliance with our obligations under this paragraph 13, and shall make available to the Client Data Controller all information, systems and staff necessary for the Client Data Controller (or its professional third party auditors) to conduct such audit. We acknowledge that the Client Data Controller (or its professional third party auditors) may enter our premises for the purposes of conducting this audit, provided that the Client Data Controller gives us reasonable prior notice of its intention to audit, conducts its audit during normal business hours, and takes all reasonable measures to prevent unnecessary disruption to our operations. The Client Data Controller will not exercise its audit rights more than once in any twelve (12) calendar month period, except (i) if and when required by instruction of a competent data protection authority; or (ii) if the Client Data Controller reasonably believes a further audit is necessary due to a Security Incident suffered by us.</p>
+          <p>We may use cookies on our Website for the purpose of monitoring website usage, and we will ask for your consent, but do ask that you inform us if you do not consent to the use of these cookies.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s14" data-title="Law">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">14</span>
+          <h2>Law</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>The Agreement and all matters arising from it are subject to the law of England and Wales and, in the event of a dispute, you will be subject to the exclusive jurisdiction of the courts of England and Wales. If the Property/Apartment is in Scotland, the Agreement between us and all matters arising therefrom are subject to the law of Scotland and, in the event of a dispute, you will be subject to the exclusive jurisdiction of the courts of Scotland.</p>
+        </div></div>
+      </section>
+
+      <section class="slt-sec" id="s15" data-title="Severance">
+        <button type="button" class="slt-sec-btn" aria-expanded="false">
+          <span class="slt-num" aria-hidden="true">15</span>
+          <h2>Severance</h2>
+          <span class="slt-chev" aria-hidden="true">+</span>
+        </button>
+        <div class="slt-body"><div class="slt-body-inner">
+          <p>If any provision (or part-provision) in these Terms and Conditions is or becomes invalid, illegal or unenforceable, it shall be deemed modified to the minimum extent necessary to make it valid, legal and enforceable. If not possible, it shall be struck out. The rest of the Agreement shall remain enforceable.</p>
+        </div></div>
+      </section>
+
+      <p class="slt-contact">If you have any questions about the above, please email <a href="mailto:hello@studentluxe.co.uk">hello@studentluxe.co.uk</a>.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var secs = Array.prototype.slice.call(document.querySelectorAll('.slt-sec'));
+  var tocWrap = document.getElementById('sltTocLinks');
+  var jump = document.getElementById('sltJump');
+  var expandBtn = document.getElementById('sltExpandAll');
+  var allOpen = false;
+
+  function setOpen(sec, open){
+    var btn = sec.querySelector('.slt-sec-btn');
+    var body = sec.querySelector('.slt-body');
+    sec.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if(open){
+      body.style.maxHeight = body.scrollHeight + 'px';
+      /* release the fixed height after animation so nested growth is not clipped */
+      setTimeout(function(){ if(sec.classList.contains('open')) body.style.maxHeight = 'none'; }, reduce ? 0 : 480);
+    } else {
+      if(body.style.maxHeight === 'none'){
+        /* re-clamp before collapsing so the transition runs */
+        body.style.maxHeight = body.scrollHeight + 'px';
+        void body.offsetWidth;
+      }
+      body.style.maxHeight = '0';
+    }
+  }
+
+  function openAndScroll(id){
+    var sec = document.getElementById(id);
+    if(!sec) return;
+    setOpen(sec, true);
+    sec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  /* build toggles + TOC + jump select */
+  secs.forEach(function(sec){
+    var btn = sec.querySelector('.slt-sec-btn');
+    btn.addEventListener('click', function(){
+      setOpen(sec, !sec.classList.contains('open'));
+    });
+    var title = sec.getAttribute('data-title');
+    var num = sec.querySelector('.slt-num').textContent;
+    if(tocWrap){
+      var a = document.createElement('a');
+      a.href = '#' + sec.id;
+      a.textContent = (num === '§' ? '' : num + '. ') + title;
+      a.addEventListener('click', function(e){ e.preventDefault(); openAndScroll(sec.id); history.replaceState(null, '', '#' + sec.id); });
+      tocWrap.appendChild(a);
+    }
+    if(jump){
+      var o = document.createElement('option');
+      o.value = sec.id;
+      o.textContent = (num === '§' ? '' : num + '. ') + title;
+      jump.appendChild(o);
+    }
+  });
+
+  if(jump){
+    jump.addEventListener('change', function(){ if(this.value){ openAndScroll(this.value); this.value=''; } });
+  }
+
+  /* expand / collapse all */
+  if(expandBtn){
+    expandBtn.addEventListener('click', function(){
+      allOpen = !allOpen;
+      secs.forEach(function(sec){ setOpen(sec, allOpen); });
+      expandBtn.textContent = allOpen ? 'Collapse all' : 'Expand all';
+    });
+  }
+
+  /* deep link: #s4 opens that section */
+  if(location.hash){
+    var target = document.getElementById(location.hash.slice(1));
+    if(target && target.classList.contains('slt-sec')){
+      setOpen(target, true);
+      setTimeout(function(){ target.scrollIntoView({ block:'start' }); }, 60);
+    }
+  } else {
+    /* open the first section by default so the page never looks empty */
+    if(secs.length) setOpen(secs[0], true);
+  }
+
+  /* scroll-spy for the TOC */
+  if('IntersectionObserver' in window && tocWrap){
+    var links = Array.prototype.slice.call(tocWrap.querySelectorAll('a'));
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){ l.classList.toggle('on', l.getAttribute('href') === '#' + e.target.id); });
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    secs.forEach(function(sec){ spy.observe(sec); });
+  }
+})();
+</script>

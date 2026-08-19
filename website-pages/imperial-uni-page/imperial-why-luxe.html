@@ -1,0 +1,369 @@
+<!-- ============================================================
+     STUDENT LUXE — Imperial Uni Page: Why Student Luxe (DARK BG)
+     Comparison block. Paste into a Squarespace Code Block.
+     Place directly above the FAQ section.
+     Background: set to navy (#0d1a2e) in Squarespace.
+     id="why-luxe" available on outer section for anchor links.
+     Standalone: no shared styles block required.
+     Primary keyword: "apartments near Imperial College London".
+     ============================================================ -->
+
+<style>
+.slc {
+  --gold:        #B8966E;
+  --gold-l:      #D4B896;          /* lighter gold for accents on dark bg */
+  --gold-border: rgba(184,150,110,0.25);
+  --rule:        rgba(184,150,110,0.10);
+  --check:       #6B8E5A;
+  --cross:       #B85C4A;
+  --heading-size: clamp(30px, 4.5vw, 54px);
+}
+
+.slc * { box-sizing: border-box; margin: 0; padding: 0; }
+.slc {
+  background: transparent;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding: 72px 0 0;
+}
+@media (max-width: 768px) { .slc { padding: 48px 0 0; } }
+
+/* ── OUTER GRID ── */
+.slc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+}
+@media (max-width: 860px) { .slc-grid { grid-template-columns: 1fr; } }
+
+/* ── LEFT COLUMN ── */
+.slc-left {
+  padding: 0 40px 48px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 28px;
+}
+@media (max-width: 860px) {
+  .slc-left { padding: 0 24px 0; }
+  .slc-lead { max-width: none; }
+}
+
+.slc-pill {
+  display: inline-block;
+  padding: 6px 18px;
+  background: rgba(184,150,110,0.15);
+  border: 0.5px solid rgba(184,150,110,0.35);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-l);
+  margin-bottom: 32px;
+}
+
+.slc-heading {
+  font-size: var(--heading-size);
+  font-weight: 300;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  color: #ffffff;
+  margin-bottom: 32px;
+}
+.slc-heading em { font-style: italic; color: var(--gold-l); }
+
+.slc-sub {
+  font-size: 17px;
+  color: #ffffff;
+  line-height: 1.4;
+  margin-bottom: 28px;
+  letter-spacing: -0.01em;
+}
+
+.slc-lead {
+  font-size: 13px;
+  color: rgba(255,255,255,0.78);
+  line-height: 1.65;
+  margin-bottom: 12px;
+  max-width: 440px;
+}
+.slc-lead strong { color: var(--gold-l); font-weight: 500; }
+.slc-lead strong em { color: var(--gold-l); }
+
+/* ── RIGHT COLUMN ── */
+.slc-right {
+  padding: 0 48px 48px 40px;
+}
+@media (max-width: 860px) {
+  .slc-right { padding: 40px 24px 48px; margin-top: 0; }
+  .slc-heading { font-size: clamp(36px, 8vw, 54px); }
+}
+
+/* ── TABLE ── */
+.slc-table {
+  width: 100%;
+}
+
+.slc-row {
+  display: grid;
+  grid-template-columns: 1.5fr 0.9fr 0.9fr 0.9fr;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 0.5px solid var(--rule);
+  font-size: 13px;
+}
+.slc-row:last-child { border-bottom: none; }
+
+.slc-row--head {
+  padding-bottom: 14px;
+  border-bottom: 0.5px solid var(--gold-border);
+}
+.slc-row--head .slc-cell {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(184,150,110,0.8);
+  font-weight: 500;
+  text-align: center;
+}
+.slc-row--head .slc-cell--brand {
+  color: #ffffff;
+}
+
+.slc-label {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.slc-cell {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.58);
+}
+.slc-cell--us {
+  color: #ffffff;
+  font-weight: 500;
+}
+.slc-cell--us .slc-yes {
+  border-color: rgba(184,150,110,0.75);
+  background: rgba(184,150,110,0.16);
+}
+.slc-cell--us .slc-yes svg {
+  stroke-width: 2.5;
+}
+
+/* Tick & cross marks */
+.slc-yes, .slc-no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0.5px solid;
+}
+.slc-yes {
+  background: rgba(184,150,110,0.10);
+  border-color: rgba(184,150,110,0.45);
+}
+.slc-yes svg {
+  width: 13px; height: 13px;
+  stroke: var(--gold-l);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.slc-no {
+  background: rgba(184,92,74,0.10);
+  border-color: rgba(184,92,74,0.40);
+}
+.slc-no svg {
+  width: 12px; height: 12px;
+  stroke: var(--cross);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.slc-ast {
+  color: var(--gold-l);
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+.slc-footnote {
+  margin-top: 18px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0;
+}
+.slc-footnote sup {
+  color: var(--gold-l);
+  font-weight: 500;
+  margin-right: 2px;
+}
+
+@media (max-width: 500px) {
+  .slc-row { grid-template-columns: 1.3fr 0.9fr 0.9fr 0.9fr; padding: 12px 0; gap: 6px; }
+  .slc-label { font-size: 12.5px; }
+  .slc-cell { font-size: 12px; }
+  .slc-yes, .slc-no { width: 26px; height: 26px; }
+  .slc-yes svg { width: 11px; height: 11px; }
+  .slc-no svg { width: 10px; height: 10px; }
+  .slc-row--head .slc-cell { font-size: 9.5px; letter-spacing: 0.08em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slc-row { transition: none !important; }
+}
+</style>
+
+<section class="slc" aria-label="Why choose Student Luxe apartments near Imperial College London over PBSA or private rental">
+  <div class="slc-grid">
+
+    <!-- ── LEFT ── -->
+    <div class="slc-left">
+      <div>
+        <span class="slc-pill">Why Student Luxe</span>
+        <h2 class="slc-heading">
+          Comfort, <em>flexibility</em> &amp; service.
+        </h2>
+        <p class="slc-sub">The highest standard in student living.</p>
+        <p class="slc-lead">
+          Apartments near Imperial College London are typically split between two options: purpose-built blocks with shared kitchens, communal bathrooms and academic-year contracts, or standard private rentals that demand UK guarantors, 12 month leases and a separate bill for everything.
+        </p>
+        <p class="slc-lead">
+          Student Luxe offers <strong>something better</strong>. All of our professionally-managed apartments are private, furnished, set up &amp; <strong>ready to move in</strong>, in neighbourhoods minutes from the South Kensington campus. All bills, Wi-Fi, housekeeping and resident support are included as standard. No guarantors or credit checks required.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── RIGHT ── -->
+    <div class="slc-right">
+      <div class="slc-table" role="table" aria-label="Comparison of Student Luxe with PBSA and private rental">
+
+        <div class="slc-row slc-row--head" role="row">
+          <div></div>
+          <div class="slc-cell slc-cell--brand">Student Luxe</div>
+          <div class="slc-cell">PBSA / Halls</div>
+          <div class="slc-cell">Private rental</div>
+        </div>
+
+        <div class="slc-row" role="row">
+          <div class="slc-label">Private apartment</div>
+          <div class="slc-cell slc-cell--us">
+            <span class="slc-yes" aria-label="Yes"><svg viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3"/></svg></span>
+          </div>
+          <div class="slc-cell">Shared</div>
+          <div class="slc-cell">
+            <span class="slc-yes" aria-label="Yes"><svg viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3"/></svg></span>
+          </div>
+        </div>
+
+        <div class="slc-row" role="row">
+          <div class="slc-label">All bills included</div>
+          <div class="slc-cell slc-cell--us">
+            <span class="slc-yes" aria-label="Yes"><svg viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3"/></svg></span>
+          </div>
+          <div class="slc-cell">
+            <span class="slc-yes" aria-label="Yes"><svg viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3"/></svg></span>
+          </div>
+          <div class="slc-cell">
+            <span class="slc-no" aria-label="No"><svg viewBox="0 0 10 10"><line x1="3" y1="3" x2="7" y2="7"/><line x1="7" y1="3" x2="3" y2="7"/></svg></span>
+          </div>
+        </div>
+
+        <div class="slc-row" role="row">
+          <div class="slc-label">Housekeeping</div>
+          <div class="slc-cell slc-cell--us">
+            <span class="slc-yes" aria-label="Yes"><svg viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3"/></svg></span>
+          </div>
+          <div class="slc-cell">Communal only</div>
+          <div class="slc-cell">
+            <span class="slc-no" aria-label="No"><svg viewBox="0 0 10 10"><line x1="3" y1="3" x2="7" y2="7"/><line x1="7" y1="3" x2="3" y2="7"/></svg></span>
+          </div>
+        </div>
+
+        <div class="slc-row" role="row">
+          <div class="slc-label">No guarantor required</div>
+          <div class="slc-cell slc-cell--us">
+            <span class="slc-yes" aria-label="Yes"><svg viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3"/></svg></span>
+          </div>
+          <div class="slc-cell">Sometimes</div>
+          <div class="slc-cell">
+            <span class="slc-no" aria-label="No"><svg viewBox="0 0 10 10"><line x1="3" y1="3" x2="7" y2="7"/><line x1="7" y1="3" x2="3" y2="7"/></svg></span>
+          </div>
+        </div>
+
+        <div class="slc-row" role="row">
+          <div class="slc-label">Length of stay</div>
+          <div class="slc-cell slc-cell--us">Flexible<sup class="slc-ast">*</sup></div>
+          <div class="slc-cell">Academic year</div>
+          <div class="slc-cell">12 months</div>
+        </div>
+
+        <div class="slc-row" role="row">
+          <div class="slc-label">Near Imperial's campus</div>
+          <div class="slc-cell slc-cell--us">
+            <span class="slc-yes" aria-label="Yes"><svg viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3"/></svg></span>
+          </div>
+          <div class="slc-cell">Varies</div>
+          <div class="slc-cell">Premium pricing</div>
+        </div>
+
+        <div class="slc-row" role="row">
+          <div class="slc-label">Resident support team</div>
+          <div class="slc-cell slc-cell--us">
+            <span class="slc-yes" aria-label="Yes"><svg viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3"/></svg></span>
+          </div>
+          <div class="slc-cell">
+            <span class="slc-yes" aria-label="Yes"><svg viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3"/></svg></span>
+          </div>
+          <div class="slc-cell">
+            <span class="slc-no" aria-label="No"><svg viewBox="0 0 10 10"><line x1="3" y1="3" x2="7" y2="7"/><line x1="7" y1="3" x2="3" y2="7"/></svg></span>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="slc-footnote">
+        <sup>*</sup>Stay as long or as short as you like, with a minimum stay of three weeks. Our most common booking is a semester stay from September to June.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(prefersReduced || !('IntersectionObserver' in window)) return;
+
+  var rows = document.querySelectorAll('.slc-row');
+  rows.forEach(function(el, i){
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(8px)';
+    el.style.transition = 'opacity 0.4s cubic-bezier(0.23,1,0.32,1) ' + (i*40) + 'ms, transform 0.4s cubic-bezier(0.23,1,0.32,1) ' + (i*40) + 'ms';
+  });
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.slc-row').forEach(function(el){
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.slc-right').forEach(function(el){ io.observe(el); });
+})();
+</script>
