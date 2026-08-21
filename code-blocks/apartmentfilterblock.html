@@ -586,6 +586,17 @@ const LEAFLET_BASE = 'https://unpkg.com/leaflet@1.9.4/dist';
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* below this zoom, pills collapse to monogram dots (no numbered clusters, ever) */
 const PIN_DOT_ZOOM = 14;
+/* preview gate: the map stays hidden from visitors until the design is
+   signed off. Visit any filter page once with ?mappreview=1 to unlock it
+   on this browser (persists), ?mappreview=0 to lock it again. */
+const MAP_PREVIEW = (function() {
+    try {
+        const p = new URLSearchParams(window.location.search);
+        if (p.get('mappreview') === '1') { localStorage.setItem('sl_map_preview', '1'); return true; }
+        if (p.get('mappreview') === '0') { localStorage.removeItem('sl_map_preview'); return false; }
+        return localStorage.getItem('sl_map_preview') === '1';
+    } catch (e) { return false; }
+})();
 let currentView = 'list';
 let map = null, pinLayer = null, leafletReady = null, mapFitted = false;
 
@@ -1102,6 +1113,11 @@ function updateResultsCount() {
     if (!el) return;
     const total = currentListings.length;
     if (!listings.length || total === 0) { el.textContent = ''; return; }
+    /* map view shows everything at once - no "Showing 8 of" pagination line */
+    if (currentView === 'map') {
+        el.innerHTML = `<b>${total}</b> apartments`;
+        return;
+    }
     /* one line: count + area context + clear link (search bypasses areas, so hide it then) */
     const areaClause = (PAGE_CONFIG.areaNoticeText && selectedAreas.length > 0 && !searchQuery.trim())
         ? ` ${escHtml(PAGE_CONFIG.areaNoticeText)} - <button type="button" onclick="SLAF.clearAreas()">${escHtml(PAGE_CONFIG.areaNoticeClearText || 'clear')}</button>`
@@ -1548,6 +1564,7 @@ function initMap() {
 
 function setView(v) {
     if (v === currentView) return;
+    if (v === 'map' && !MAP_PREVIEW) return;
     currentView = v;
     document.querySelectorAll('#viewToggle button').forEach(function(b) {
         const on = b.dataset.view === v;
@@ -1566,11 +1583,16 @@ function setView(v) {
         wrap.classList.remove('show');
         grid.style.display = '';
     }
+    updateResultsCount();
     writeUrlState();
 }
 document.querySelectorAll('#viewToggle button').forEach(function(b) {
     b.addEventListener('click', function() { userTouched = true; setView(b.dataset.view); });
 });
+if (!MAP_PREVIEW) {
+    const vt = document.getElementById('viewToggle');
+    if (vt) vt.style.display = 'none';
+}
 
 if (PAGE_CONFIG.defaultPriceMode === 'monthly') {
     priceMode = 'weekly';   /* so setPriceMode('monthly') applies the switch */
