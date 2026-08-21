@@ -647,17 +647,6 @@ const PIN_DOT_ZOOM = 14;
    Kept tight: this is for pins literally on top of each other, not for
    grouping a neighbourhood. */
 const OVERLAP_RADIUS = 20;
-/* preview gate: the map stays hidden from visitors until the design is
-   signed off. Visit any filter page once with ?mappreview=1 to unlock it
-   on this browser (persists), ?mappreview=0 to lock it again. */
-const MAP_PREVIEW = (function() {
-    try {
-        const p = new URLSearchParams(window.location.search);
-        if (p.get('mappreview') === '1') { localStorage.setItem('sl_map_preview', '1'); return true; }
-        if (p.get('mappreview') === '0') { localStorage.removeItem('sl_map_preview'); return false; }
-        return localStorage.getItem('sl_map_preview') === '1';
-    } catch (e) { return false; }
-})();
 let currentView = 'list';
 let map = null, pinLayer = null, leafletReady = null, mapFitted = false;
 let mapRefit = false;   /* area changed: re-frame the map on its next render */
@@ -1767,7 +1756,6 @@ function collapseHostSection(on) {
 
 function setView(v) {
     if (v === currentView) return;
-    if (v === 'map' && !MAP_PREVIEW) return;
     currentView = v;
     document.querySelectorAll('#viewToggle button').forEach(function(b) {
         const on = b.dataset.view === v;
@@ -1793,10 +1781,6 @@ function setView(v) {
 document.querySelectorAll('#viewToggle button').forEach(function(b) {
     b.addEventListener('click', function() { userTouched = true; setView(b.dataset.view); });
 });
-if (!MAP_PREVIEW) {
-    const vt = document.getElementById('viewToggle');
-    if (vt) vt.style.display = 'none';
-}
 (function bindKeyToggle() {
     const key = document.getElementById('mapKey');
     const btn = key && key.querySelector('.map-key-toggle');
