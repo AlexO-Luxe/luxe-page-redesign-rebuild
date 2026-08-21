@@ -300,7 +300,11 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 #mapCanvas {position:absolute;inset:0;}
 .map-empty {position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--lx-muted);font-size:14px;z-index:500;background:rgba(251,248,241,.85);}
 @media (max-width:768px){ #mapWrap {height:62vh;min-height:380px;} }
-.map-pin {display:flex;align-items:center;justify-content:center;background:var(--lx-ink);border:1.5px solid var(--lx-gold);border-radius:9999px;box-shadow:0 2px 6px rgba(13,26,46,.25);color:#fff;font-family:var(--lx-sans);font-size:12px;font-weight:600;letter-spacing:.01em;padding:4px 11px;white-space:nowrap;width:auto !important;height:auto !important;transition:background .15s,color .15s,border-color .15s,padding .15s;}
+/* zero-size anchor positioned by Leaflet; the visible pill centres itself
+   on it, so the pin sits exactly on the building and spider legs meet the
+   pill's centre instead of stopping above it */
+.map-pin-a {background:none;border:none;}
+.map-pin {position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:var(--lx-ink);border:1.5px solid var(--lx-gold);border-radius:9999px;box-shadow:0 2px 6px rgba(13,26,46,.25);color:#fff;font-family:var(--lx-sans);font-size:12px;font-weight:600;letter-spacing:.01em;padding:4px 11px;white-space:nowrap;transition:background .15s,color .15s,border-color .15s,padding .15s;}
 /* price-banded navy: lightest when the building starts under £1,000/wk,
    mid for £1,000-2,000, house ink for £2,000+ and POA */
 .map-pin.map-pin-light {background:#46608C;border-color:var(--lx-gold-lt);}
@@ -1524,7 +1528,7 @@ function pinBand(b) {
 }
 
 function pinIconHtml(b) {
-    return '<span class="mp-price">' + escHtml(pinLabel(b)) + '</span>';
+    return '<span class="map-pin' + pinBand(b) + '"><span class="mp-price">' + escHtml(pinLabel(b)) + '</span></span>';
 }
 
 /* Universities are fixed landmarks, so their coordinates live here rather
@@ -1598,7 +1602,7 @@ function updateMapMarkers() {
     }
     buildings.forEach(function(b) {
         const m = L.marker([b.lat, b.lng], {
-            icon: L.divIcon({ className: 'map-pin' + pinBand(b), html: pinIconHtml(b), iconSize: null }),
+            icon: L.divIcon({ className: 'map-pin-a', html: pinIconHtml(b), iconSize: [0, 0] }),
         });
         m.bindPopup(popupHtml(b), { maxWidth: 300 });
         pinLayer.addLayer(m);
