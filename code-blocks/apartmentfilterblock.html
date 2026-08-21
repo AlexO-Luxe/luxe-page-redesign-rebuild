@@ -258,7 +258,8 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
     .filter-group label {font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--lx-muted);white-space:nowrap;}
     .filter-group > input, .filter-group > div > input.search-input, .filter-group > select, .filter-group > div > button, .filter-group > button {width:180px !important;min-width:180px !important;max-width:180px !important;height:42px !important;padding:0 14px !important;font-size:12.5px !important;border:1px solid var(--lx-hair) !important;border-radius:10px !important;box-sizing:border-box !important;}
     #areaFilterContainer, #areaFilterContainer > div, #areaDropdownWrapper, #priceDropdownWrapper, #bedroomDropdownWrapper {width:180px !important;min-width:180px !important;max-width:180px !important;}
-    #bedroomCheckboxList input, #areaCheckboxList input {width:15px !important;min-width:15px !important;max-width:15px !important;height:15px !important;padding:0 !important;border:none !important;}
+    /* menu rows keep their own sizing inside the 180px dropdown panels */
+    .menu-row {width:100% !important;min-width:0 !important;max-width:none !important;height:auto !important;}
     .filter-group button {display:flex !important;align-items:center !important;justify-content:space-between !important;gap:8px !important;background:rgba(255,255,255,.6) !important;cursor:pointer !important;font-family:var(--lx-sans) !important;}
     /* the Area button nests one div deeper so the sizing rule above misses it - force all three dropdowns to identical box + font */
     #bedroomDropdownBtn, #areaDropdownBtn, #priceDropdownBtn {width:180px !important;min-width:180px !important;max-width:180px !important;height:42px !important;padding:0 14px !important;font-size:12.5px !important;border:1px solid var(--lx-hair) !important;border-radius:10px !important;box-sizing:border-box !important;}
@@ -280,8 +281,20 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 /* ── overrides for inline-styled elements built by the JS ── */
 #bedroomDropdownBtn, #areaDropdownBtn, #priceDropdownBtn {border:1px solid var(--lx-hair) !important;border-radius:10px !important;background:rgba(255,255,255,.6) !important;font-family:var(--lx-sans) !important;color:var(--lx-ink) !important;}
 #bedroomDropdownPanel, #areaDropdownPanel, #priceDropdownPanel {border:1px solid var(--lx-hair) !important;border-radius:12px !important;box-shadow:0 12px 34px rgba(13,26,46,.14) !important;background:var(--lx-paper) !important;}
-#bedroomCheckboxList input, #areaCheckboxList input {accent-color:var(--lx-gold) !important;}
-#bedroomCheckboxList label, #areaCheckboxList label {font-family:var(--lx-sans) !important;color:var(--lx-ink) !important;}
+/* menu-card rows (Area + Apartment type): serif sentence-case rows, whole
+   row is the tap target, gold tick + gold wash for selected, quiet counts.
+   Explicit font/case/spacing so the site theme cannot uppercase them. */
+.menu-rows {padding:4px 0;}
+.menu-row {display:flex !important;align-items:center !important;justify-content:space-between !important;gap:14px;width:100% !important;padding:10px 16px !important;background:none !important;border:none !important;border-top:1px solid var(--lx-hair-soft) !important;border-radius:0 !important;cursor:pointer;text-align:left !important;font-family:var(--lx-serif) !important;font-size:14.5px !important;letter-spacing:0 !important;text-transform:none !important;color:var(--lx-ink) !important;line-height:1.3;transition:background .15s;}
+.menu-row:first-child {border-top:none !important;}
+.menu-row:hover {background:var(--lx-gold-wash) !important;}
+.menu-row:focus-visible {outline:2px solid var(--lx-gold);outline-offset:-2px;}
+.menu-row.sel {background:var(--lx-gold-wash) !important;}
+.menu-row .mr-side {display:flex;align-items:center;gap:8px;flex:none;}
+.menu-row .mr-count {font-family:var(--lx-sans) !important;font-size:11px !important;letter-spacing:0 !important;color:var(--lx-muted);}
+.menu-row .mr-tick {display:none;color:var(--lx-gold-deep);font-size:14px;}
+.menu-row.sel .mr-count {display:none;}
+.menu-row.sel .mr-tick {display:inline;}
 .amenity-show-more {background:var(--lx-hair-soft) !important;color:var(--lx-muted) !important;border-color:transparent !important;}
 .amenity-reset {background:var(--lx-red) !important;border-color:var(--lx-red) !important;color:#fff !important;}
 @media (max-width:768px){
@@ -385,22 +398,12 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
                     <i class="fa-light fa-chevron-down" style="font-size:12px;color:#666;transition:transform 0.2s;" id="bedroomChevron"></i>
                 </button>
                 <div id="bedroomDropdownPanel" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-width:90vw;background:white;border:1.5px solid #e5e7eb;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:1000;text-align:left;direction:ltr;">
-                    <div id="bedroomCheckboxList" style="padding:6px 0;text-align:left;">
-                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                            <input type="checkbox" value="studio" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> Studio
-                        </label>
-                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                            <input type="checkbox" value="1bed" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> 1 Bedroom
-                        </label>
-                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                            <input type="checkbox" value="2bed" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> 2 Bedrooms
-                        </label>
-                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                            <input type="checkbox" value="3bed" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> 3 Bedrooms
-                        </label>
-                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                            <input type="checkbox" value="4bed" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> 4 Bedrooms
-                        </label>
+                    <div id="bedroomCheckboxList" class="menu-rows">
+                        <button type="button" class="menu-row" data-value="studio" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">Studio</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
+                        <button type="button" class="menu-row" data-value="1bed" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">1 bedroom</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
+                        <button type="button" class="menu-row" data-value="2bed" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">2 bedrooms</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
+                        <button type="button" class="menu-row" data-value="3bed" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">3 bedrooms</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
+                        <button type="button" class="menu-row" data-value="4bed" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">4 bedrooms</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
                     </div>
                 </div>
             </div>
@@ -710,10 +713,10 @@ async function loadListings() {
       urlTypes.forEach(t => {
           if (bedLabelsLong[t] && !selectedBedrooms.includes(t)) {
               selectedBedrooms.push(t);
-              const cb = document.querySelector('#bedroomCheckboxList input[value="' + t + '"]');
-              if (cb) cb.checked = true;
           }
       });
+      syncMenuRows('bedroomCheckboxList', selectedBedrooms);
+      updateBedroomCounts();
       updateBedroomDropdownLabel();
       urlAmenities.forEach(a => { if (!selectedAmenities.includes(a)) selectedAmenities.push(a); });
       if (urlQuery) { searchQuery = urlQuery; document.getElementById('searchInput').value = urlQuery; }
@@ -947,25 +950,43 @@ function clearAreas() {
     userTouched = true;
     mapRefit = true;
     selectedAreas = [];
-    document.querySelectorAll('#areaCheckboxList input[type=checkbox]').forEach(cb => cb.checked = false);
+    syncMenuRows('areaCheckboxList', selectedAreas);
     updateAreaDropdownLabel();
     applyFilters();
     renderAmenityPills();
 }
 
-function populateAreaFilter() {
-    const locationSet = new Set();
-    listings.forEach(listing => {
-        listing.location.split(',').map(p => p.trim()).filter(Boolean).forEach(p => locationSet.add(p));
+/* mark the selected rows in a menu-card list and mirror aria-pressed */
+function syncMenuRows(listId, selected) {
+    document.querySelectorAll('#' + listId + ' .menu-row').forEach(function(b) {
+        const on = selected.indexOf(b.dataset.value) > -1;
+        b.classList.toggle('sel', on);
+        b.setAttribute('aria-pressed', String(on));
     });
-    const areas = [...locationSet].sort();
-    const checkboxList = document.getElementById('areaCheckboxList');
-    if (checkboxList) {
-        checkboxList.innerHTML = areas.map(area => `
-            <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                <input type="checkbox" value="${escHtml(area)}" onchange="SLAF.onAreaCheckboxChange(this)" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;">
-                ${escHtml(area)}
-            </label>`).join('');
+}
+
+function updateBedroomCounts() {
+    const counts = {};
+    listings.forEach(function(l) { counts[l.bedroomType] = (counts[l.bedroomType] || 0) + 1; });
+    document.querySelectorAll('#bedroomCheckboxList .menu-row').forEach(function(b) {
+        const c = counts[b.dataset.value] || 0;
+        b.querySelector('.mr-count').textContent = c ? String(c) : '';
+    });
+}
+
+function populateAreaFilter() {
+    const areaCounts = {};
+    listings.forEach(listing => {
+        listing.location.split(',').map(p => p.trim()).filter(Boolean).forEach(p => {
+            areaCounts[p] = (areaCounts[p] || 0) + 1;
+        });
+    });
+    const areas = Object.keys(areaCounts).sort();
+    const rowsEl = document.getElementById('areaCheckboxList');
+    if (rowsEl) {
+        rowsEl.classList.add('menu-rows');
+        rowsEl.innerHTML = areas.map(area => `
+            <button type="button" class="menu-row" data-value="${escHtml(area)}" onclick="SLAF.toggleAreaRow(this)" aria-pressed="false"><span class="mr-name">${escHtml(area)}</span><span class="mr-side"><span class="mr-count">${areaCounts[area]}</span><span class="mr-tick">&#10003;</span></span></button>`).join('');
     }
     /* Inbound ?area= links take priority; defaults apply only when none given */
     if (urlAreas.length) {
@@ -977,20 +998,17 @@ function populateAreaFilter() {
     } else if (PAGE_CONFIG.defaultAreas && PAGE_CONFIG.defaultAreas.length > 0) {
         selectedAreas = PAGE_CONFIG.defaultAreas.filter(a => areas.includes(a));
     }
-    if (checkboxList) {
-        checkboxList.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            cb.checked = selectedAreas.includes(cb.value);
-        });
-    }
+    syncMenuRows('areaCheckboxList', selectedAreas);
     updateAreaDropdownLabel();
 }
 
-function onAreaCheckboxChange(checkbox) {
+function toggleAreaRow(btn) {
     userTouched = true;
     mapRefit = true;
-    const area = checkbox.value;
-    if (checkbox.checked) { if (!selectedAreas.includes(area)) selectedAreas.push(area); }
-    else { selectedAreas = selectedAreas.filter(a => a !== area); }
+    const area = btn.dataset.value;
+    if (selectedAreas.includes(area)) selectedAreas = selectedAreas.filter(a => a !== area);
+    else selectedAreas.push(area);
+    syncMenuRows('areaCheckboxList', selectedAreas);
     updateAreaDropdownLabel();
     applyFilters();
     renderAmenityPills();
@@ -1041,9 +1059,9 @@ function renderAmenityPills(){
             if (drMin) { drMin.value = priceToPos(priceMin); drMax.value = priceToPos(priceMax); updatePriceUi(); }
             document.getElementById('searchInput').value='';
             document.getElementById('areaSelect').value='all';
-            document.querySelectorAll('#bedroomCheckboxList input[type=checkbox]').forEach(cb=>cb.checked=false);
+            syncMenuRows('bedroomCheckboxList', selectedBedrooms);
             updateBedroomDropdownLabel();
-            document.querySelectorAll('#areaCheckboxList input[type=checkbox]').forEach(cb=>cb.checked=false);
+            syncMenuRows('areaCheckboxList', selectedAreas);
             updateAreaDropdownLabel();
             applyFilters(); renderAmenityPills();
         });
@@ -1317,12 +1335,12 @@ function updateBedroomDropdownLabel() {
     else label.textContent = selectedBedrooms.length + ' Types selected';
 }
 
-function onBedroomCheckboxChange() {
+function toggleBedroomRow(btn) {
     userTouched = true;
-    selectedBedrooms = [];
-    document.querySelectorAll('#bedroomCheckboxList input[type=checkbox]').forEach(cb => {
-        if (cb.checked) selectedBedrooms.push(cb.value);
-    });
+    const v = btn.dataset.value;
+    if (selectedBedrooms.includes(v)) selectedBedrooms = selectedBedrooms.filter(x => x !== v);
+    else selectedBedrooms.push(v);
+    syncMenuRows('bedroomCheckboxList', selectedBedrooms);
     updateBedroomDropdownLabel();
     applyFilters();
     renderAmenityPills();
@@ -1379,7 +1397,7 @@ function showAutocompleteSuggestions(query){
                 mapRefit=true;
                 const area=item.dataset.value;
                 if(!selectedAreas.includes(area)) selectedAreas.push(area);
-                document.querySelectorAll('#areaCheckboxList input[type=checkbox]').forEach(cb=>{if(cb.value===area)cb.checked=true;});
+                syncMenuRows('areaCheckboxList', selectedAreas);
                 updateAreaDropdownLabel();
                 searchInput.value=''; searchQuery='';
             } else {
@@ -1772,9 +1790,9 @@ if (PAGE_CONFIG.defaultPriceMode === 'monthly') {
 /* only these are reachable from inline onclick attributes */
 return {
     toggleBedroomDropdown: toggleBedroomDropdown,
-    onBedroomCheckboxChange: onBedroomCheckboxChange,
+    toggleBedroomRow: toggleBedroomRow,
     toggleAreaDropdown: toggleAreaDropdown,
-    onAreaCheckboxChange: onAreaCheckboxChange,
+    toggleAreaRow: toggleAreaRow,
     loadMore: loadMore,
     scrollToTop: scrollToTop,
     retryLoad: retryLoad,
