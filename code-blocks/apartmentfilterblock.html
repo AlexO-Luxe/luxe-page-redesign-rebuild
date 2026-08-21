@@ -300,9 +300,13 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 #mapCanvas {position:absolute;inset:0;}
 .map-empty {position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--lx-muted);font-size:14px;z-index:500;background:rgba(251,248,241,.85);}
 @media (max-width:768px){ #mapWrap {height:62vh;min-height:380px;} }
-.map-pin {background:#fff;border:.5px solid var(--lx-gold-line);border-radius:9999px;box-shadow:0 2px 6px rgba(13,26,46,.18);color:var(--lx-ink);font-family:var(--lx-sans);font-size:12px;font-weight:600;letter-spacing:.01em;padding:5px 10px;white-space:nowrap;display:flex;align-items:center;justify-content:center;width:auto !important;height:auto !important;transition:background .15s,color .15s;}
-.map-pin:hover {background:var(--lx-ink);color:#fff;border-color:var(--lx-ink);}
-.map-cluster {background:var(--lx-ink);color:#fff;border:2px solid var(--lx-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--lx-sans);font-size:12px;font-weight:600;box-shadow:0 2px 8px rgba(13,26,46,.3);}
+.map-pin {display:flex;align-items:center;gap:6px;background:var(--lx-ink);border:1.5px solid var(--lx-gold);border-radius:9999px;box-shadow:0 2px 6px rgba(13,26,46,.25);color:#fff;font-family:var(--lx-sans);font-size:12px;font-weight:600;letter-spacing:.01em;padding:3px 11px 3px 4px;white-space:nowrap;width:auto !important;height:auto !important;transition:background .15s,color .15s,border-color .15s,padding .15s;}
+.map-pin .mp-mono {width:20px;height:20px;border-radius:50%;background:var(--lx-gold);display:flex;align-items:center;justify-content:center;font-family:var(--lx-serif);font-size:11px;font-weight:400;color:var(--lx-ink);flex:none;transition:background .15s,color .15s;}
+.map-pin:hover {background:var(--lx-gold);border-color:var(--lx-ink);color:var(--lx-ink);}
+.map-pin:hover .mp-mono {background:var(--lx-ink);color:var(--lx-gold-lt);}
+/* zoomed out: pills collapse to monogram dots (never numbered clusters) */
+.map-dots .map-pin {padding:3px;gap:0;}
+.map-dots .map-pin .mp-price {display:none;}
 .leaflet-popup-content-wrapper {background:var(--lx-paper) !important;border:1px solid var(--lx-hair) !important;border-radius:12px !important;box-shadow:0 12px 34px rgba(13,26,46,.18) !important;}
 .leaflet-popup-tip {background:var(--lx-paper) !important;}
 .leaflet-popup-content {margin:14px 16px !important;font-family:var(--lx-sans) !important;color:var(--lx-ink) !important;}
@@ -579,10 +583,11 @@ let priceBoundMin = 0, priceBoundMax = 0, priceMin = 0, priceMax = 0;   /* weekl
 /* map view state: declared with the rest of the state because renderListings
    and writeUrlState read currentView during the synchronous boot path */
 const LEAFLET_BASE = 'https://unpkg.com/leaflet@1.9.4/dist';
-const CLUSTER_BASE = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist';
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* below this zoom, pills collapse to monogram dots (no numbered clusters, ever) */
+const PIN_DOT_ZOOM = 14;
 let currentView = 'list';
-let map = null, clusterGroup = null, leafletReady = null, mapFitted = false;
+let map = null, pinLayer = null, leafletReady = null, mapFitted = false;
 
 /* ── inbound URL params (comma-separated values supported) ── */
 let urlAreas = [], urlTypes = [], urlAmenities = [], urlQuery = '', urlSort = '', urlView = false;
@@ -1411,11 +1416,12 @@ window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setT
   }, 3000);
 })();
 
-/* ── List | Map view. Leaflet + markercluster load lazily on first Map
-      click, so list-only visitors pay zero extra bytes. The map renders
+/* ── List | Map view. Leaflet loads lazily on first Map click, so
+      list-only visitors pay zero extra bytes. The map renders
       currentListings (the already-filtered set): every existing filter,
       sort and the price slider drive it with no extra wiring. One pin per
-      building ("from £X"), popup lists that building's apartments. A
+      building (gold monogram + price pill; monogram dot when zoomed out,
+      never numbered clusters), popup lists that building's apartments. A
       listing without lat/lng (not yet geocoded) simply stays list-only. ── */
 function loadCss(href) {
     if (document.querySelector('link[href="' + href + '"]')) return;
@@ -1433,9 +1439,7 @@ function loadScript(src) {
 function ensureLeaflet() {
     if (leafletReady) return leafletReady;
     loadCss(LEAFLET_BASE + '/leaflet.css');
-    loadCss(CLUSTER_BASE + '/MarkerCluster.css');
-    leafletReady = loadScript(LEAFLET_BASE + '/leaflet.js')
-        .then(function() { return loadScript(CLUSTER_BASE + '/leaflet.markercluster.js'); });
+    leafletReady = loadScript(LEAFLET_BASE + '/leaflet.js');
     return leafletReady;
 }
 
@@ -1457,7 +1461,16 @@ function pinLabel(b) {
     const priced = b.units.filter(function(u) { return !u.poa && !u.comingSoon && !u.refurb; });
     if (!priced.length) return 'POA';
     const min = Math.min.apply(null, priced.map(function(u) { return u.weekly; }));
-    return 'from ' + PAGE_CONFIG.currency + formatPrice(min);
+    return PAGE_CONFIG.currency + formatPrice(min);
+}
+
+function pinMonogram(b) {
+    const cleaned = String(b.title || '').replace(/^the\s+/i, '').trim();
+    return (cleaned[0] || '·').toUpperCase();
+}
+
+function pinIconHtml(b) {
+    return '<span class="mp-mono">' + escHtml(pinMonogram(b)) + '</span><span class="mp-price">' + escHtml(pinLabel(b)) + '</span>';
 }
 
 function popupHtml(b) {
@@ -1475,8 +1488,8 @@ function popupHtml(b) {
 }
 
 function updateMapMarkers() {
-    if (!map || !window.L || !clusterGroup) return;
-    clusterGroup.clearLayers();
+    if (!map || !window.L || !pinLayer) return;
+    pinLayer.clearLayers();
     const old = document.getElementById('mapEmpty');
     if (old) old.remove();
     const buildings = mapBuildings();
@@ -1491,10 +1504,10 @@ function updateMapMarkers() {
     }
     buildings.forEach(function(b) {
         const m = L.marker([b.lat, b.lng], {
-            icon: L.divIcon({ className: 'map-pin', html: escHtml(pinLabel(b)), iconSize: null }),
+            icon: L.divIcon({ className: 'map-pin', html: pinIconHtml(b), iconSize: null }),
         });
         m.bindPopup(popupHtml(b), { maxWidth: 300 });
-        clusterGroup.addLayer(m);
+        pinLayer.addLayer(m);
     });
     if (!mapFitted) {
         mapFitted = true;
@@ -1524,14 +1537,12 @@ function initMap() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
         maxZoom: 19,
     }).addTo(map);
-    clusterGroup = L.markerClusterGroup({
-        maxClusterRadius: 46,
-        showCoverageOnHover: false,
-        iconCreateFunction: function(c) {
-            return L.divIcon({ className: 'map-cluster', html: String(c.getChildCount()), iconSize: L.point(38, 38) });
-        },
-    });
-    map.addLayer(clusterGroup);
+    pinLayer = L.layerGroup().addTo(map);
+    /* pills above PIN_DOT_ZOOM, monogram dots below - no numbered clusters */
+    const canvas = document.getElementById('mapCanvas');
+    function syncPinMode() { canvas.classList.toggle('map-dots', map.getZoom() < PIN_DOT_ZOOM); }
+    map.on('zoomend', syncPinMode);
+    syncPinMode();
     updateMapMarkers();
 }
 
