@@ -371,24 +371,26 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 .leaflet-popup-tip {background:var(--lx-paper) !important;}
 .leaflet-popup-content {margin:14px 16px !important;font-family:var(--lx-sans) !important;color:var(--lx-ink) !important;}
 .map-pop-title {font-family:var(--lx-serif);font-size:1.17rem;letter-spacing:-.04em;margin-bottom:2px;}
-.map-pop-area {font-size:11px;color:var(--lx-muted);margin-bottom:6px;}
+.map-pop-area {font-size:11px;color:var(--lx-muted);margin-bottom:2px;}
+.map-pop-bams {font-size:9.5px;color:var(--lx-gold-deep);letter-spacing:.02em;margin-bottom:7px;}
 .map-pop-unit {display:flex;gap:10px;align-items:center;padding:8px 6px 8px 0;border-top:1px solid var(--lx-hair-soft);font-size:12.5px;color:var(--lx-ink);text-decoration:none;transition:background .15s;}
 /* the site theme colours anchors blue; rows rest in house navy and invert
    to ink with white text and light gold chips on hover (same language as
    the pins' hover) */
 a.map-pop-unit, a.map-pop-unit:visited, a.map-pop-unit:active,
 a.map-pop-unit * {color:var(--lx-ink) !important;text-decoration:none !important;}
-a.map-pop-unit .map-pop-chip {color:var(--lx-gold-deep) !important;}
+a.map-pop-unit .mp-sub {color:var(--lx-muted) !important;}
 a.map-pop-unit:hover, a.map-pop-unit:hover * {color:#fff !important;text-decoration:none !important;}
 a.map-pop-unit:hover {background:var(--lx-ink);border-radius:8px;}
-a.map-pop-unit:hover .map-pop-chip {color:var(--lx-gold-lt) !important;background:transparent;border-color:rgba(212,184,150,.55);}
-.map-pop-unit img {width:64px;height:64px;border-radius:8px;object-fit:cover;flex:none;}
+a.map-pop-unit:hover .mp-sub {color:rgba(255,255,255,.65) !important;}
+.map-pop-unit img {width:56px;height:56px;border-radius:8px;object-fit:cover;flex:none;}
 .map-pop-list {max-height:290px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(184,150,110,.5) transparent;}
 @media (max-width:768px){ .map-pop-list {max-height:34vh;} }
 .map-pop-main {flex:1;min-width:0;}
-.map-pop-ams {margin-top:3px;}
-.map-pop-chip {display:inline-block;font-size:9.5px;line-height:1.6;color:var(--lx-gold-deep);background:var(--lx-gold-wash);border:1px solid var(--lx-gold-line);border-radius:9999px;padding:0 8px;margin:1px 3px 1px 0;white-space:nowrap;}
-.map-pop-price {font-weight:700;white-space:nowrap;}
+.map-pop-main .mp-bed {font-size:12.5px;}
+.mp-sub {font-size:10px;color:var(--lx-muted);}
+.map-pop-rail {flex:none;text-align:right;}
+.map-pop-rail .mp-pricetop {font-size:13.5px;font-weight:700;white-space:nowrap;}
 
 /* house rule 6: respect reduced-motion */
 @media (prefers-reduced-motion: reduce) {
@@ -1704,24 +1706,33 @@ function cityUnis() {
 }
 
 function popupHtml(b) {
-    const unit = priceMode === 'weekly' ? '/wk' : '/mo';
+    const unit = priceMode === 'weekly' ? 'per week' : 'per month';
+    /* amenities are building-level, so they appear once under the header
+       as a quiet gold line rather than repeating on every row */
+    const seen = {};
+    b.units.forEach(function(u) { (u.amenities || []).forEach(function(k) { seen[k] = 1; }); });
+    const amLine = Object.keys(seen).slice(0, 4).map(function(k) {
+        const a = amenityIcons[k];
+        return a ? a.label : '';
+    }).filter(Boolean).join(' · ');
     const rows = b.units.map(function(u) {
-        const price = u.comingSoon ? 'Coming soon'
-            : u.poa ? 'POA'
-            : u.refurb ? 'Unavailable'
-            : PAGE_CONFIG.currency + formatPrice(u.weekly) + ' ' + unit;
         const thumb = u.imageUrl ? '<img src="' + sqSrc(u.imageUrl, '300w') + '" loading="lazy" decoding="async" alt="">' : '';
-        const chips = (u.amenities || []).slice(0, 3).map(function(k) {
-            const a = amenityIcons[k];
-            return a ? '<span class="map-pop-chip">' + a.label + '</span>' : '';
-        }).join('');
-        const inner = thumb + '<div class="map-pop-main"><div>' + bedLabel(u.bedroomType) + ' · ' + escHtml(u.size) + ' sq/m · <span class="map-pop-price">' + price + '</span></div><div class="map-pop-ams">' + chips + '</div></div>';
+        let priceTop, priceSub = unit;
+        if (u.comingSoon) { priceTop = 'Coming soon'; priceSub = ''; }
+        else if (u.poa) { priceTop = 'POA'; priceSub = ''; }
+        else if (u.refurb) { priceTop = 'Unavailable'; priceSub = ''; }
+        else { priceTop = PAGE_CONFIG.currency + formatPrice(u.weekly); }
+        const inner = thumb
+            + '<div class="map-pop-main"><div class="mp-bed">' + bedLabel(u.bedroomType) + '</div><div class="mp-sub">' + escHtml(u.size) + ' sq/m</div></div>'
+            + '<div class="map-pop-rail"><div class="mp-pricetop">' + priceTop + '</div>' + (priceSub ? '<div class="mp-sub">' + priceSub + '</div>' : '') + '</div>';
         /* the whole row (photo included) links to the apartment page */
         return (!u.comingSoon && u.url)
             ? '<a href="' + u.url + '" class="map-pop-unit">' + inner + '</a>'
             : '<div class="map-pop-unit">' + inner + '</div>';
     }).join('');
-    return '<div class="map-pop-title">' + escHtml(b.title) + '</div><div class="map-pop-area">' + escHtml(b.location) + '</div><div class="map-pop-list">' + rows + '</div>';
+    return '<div class="map-pop-title">' + escHtml(b.title) + '</div><div class="map-pop-area">' + escHtml(b.location) + '</div>'
+        + (amLine ? '<div class="map-pop-bams">' + amLine + '</div>' : '')
+        + '<div class="map-pop-list">' + rows + '</div>';
 }
 
 function updateMapMarkers() {
