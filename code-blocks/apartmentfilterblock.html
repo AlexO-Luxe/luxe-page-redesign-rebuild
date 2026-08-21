@@ -1690,6 +1690,26 @@ function initMap() {
     updateMapMarkers();
 }
 
+/* Squarespace Fluid Engine reserves the section's height as fixed grid
+   rows measured off the tall list view, which leaves a void under the much
+   shorter map. While the map is showing, relax the host section's rows to
+   auto so it hugs the content; restore the original value on List. Safe
+   no-op outside Squarespace or in classic (non fluid) sections. */
+function collapseHostSection(on) {
+    const wrap = document.getElementById('mapWrap');
+    const fe = wrap.closest('.fluid-engine');
+    if (fe) {
+        if (on) {
+            if (fe.dataset.slRows === undefined) fe.dataset.slRows = fe.style.gridTemplateRows || '';
+            fe.style.setProperty('grid-template-rows', 'auto', 'important');
+        } else {
+            fe.style.gridTemplateRows = fe.dataset.slRows || '';
+        }
+    }
+    const blk = wrap.closest('.sqs-block');
+    if (blk) blk.style.height = on ? 'auto' : '';
+}
+
 function setView(v) {
     if (v === currentView) return;
     if (v === 'map' && !MAP_PREVIEW) return;
@@ -1711,6 +1731,7 @@ function setView(v) {
         wrap.classList.remove('show');
         grid.style.display = '';
     }
+    collapseHostSection(v === 'map');
     updateResultsCount();
     writeUrlState();
 }
