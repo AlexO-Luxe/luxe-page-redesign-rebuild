@@ -302,6 +302,10 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 @media (max-width:768px){ #mapWrap {height:62vh;min-height:380px;} }
 .map-pin {display:flex;align-items:center;gap:6px;background:var(--lx-ink);border:1.5px solid var(--lx-gold);border-radius:9999px;box-shadow:0 2px 6px rgba(13,26,46,.25);color:#fff;font-family:var(--lx-sans);font-size:12px;font-weight:600;letter-spacing:.01em;padding:3px 11px 3px 4px;white-space:nowrap;width:auto !important;height:auto !important;transition:background .15s,color .15s,border-color .15s,padding .15s;}
 .map-pin .mp-mono {width:20px;height:20px;border-radius:50%;background:var(--lx-gold);display:flex;align-items:center;justify-content:center;font-family:var(--lx-serif);font-size:11px;font-weight:400;color:var(--lx-ink);flex:none;transition:background .15s,color .15s;}
+/* price-banded navy: lightest when the building starts under £1,000/wk,
+   mid for £1,000-2,000, house ink for £2,000+ and POA */
+.map-pin.map-pin-light {background:#46608C;border-color:var(--lx-gold-lt);}
+.map-pin.map-pin-mid {background:#263C5E;}
 .map-pin:hover {background:var(--lx-gold);border-color:var(--lx-ink);color:var(--lx-ink);}
 .map-pin:hover .mp-mono {background:var(--lx-ink);color:var(--lx-gold-lt);}
 /* zoomed out: pills collapse to monogram dots (never numbered clusters) */
@@ -1473,11 +1477,23 @@ function mapBuildings() {
     return Array.from(byBuilding.values());
 }
 
-function pinLabel(b) {
+function minWeekly(b) {
     const priced = b.units.filter(function(u) { return !u.poa && !u.comingSoon && !u.refurb; });
-    if (!priced.length) return 'POA';
-    const min = Math.min.apply(null, priced.map(function(u) { return u.weekly; }));
-    return PAGE_CONFIG.currency + formatPrice(min);
+    if (!priced.length) return null;
+    return Math.min.apply(null, priced.map(function(u) { return u.weekly; }));
+}
+
+function pinLabel(b) {
+    const m = minWeekly(b);
+    return m == null ? 'POA' : PAGE_CONFIG.currency + formatPrice(m);
+}
+
+function pinBand(b) {
+    const m = minWeekly(b);
+    if (m == null) return '';
+    if (m < 1000) return ' map-pin-light';
+    if (m < 2000) return ' map-pin-mid';
+    return '';
 }
 
 function pinMonogram(b) {
@@ -1520,7 +1536,7 @@ function updateMapMarkers() {
     }
     buildings.forEach(function(b) {
         const m = L.marker([b.lat, b.lng], {
-            icon: L.divIcon({ className: 'map-pin', html: pinIconHtml(b), iconSize: null }),
+            icon: L.divIcon({ className: 'map-pin' + pinBand(b), html: pinIconHtml(b), iconSize: null }),
         });
         m.bindPopup(popupHtml(b), { maxWidth: 300 });
         pinLayer.addLayer(m);
