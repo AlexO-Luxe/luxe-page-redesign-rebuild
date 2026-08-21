@@ -1656,9 +1656,17 @@ function updateMapMarkers() {
     if (!buildings.length) {
         const note = document.createElement('div');
         note.id = 'mapEmpty'; note.className = 'map-empty';
-        note.textContent = listings.some(function(l) { return l.lat != null; })
-            ? 'No mapped apartments match these filters.'
-            : 'The map is warming up - apartment positions appear here shortly.';
+        const matching = currentListings.length;
+        if (matching > 0) {
+            /* apartments match but their building has no coordinates yet */
+            note.textContent = matching === 1
+                ? 'The matching apartment is not on the map yet. Switch to List to view it.'
+                : 'These ' + matching + ' apartments are not on the map yet. Switch to List to view them.';
+        } else if (listings.some(function(l) { return l.lat != null; })) {
+            note.textContent = 'No apartments match these filters.';
+        } else {
+            note.textContent = 'The map is warming up - apartment positions appear here shortly.';
+        }
         document.getElementById('mapWrap').appendChild(note);
         return;
     }
