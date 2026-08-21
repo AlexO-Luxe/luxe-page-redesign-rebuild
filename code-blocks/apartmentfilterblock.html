@@ -1498,7 +1498,12 @@ function updateMapMarkers() {
     });
     if (!mapFitted) {
         mapFitted = true;
-        map.fitBounds(clusterGroup.getBounds().pad(0.12));
+        /* default view: median centre of the pins at zoom 12. Median, not
+           bounds: one outlier building (Wembley, Stratford) must not zoom
+           the whole city out to fit */
+        const lats = buildings.map(function(b) { return b.lat; }).sort(function(a, b) { return a - b; });
+        const lngs = buildings.map(function(b) { return b.lng; }).sort(function(a, b) { return a - b; });
+        map.setView([lats[Math.floor(lats.length / 2)], lngs[Math.floor(lngs.length / 2)]], 12);
     }
 }
 
