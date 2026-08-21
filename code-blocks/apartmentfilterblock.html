@@ -300,16 +300,14 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 #mapCanvas {position:absolute;inset:0;}
 .map-empty {position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--lx-muted);font-size:14px;z-index:500;background:rgba(251,248,241,.85);}
 @media (max-width:768px){ #mapWrap {height:62vh;min-height:380px;} }
-.map-pin {display:flex;align-items:center;gap:6px;background:var(--lx-ink);border:1.5px solid var(--lx-gold);border-radius:9999px;box-shadow:0 2px 6px rgba(13,26,46,.25);color:#fff;font-family:var(--lx-sans);font-size:12px;font-weight:600;letter-spacing:.01em;padding:3px 11px 3px 4px;white-space:nowrap;width:auto !important;height:auto !important;transition:background .15s,color .15s,border-color .15s,padding .15s;}
-.map-pin .mp-mono {width:20px;height:20px;border-radius:50%;background:var(--lx-gold);display:flex;align-items:center;justify-content:center;font-family:var(--lx-serif);font-size:11px;font-weight:400;color:var(--lx-ink);flex:none;transition:background .15s,color .15s;}
+.map-pin {display:flex;align-items:center;justify-content:center;background:var(--lx-ink);border:1.5px solid var(--lx-gold);border-radius:9999px;box-shadow:0 2px 6px rgba(13,26,46,.25);color:#fff;font-family:var(--lx-sans);font-size:12px;font-weight:600;letter-spacing:.01em;padding:4px 11px;white-space:nowrap;width:auto !important;height:auto !important;transition:background .15s,color .15s,border-color .15s,padding .15s;}
 /* price-banded navy: lightest when the building starts under £1,000/wk,
    mid for £1,000-2,000, house ink for £2,000+ and POA */
 .map-pin.map-pin-light {background:#46608C;border-color:var(--lx-gold-lt);}
 .map-pin.map-pin-mid {background:#263C5E;}
 .map-pin:hover {background:var(--lx-gold);border-color:var(--lx-ink);color:var(--lx-ink);}
-.map-pin:hover .mp-mono {background:var(--lx-ink);color:var(--lx-gold-lt);}
-/* zoomed out: pills collapse to monogram dots (never numbered clusters) */
-.map-dots .map-pin {padding:3px;gap:0;}
+/* zoomed out: pills collapse to plain price-banded dots (never numbered clusters) */
+.map-dots .map-pin {width:15px !important;height:15px !important;padding:0;}
 .map-dots .map-pin .mp-price {display:none;}
 .leaflet-popup-content-wrapper {background:var(--lx-paper) !important;border:1px solid var(--lx-hair) !important;border-radius:12px !important;box-shadow:0 12px 34px rgba(13,26,46,.18) !important;}
 .leaflet-popup-tip {background:var(--lx-paper) !important;}
@@ -588,7 +586,7 @@ let priceBoundMin = 0, priceBoundMax = 0, priceMin = 0, priceMax = 0;   /* weekl
    and writeUrlState read currentView during the synchronous boot path */
 const LEAFLET_BASE = 'https://unpkg.com/leaflet@1.9.4/dist';
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-/* below this zoom, pills collapse to monogram dots (no numbered clusters, ever) */
+/* below this zoom, pills collapse to plain dots (no numbered clusters, ever) */
 const PIN_DOT_ZOOM = 14;
 /* preview gate: the map stays hidden from visitors until the design is
    signed off. Visit any filter page once with ?mappreview=1 to unlock it
@@ -1440,8 +1438,8 @@ window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setT
       list-only visitors pay zero extra bytes. The map renders
       currentListings (the already-filtered set): every existing filter,
       sort and the price slider drive it with no extra wiring. One pin per
-      building (gold monogram + price pill; monogram dot when zoomed out,
-      never numbered clusters), popup lists that building's apartments. A
+      building (price pill in a price-banded navy; plain dot when zoomed
+      out, never numbered clusters), popup lists that building's apartments. A
       listing without lat/lng (not yet geocoded) simply stays list-only. ── */
 function loadCss(href) {
     if (document.querySelector('link[href="' + href + '"]')) return;
@@ -1496,13 +1494,8 @@ function pinBand(b) {
     return '';
 }
 
-function pinMonogram(b) {
-    const cleaned = String(b.title || '').replace(/^the\s+/i, '').trim();
-    return (cleaned[0] || '·').toUpperCase();
-}
-
 function pinIconHtml(b) {
-    return '<span class="mp-mono">' + escHtml(pinMonogram(b)) + '</span><span class="mp-price">' + escHtml(pinLabel(b)) + '</span>';
+    return '<span class="mp-price">' + escHtml(pinLabel(b)) + '</span>';
 }
 
 function popupHtml(b) {
@@ -1570,7 +1563,7 @@ function initMap() {
         maxZoom: 19,
     }).addTo(map);
     pinLayer = L.layerGroup().addTo(map);
-    /* pills above PIN_DOT_ZOOM, monogram dots below - no numbered clusters */
+    /* pills above PIN_DOT_ZOOM, plain dots below - no numbered clusters */
     const canvas = document.getElementById('mapCanvas');
     function syncPinMode() { canvas.classList.toggle('map-dots', map.getZoom() < PIN_DOT_ZOOM); }
     map.on('zoomend', syncPinMode);
