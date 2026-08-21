@@ -309,6 +309,19 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 /* zoomed out: pills collapse to plain price-banded dots (never numbered clusters) */
 .map-dots .map-pin {width:15px !important;height:15px !important;padding:0;}
 .map-dots .map-pin .mp-price {display:none;}
+/* university markers: paper circle, ink ring, gold mortarboard */
+.map-uni {background:var(--lx-paper);border:1.5px solid var(--lx-ink);border-radius:50%;box-shadow:0 2px 6px rgba(13,26,46,.22);display:flex;align-items:center;justify-content:center;color:var(--lx-gold-deep);width:26px !important;height:26px !important;}
+.map-uni svg {width:15px;height:15px;display:block;}
+.leaflet-tooltip.map-uni-tip {background:var(--lx-paper);border:1px solid var(--lx-hair);border-radius:8px;box-shadow:0 4px 14px rgba(13,26,46,.14);color:var(--lx-ink);font-family:var(--lx-sans);font-size:11px;font-weight:500;padding:4px 10px;}
+/* map key: price bands + university marker */
+.map-key {position:absolute;left:12px;bottom:12px;z-index:800;pointer-events:none;background:rgba(251,248,241,.94);border:1px solid var(--lx-hair);border-radius:10px;padding:9px 13px;display:flex;flex-direction:column;gap:6px;box-shadow:0 4px 14px rgba(13,26,46,.10);}
+.map-key-row {display:flex;align-items:center;gap:8px;font-family:var(--lx-sans);font-size:10.5px;letter-spacing:.02em;color:var(--lx-ink);white-space:nowrap;}
+.map-key-dot {width:12px;height:12px;border-radius:50%;border:1.5px solid var(--lx-gold);background:var(--lx-ink);flex:none;}
+.map-key-dot.mkd-light {background:#46608C;border-color:var(--lx-gold-lt);}
+.map-key-dot.mkd-mid {background:#263C5E;}
+.map-key-uni {width:14px;height:14px;border-radius:50%;border:1.5px solid var(--lx-ink);background:var(--lx-paper);display:flex;align-items:center;justify-content:center;color:var(--lx-gold-deep);flex:none;}
+.map-key-uni svg {width:9px;height:9px;display:block;}
+@media (max-width:768px){ .map-key {padding:7px 11px;gap:5px;} .map-key-row {font-size:10px;} }
 .leaflet-popup-content-wrapper {background:var(--lx-paper) !important;border:1px solid var(--lx-hair) !important;border-radius:12px !important;box-shadow:0 12px 34px rgba(13,26,46,.18) !important;}
 .leaflet-popup-tip {background:var(--lx-paper) !important;}
 .leaflet-popup-content {margin:14px 16px !important;font-family:var(--lx-sans) !important;color:var(--lx-ink) !important;}
@@ -431,7 +444,12 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
     </div>
-    <div id="mapWrap" aria-label="Map of apartments"><div id="mapCanvas"></div></div>
+    <div id="mapWrap" aria-label="Map of apartments"><div id="mapCanvas"></div><div class="map-key" aria-hidden="true">
+        <div class="map-key-row"><span class="map-key-dot mkd-light"></span>Under &pound;1,000 a week</div>
+        <div class="map-key-row"><span class="map-key-dot mkd-mid"></span>&pound;1,000 to &pound;2,000</div>
+        <div class="map-key-row"><span class="map-key-dot"></span>&pound;2,000 and up</div>
+        <div class="map-key-row"><span class="map-key-uni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/></svg></span>University</div>
+    </div></div>
     <select id="areaSelect" style="display:none;"><option value="all">All</option></select>
     <noscript>
         <p>Browse our luxury serviced apartments near UCL:
@@ -1498,6 +1516,46 @@ function pinIconHtml(b) {
     return '<span class="mp-price">' + escHtml(pinLabel(b)) + '</span>';
 }
 
+/* Universities are fixed landmarks, so their coordinates live here rather
+   than in Monday. Keyed by city page; extend a list to add a campus. */
+const UNI_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/></svg>';
+const UNI_MARKERS = {
+    'london': [
+        { n: 'UCL', lat: 51.5246, lng: -0.1340 },
+        { n: 'Imperial College London', lat: 51.4988, lng: -0.1749 },
+        { n: 'LSE', lat: 51.5144, lng: -0.1165 },
+        { n: "King's College London", lat: 51.5115, lng: -0.1160 },
+        { n: 'SOAS', lat: 51.5223, lng: -0.1290 },
+        { n: 'Queen Mary University', lat: 51.5246, lng: -0.0384 },
+        { n: 'University of Westminster', lat: 51.5167, lng: -0.1440 },
+        { n: 'City, University of London', lat: 51.5279, lng: -0.1025 },
+        { n: 'Central Saint Martins (UAL)', lat: 51.5355, lng: -0.1250 },
+        { n: "Regent's University London", lat: 51.5268, lng: -0.1554 },
+    ],
+    'cambridge': [
+        { n: 'University of Cambridge', lat: 52.2054, lng: 0.1132 },
+    ],
+    'edinburgh': [
+        { n: 'University of Edinburgh', lat: 55.9473, lng: -3.1872 },
+    ],
+    'paris': [
+        { n: 'Sorbonne Université', lat: 48.8489, lng: 2.3435 },
+        { n: 'Sciences Po', lat: 48.8541, lng: 2.3286 },
+        { n: 'The American University of Paris', lat: 48.8580, lng: 2.2966 },
+    ],
+    'madrid': [
+        { n: 'IE University Madrid', lat: 40.4780, lng: -3.6880 },
+        { n: 'Universidad Complutense de Madrid', lat: 40.4489, lng: -3.7278 },
+    ],
+};
+
+function cityUnis() {
+    const city = PAGE_CONFIG.filter.type === 'city'
+        ? PAGE_CONFIG.filter.value
+        : (PAGE_CONFIG.parentCity && PAGE_CONFIG.parentCity.label) || '';
+    return UNI_MARKERS[String(city).toLowerCase()] || [];
+}
+
 function popupHtml(b) {
     const unit = priceMode === 'weekly' ? '/wk' : '/mo';
     const rows = b.units.slice(0, 8).map(function(u) {
@@ -1536,12 +1594,13 @@ function updateMapMarkers() {
     });
     if (!mapFitted) {
         mapFitted = true;
-        /* default view: median centre of the pins at zoom 12. Median, not
-           bounds: one outlier building (Wembley, Stratford) must not zoom
-           the whole city out to fit */
+        /* default view: median centre of the pins at zoom 14, so the map
+           opens on the central district with full price pills showing.
+           Median, not bounds: one outlier building (Wembley, Stratford)
+           must not drag the start view */
         const lats = buildings.map(function(b) { return b.lat; }).sort(function(a, b) { return a - b; });
         const lngs = buildings.map(function(b) { return b.lng; }).sort(function(a, b) { return a - b; });
-        map.setView([lats[Math.floor(lats.length / 2)], lngs[Math.floor(lngs.length / 2)]], 12);
+        map.setView([lats[Math.floor(lats.length / 2)], lngs[Math.floor(lngs.length / 2)]], 14);
     }
 }
 
@@ -1556,13 +1615,20 @@ function initMap() {
         fadeAnimation: !REDUCED_MOTION,
         scrollWheelZoom: false,   /* page scroll must not hijack into zoom; enables on click */
     });
-    map.setView([51.5074, -0.1278], 12);
+    map.setView([51.5074, -0.1278], 14);
     map.on('click', function() { map.scrollWheelZoom.enable(); });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
         maxZoom: 19,
     }).addTo(map);
     pinLayer = L.layerGroup().addTo(map);
+    /* university landmarks: static, unaffected by filters */
+    cityUnis().forEach(function(u) {
+        L.marker([u.lat, u.lng], {
+            icon: L.divIcon({ className: 'map-uni', html: UNI_ICON, iconSize: [26, 26] }),
+            zIndexOffset: -100,
+        }).bindTooltip(u.n, { className: 'map-uni-tip', direction: 'top', offset: [0, -8] }).addTo(map);
+    });
     /* pills above PIN_DOT_ZOOM, plain dots below - no numbered clusters */
     const canvas = document.getElementById('mapCanvas');
     function syncPinMode() { canvas.classList.toggle('map-dots', map.getZoom() < PIN_DOT_ZOOM); }
