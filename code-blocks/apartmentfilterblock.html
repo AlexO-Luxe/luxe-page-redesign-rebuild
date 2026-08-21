@@ -289,10 +289,35 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
   /* price toggle: show only the active mode label */
 }
 
+/* ── List | Map view toggle + map view ── */
+.grid-meta {flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.view-toggle {display:flex;height:38px;border:1px solid var(--lx-hair);border-radius:10px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.6);}
+.view-toggle button {border:none;background:transparent;padding:0 18px;font-family:var(--lx-sans);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--lx-muted);cursor:pointer;transition:background .15s,color .15s;}
+.view-toggle button.on {background:var(--lx-ink);color:#fff;}
+.view-toggle button:focus-visible {outline:2px solid var(--lx-gold);outline-offset:-2px;}
+#mapWrap {display:none;position:relative;height:560px;border:1px solid var(--lx-hair);border-radius:16px;overflow:hidden;margin-bottom:40px;background:var(--lx-hair-soft);}
+#mapWrap.show {display:block;}
+#mapCanvas {position:absolute;inset:0;}
+.map-empty {position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--lx-muted);font-size:14px;z-index:500;background:rgba(251,248,241,.85);}
+@media (max-width:768px){ #mapWrap {height:62vh;min-height:380px;} }
+.map-pin {background:#fff;border:.5px solid var(--lx-gold-line);border-radius:9999px;box-shadow:0 2px 6px rgba(13,26,46,.18);color:var(--lx-ink);font-family:var(--lx-sans);font-size:12px;font-weight:600;letter-spacing:.01em;padding:5px 10px;white-space:nowrap;display:flex;align-items:center;justify-content:center;width:auto !important;height:auto !important;transition:background .15s,color .15s;}
+.map-pin:hover {background:var(--lx-ink);color:#fff;border-color:var(--lx-ink);}
+.map-cluster {background:var(--lx-ink);color:#fff;border:2px solid var(--lx-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--lx-sans);font-size:12px;font-weight:600;box-shadow:0 2px 8px rgba(13,26,46,.3);}
+.leaflet-popup-content-wrapper {background:var(--lx-paper) !important;border:1px solid var(--lx-hair) !important;border-radius:12px !important;box-shadow:0 12px 34px rgba(13,26,46,.18) !important;}
+.leaflet-popup-tip {background:var(--lx-paper) !important;}
+.leaflet-popup-content {margin:14px 16px !important;font-family:var(--lx-sans) !important;color:var(--lx-ink) !important;}
+.map-pop-title {font-family:var(--lx-serif);font-size:1.1rem;letter-spacing:-.02em;margin-bottom:2px;}
+.map-pop-area {font-size:11px;color:var(--lx-muted);margin-bottom:8px;}
+.map-pop-unit {display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-top:1px solid var(--lx-hair-soft);font-size:12.5px;align-items:baseline;}
+.map-pop-unit a {color:var(--lx-gold-deep);font-weight:500;text-decoration:none;}
+.map-pop-unit a:hover {color:var(--lx-ink);}
+.map-pop-price {font-weight:700;white-space:nowrap;}
+
 /* house rule 6: respect reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .listing-card, .listing-image img, .price-seg button,
-  .amenity-pill, .autocomplete-item, .listing-overlay-title, .listing-overlay-view {transition:none !important;}
+  .amenity-pill, .autocomplete-item, .listing-overlay-title, .listing-overlay-view,
+  .view-toggle button, .map-pin {transition:none !important;}
   .listing-card:hover {transform:none !important;}
   .loading-spinner {animation-duration:1.6s;}
 }
@@ -385,6 +410,10 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
     </div>
     <div class="grid-meta">
         <div class="results-count" id="resultsCount" aria-live="polite"></div>
+        <div class="view-toggle" id="viewToggle" role="group" aria-label="Switch between list and map view">
+            <button type="button" data-view="list" class="on" aria-pressed="true">List</button>
+            <button type="button" data-view="map" aria-pressed="false">Map</button>
+        </div>
     </div>
     <div class="listings-grid" id="listingsGrid">
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
@@ -396,6 +425,7 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
     </div>
+    <div id="mapWrap" aria-label="Map of apartments"><div id="mapCanvas"></div></div>
     <select id="areaSelect" style="display:none;"><option value="all">All</option></select>
     <noscript>
         <p>Browse our luxury serviced apartments near UCL:
@@ -546,8 +576,16 @@ let selectedAreas = [];
 let userTouched = false;   /* URL state is only written after a real interaction */
 let priceBoundMin = 0, priceBoundMax = 0, priceMin = 0, priceMax = 0;   /* weekly £ */
 
+/* map view state: declared with the rest of the state because renderListings
+   and writeUrlState read currentView during the synchronous boot path */
+const LEAFLET_BASE = 'https://unpkg.com/leaflet@1.9.4/dist';
+const CLUSTER_BASE = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist';
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let currentView = 'list';
+let map = null, clusterGroup = null, leafletReady = null, mapFitted = false;
+
 /* ── inbound URL params (comma-separated values supported) ── */
-let urlAreas = [], urlTypes = [], urlAmenities = [], urlQuery = '', urlSort = '';
+let urlAreas = [], urlTypes = [], urlAmenities = [], urlQuery = '', urlSort = '', urlView = false;
 (function readUrlParams() {
     const params = new URLSearchParams(window.location.search);
     const amenityAliases = {
@@ -562,6 +600,7 @@ let urlAreas = [], urlTypes = [], urlAmenities = [], urlQuery = '', urlSort = ''
     if (params.get('amenity')) urlAmenities = decodeURIComponent(params.get('amenity')).toLowerCase().split(',').map(s => amenityAliases[s.trim().replace(/\s+/g, '-')]).filter(Boolean);
     if (params.get('q')) urlQuery = decodeURIComponent(params.get('q'));
     if (params.get('sort')) urlSort = params.get('sort');
+    if (params.get('view') === 'map') urlView = true;
 })();
 let urlPrice = null;
 (function(){ const m = (new URLSearchParams(window.location.search).get('price') || '').match(/^(\d+)-(\d+)$/); if (m) urlPrice = [parseInt(m[1],10), parseInt(m[2],10)]; if (urlPrice && urlPrice[0] >= urlPrice[1]) urlPrice = null; /* collapsed range from a bad link would show zero results */ })();
@@ -570,7 +609,8 @@ let urlPrice = null;
 function writeUrlState() {
     if (!userTouched || !window.history || !history.replaceState) return;
     const params = new URLSearchParams(window.location.search);
-    ['q','type','area','amenity','sort'].forEach(k => params.delete(k));
+    ['q','type','area','amenity','sort','view'].forEach(k => params.delete(k));
+    if (currentView === 'map') params.set('view', 'map');
     if (searchQuery.trim()) params.set('q', searchQuery.trim());
     if (selectedBedrooms.length) params.set('type', selectedBedrooms.join(','));
     if (selectedAreas.length) params.set('area', selectedAreas.join(','));
@@ -612,6 +652,7 @@ async function loadListings() {
       initPriceSlider();
       renderAmenityPills();
       applyFilters();
+      if (urlView) { urlView = false; setView('map'); }
   }
 
   if (cached) {
@@ -656,6 +697,8 @@ async function loadListings() {
       minstay90: l.minstay90 || false,
       comingSoon: l.comingSoon || false,
       poa: l.poa || false,
+      lat: (typeof l.lat === 'number') ? l.lat : null,
+      lng: (typeof l.lng === 'number') ? l.lng : null,
     }));
 
     if (fresh.length > 0) {
@@ -1127,6 +1170,7 @@ function renderListings(listingsToRender){
     updateResultsCount();
     updateShortlistBar();
     bindAmenityMore(grid);
+    if (currentView === 'map') updateMapMarkers();
 }
 
 /* Append only the new cards - keeps scroll position, expanded rows, and
@@ -1332,7 +1376,7 @@ window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setT
   if (!grid) { loadListings(); return; }
 
   var params = new URLSearchParams(window.location.search);
-  if (params.has('type') || params.has('amenity') || params.has('area') || params.has('q') || params.has('sort')) {
+  if (params.has('type') || params.has('amenity') || params.has('area') || params.has('q') || params.has('sort') || params.has('view')) {
     loadListings();
     return;
   }
@@ -1366,6 +1410,151 @@ window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setT
     }
   }, 3000);
 })();
+
+/* ── List | Map view. Leaflet + markercluster load lazily on first Map
+      click, so list-only visitors pay zero extra bytes. The map renders
+      currentListings (the already-filtered set): every existing filter,
+      sort and the price slider drive it with no extra wiring. One pin per
+      building ("from £X"), popup lists that building's apartments. A
+      listing without lat/lng (not yet geocoded) simply stays list-only. ── */
+function loadCss(href) {
+    if (document.querySelector('link[href="' + href + '"]')) return;
+    const l = document.createElement('link');
+    l.rel = 'stylesheet'; l.href = href;
+    document.head.appendChild(l);
+}
+function loadScript(src) {
+    return new Promise(function(resolve, reject) {
+        const s = document.createElement('script');
+        s.src = src; s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+    });
+}
+function ensureLeaflet() {
+    if (leafletReady) return leafletReady;
+    loadCss(LEAFLET_BASE + '/leaflet.css');
+    loadCss(CLUSTER_BASE + '/MarkerCluster.css');
+    leafletReady = loadScript(LEAFLET_BASE + '/leaflet.js')
+        .then(function() { return loadScript(CLUSTER_BASE + '/leaflet.markercluster.js'); });
+    return leafletReady;
+}
+
+function mapBuildings() {
+    const byBuilding = new Map();
+    currentListings.forEach(function(l) {
+        if (l.lat == null || l.lng == null) return;
+        let b = byBuilding.get(l.buildingId);
+        if (!b) {
+            b = { lat: l.lat, lng: l.lng, title: l.title, location: l.location, units: [] };
+            byBuilding.set(l.buildingId, b);
+        }
+        b.units.push(l);
+    });
+    return Array.from(byBuilding.values());
+}
+
+function pinLabel(b) {
+    const priced = b.units.filter(function(u) { return !u.poa && !u.comingSoon && !u.refurb; });
+    if (!priced.length) return 'POA';
+    const min = Math.min.apply(null, priced.map(function(u) { return u.weekly; }));
+    return 'from ' + PAGE_CONFIG.currency + formatPrice(min);
+}
+
+function popupHtml(b) {
+    const unit = priceMode === 'weekly' ? '/wk' : '/mo';
+    const rows = b.units.slice(0, 8).map(function(u) {
+        const price = u.comingSoon ? 'Coming soon'
+            : u.poa ? 'POA'
+            : u.refurb ? 'Unavailable'
+            : PAGE_CONFIG.currency + formatPrice(u.weekly) + ' ' + unit;
+        const link = (!u.comingSoon && u.url) ? '<a href="' + u.url + '">View</a>' : '';
+        return '<div class="map-pop-unit"><span>' + bedLabel(u.bedroomType) + ' · ' + escHtml(u.size) + ' sq/m</span><span class="map-pop-price">' + price + '</span>' + link + '</div>';
+    }).join('');
+    const more = b.units.length > 8 ? '<div class="map-pop-unit"><span>+ ' + (b.units.length - 8) + ' more apartments</span></div>' : '';
+    return '<div class="map-pop-title">' + escHtml(b.title) + '</div><div class="map-pop-area">' + escHtml(b.location) + '</div>' + rows + more;
+}
+
+function updateMapMarkers() {
+    if (!map || !window.L || !clusterGroup) return;
+    clusterGroup.clearLayers();
+    const old = document.getElementById('mapEmpty');
+    if (old) old.remove();
+    const buildings = mapBuildings();
+    if (!buildings.length) {
+        const note = document.createElement('div');
+        note.id = 'mapEmpty'; note.className = 'map-empty';
+        note.textContent = listings.some(function(l) { return l.lat != null; })
+            ? 'No mapped apartments match these filters.'
+            : 'The map is warming up - apartment positions appear here shortly.';
+        document.getElementById('mapWrap').appendChild(note);
+        return;
+    }
+    buildings.forEach(function(b) {
+        const m = L.marker([b.lat, b.lng], {
+            icon: L.divIcon({ className: 'map-pin', html: escHtml(pinLabel(b)), iconSize: null }),
+        });
+        m.bindPopup(popupHtml(b), { maxWidth: 300 });
+        clusterGroup.addLayer(m);
+    });
+    if (!mapFitted) {
+        mapFitted = true;
+        map.fitBounds(clusterGroup.getBounds().pad(0.12));
+    }
+}
+
+function initMap() {
+    if (map) {
+        updateMapMarkers();
+        setTimeout(function() { map.invalidateSize(); }, 60);
+        return;
+    }
+    map = L.map('mapCanvas', {
+        zoomAnimation: !REDUCED_MOTION,
+        fadeAnimation: !REDUCED_MOTION,
+        scrollWheelZoom: false,   /* page scroll must not hijack into zoom; enables on click */
+    });
+    map.setView([51.5074, -0.1278], 12);
+    map.on('click', function() { map.scrollWheelZoom.enable(); });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 19,
+    }).addTo(map);
+    clusterGroup = L.markerClusterGroup({
+        maxClusterRadius: 46,
+        showCoverageOnHover: false,
+        iconCreateFunction: function(c) {
+            return L.divIcon({ className: 'map-cluster', html: String(c.getChildCount()), iconSize: L.point(38, 38) });
+        },
+    });
+    map.addLayer(clusterGroup);
+    updateMapMarkers();
+}
+
+function setView(v) {
+    if (v === currentView) return;
+    currentView = v;
+    document.querySelectorAll('#viewToggle button').forEach(function(b) {
+        const on = b.dataset.view === v;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', String(on));
+    });
+    const grid = document.getElementById('listingsGrid');
+    const wrap = document.getElementById('mapWrap');
+    if (v === 'map') {
+        grid.style.display = 'none';
+        wrap.classList.add('show');
+        ensureLeaflet().then(initMap).catch(function() {
+            wrap.innerHTML = '<div class="map-empty">The map could not load. Please switch back to List view.</div>';
+        });
+    } else {
+        wrap.classList.remove('show');
+        grid.style.display = '';
+    }
+    writeUrlState();
+}
+document.querySelectorAll('#viewToggle button').forEach(function(b) {
+    b.addEventListener('click', function() { userTouched = true; setView(b.dataset.view); });
+});
 
 if (PAGE_CONFIG.defaultPriceMode === 'monthly') {
     priceMode = 'weekly';   /* so setPriceMode('monthly') applies the switch */
