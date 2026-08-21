@@ -306,9 +306,12 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 .map-pin.map-pin-light {background:#46608C;border-color:var(--lx-gold-lt);}
 .map-pin.map-pin-mid {background:#263C5E;}
 .map-pin:hover {background:var(--lx-gold);border-color:var(--lx-ink);color:var(--lx-ink);}
-/* zoomed out: pills collapse to plain price-banded dots (never numbered clusters) */
+/* zoomed out: pills collapse to plain price-banded dots */
 .map-dots .map-pin {width:15px !important;height:15px !important;padding:0;}
 .map-dots .map-pin .mp-price {display:none;}
+/* overlap bubble: only pins stacked on top of each other group into a
+   counted circle; clicking fans them out so each is clickable */
+.map-cluster {background:var(--lx-ink);border:1.5px solid var(--lx-gold);border-radius:50%;box-shadow:0 2px 6px rgba(13,26,46,.25);color:#fff;font-family:var(--lx-sans);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 /* university markers: paper circle, ink ring, gold mortarboard */
 .map-uni {background:var(--lx-paper);border:1.5px solid var(--lx-ink);border-radius:50%;box-shadow:0 2px 6px rgba(13,26,46,.22);display:flex;align-items:center;justify-content:center;color:var(--lx-gold-deep);width:26px !important;height:26px !important;}
 .map-uni svg {width:15px;height:15px;display:block;}
@@ -603,9 +606,14 @@ let priceBoundMin = 0, priceBoundMax = 0, priceMin = 0, priceMax = 0;   /* weekl
 /* map view state: declared with the rest of the state because renderListings
    and writeUrlState read currentView during the synchronous boot path */
 const LEAFLET_BASE = 'https://unpkg.com/leaflet@1.9.4/dist';
+const CLUSTER_BASE = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist';
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-/* below this zoom, pills collapse to plain dots (no numbered clusters, ever) */
+/* below this zoom, pills collapse to plain dots */
 const PIN_DOT_ZOOM = 14;
+/* pins within this many pixels of each other merge into an overlap bubble.
+   Kept tight: this is for pins literally on top of each other, not for
+   grouping a neighbourhood. */
+const OVERLAP_RADIUS = 20;
 /* preview gate: the map stays hidden from visitors until the design is
    signed off. Visit any filter page once with ?mappreview=1 to unlock it
    on this browser (persists), ?mappreview=0 to lock it again. */
@@ -1457,7 +1465,8 @@ window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setT
       currentListings (the already-filtered set): every existing filter,
       sort and the price slider drive it with no extra wiring. One pin per
       building (price pill in a price-banded navy; plain dot when zoomed
-      out, never numbered clusters), popup lists that building's apartments. A
+      out; only true stacks merge into a click-to-fan-out overlap bubble),
+      popup lists that building's apartments. A
       listing without lat/lng (not yet geocoded) simply stays list-only. ── */
 function loadCss(href) {
     if (document.querySelector('link[href="' + href + '"]')) return;
@@ -1475,7 +1484,9 @@ function loadScript(src) {
 function ensureLeaflet() {
     if (leafletReady) return leafletReady;
     loadCss(LEAFLET_BASE + '/leaflet.css');
-    leafletReady = loadScript(LEAFLET_BASE + '/leaflet.js');
+    loadCss(CLUSTER_BASE + '/MarkerCluster.css');
+    leafletReady = loadScript(LEAFLET_BASE + '/leaflet.js')
+        .then(function() { return loadScript(CLUSTER_BASE + '/leaflet.markercluster.js'); });
     return leafletReady;
 }
 
@@ -1621,7 +1632,23 @@ function initMap() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
         maxZoom: 19,
     }).addTo(map);
-    pinLayer = L.layerGroup().addTo(map);
+    /* overlap-only grouping: OVERLAP_RADIUS is tight, so distinct buildings
+       keep their own pins; only true stacks merge into a counted bubble.
+       Clicking the bubble spiderfies immediately (no zoom step) so both
+       pins fan out and each can be clicked. */
+    pinLayer = L.markerClusterGroup({
+        maxClusterRadius: OVERLAP_RADIUS,
+        zoomToBoundsOnClick: false,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        spiderfyDistanceMultiplier: 1.6,
+        animate: !REDUCED_MOTION,
+        iconCreateFunction: function(c) {
+            return L.divIcon({ className: 'map-cluster', html: String(c.getChildCount()), iconSize: L.point(30, 30) });
+        },
+    });
+    pinLayer.on('clusterclick', function(e) { e.layer.spiderfy(); });
+    map.addLayer(pinLayer);
     /* university landmarks: static, unaffected by filters */
     cityUnis().forEach(function(u) {
         L.marker([u.lat, u.lng], {
