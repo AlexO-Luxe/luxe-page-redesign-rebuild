@@ -373,7 +373,9 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 .map-pop-title {font-family:var(--lx-serif);font-size:1.1rem;letter-spacing:-.02em;margin-bottom:2px;}
 .map-pop-area {font-size:11px;color:var(--lx-muted);margin-bottom:6px;}
 .map-pop-unit {display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--lx-hair-soft);font-size:12.5px;}
-.map-pop-unit img {width:52px;height:52px;border-radius:8px;object-fit:cover;flex:none;}
+.map-pop-unit img {width:72px;height:48px;border-radius:8px;object-fit:cover;flex:none;}
+.map-pop-list {max-height:290px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(184,150,110,.5) transparent;}
+@media (max-width:768px){ .map-pop-list {max-height:34vh;} }
 .map-pop-main {flex:1;min-width:0;}
 .map-pop-ams {margin-top:3px;}
 .map-pop-chip {display:inline-block;font-size:9.5px;line-height:1.6;color:var(--lx-gold-deep);background:var(--lx-gold-wash);border:1px solid var(--lx-gold-line);border-radius:9999px;padding:0 8px;margin:1px 3px 1px 0;white-space:nowrap;}
@@ -1632,7 +1634,7 @@ function cityUnis() {
 
 function popupHtml(b) {
     const unit = priceMode === 'weekly' ? '/wk' : '/mo';
-    const rows = b.units.slice(0, 6).map(function(u) {
+    const rows = b.units.map(function(u) {
         const price = u.comingSoon ? 'Coming soon'
             : u.poa ? 'POA'
             : u.refurb ? 'Unavailable'
@@ -1645,8 +1647,7 @@ function popupHtml(b) {
         }).join('');
         return '<div class="map-pop-unit">' + thumb + '<div class="map-pop-main"><div>' + bedLabel(u.bedroomType) + ' · ' + escHtml(u.size) + ' sq/m · <span class="map-pop-price">' + price + '</span></div><div class="map-pop-ams">' + chips + '</div></div>' + link + '</div>';
     }).join('');
-    const more = b.units.length > 6 ? '<div class="map-pop-unit"><span>+ ' + (b.units.length - 6) + ' more apartments</span></div>' : '';
-    return '<div class="map-pop-title">' + escHtml(b.title) + '</div><div class="map-pop-area">' + escHtml(b.location) + '</div>' + rows + more;
+    return '<div class="map-pop-title">' + escHtml(b.title) + '</div><div class="map-pop-area">' + escHtml(b.location) + '</div><div class="map-pop-list">' + rows + '</div>';
 }
 
 function updateMapMarkers() {
