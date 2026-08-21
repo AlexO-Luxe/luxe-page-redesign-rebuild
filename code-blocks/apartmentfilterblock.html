@@ -373,6 +373,11 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 .map-pop-title {font-family:var(--lx-serif);font-size:1.1rem;letter-spacing:-.02em;margin-bottom:2px;}
 .map-pop-area {font-size:11px;color:var(--lx-muted);margin-bottom:6px;}
 .map-pop-unit {display:flex;gap:10px;align-items:center;padding:8px 6px 8px 0;border-top:1px solid var(--lx-hair-soft);font-size:12.5px;color:var(--lx-ink);text-decoration:none;transition:background .15s;}
+/* the site theme colours anchors blue and washes them out on hover; the
+   popup rows stay house navy in every state */
+a.map-pop-unit, a.map-pop-unit:hover, a.map-pop-unit:visited, a.map-pop-unit:active,
+a.map-pop-unit *, a.map-pop-unit:hover * {color:var(--lx-ink) !important;text-decoration:none !important;}
+a.map-pop-unit .map-pop-chip, a.map-pop-unit:hover .map-pop-chip {color:var(--lx-gold-deep) !important;}
 a.map-pop-unit:hover {background:var(--lx-gold-wash);}
 .map-pop-unit img {width:64px;height:64px;border-radius:8px;object-fit:cover;flex:none;}
 .map-pop-list {max-height:290px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(184,150,110,.5) transparent;}
