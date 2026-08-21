@@ -653,6 +653,7 @@ const MAP_PREVIEW = (function() {
 })();
 let currentView = 'list';
 let map = null, pinLayer = null, leafletReady = null, mapFitted = false;
+let mapRefit = false;   /* area changed: re-frame the map on its next render */
 
 /* ── inbound URL params (comma-separated values supported) ── */
 let urlAreas = [], urlTypes = [], urlAmenities = [], urlQuery = '', urlSort = '', urlView = false;
@@ -944,6 +945,7 @@ function updateAreaDropdownLabel() {
 
 function clearAreas() {
     userTouched = true;
+    mapRefit = true;
     selectedAreas = [];
     document.querySelectorAll('#areaCheckboxList input[type=checkbox]').forEach(cb => cb.checked = false);
     updateAreaDropdownLabel();
@@ -985,6 +987,7 @@ function populateAreaFilter() {
 
 function onAreaCheckboxChange(checkbox) {
     userTouched = true;
+    mapRefit = true;
     const area = checkbox.value;
     if (checkbox.checked) { if (!selectedAreas.includes(area)) selectedAreas.push(area); }
     else { selectedAreas = selectedAreas.filter(a => a !== area); }
@@ -1032,6 +1035,7 @@ function renderAmenityPills(){
     if(resetBtn) {
         resetBtn.addEventListener('click', () => {
             userTouched = true;
+            mapRefit = true;
             selectedAmenities=[]; selectedBedrooms=[]; searchQuery=''; selectedAreas=[];
             priceMin = priceBoundMin; priceMax = priceBoundMax;
             if (drMin) { drMin.value = priceToPos(priceMin); drMax.value = priceToPos(priceMax); updatePriceUi(); }
@@ -1372,6 +1376,7 @@ function showAutocompleteSuggestions(query){
             if(item.dataset.type==='area'){
                 /* picking an area ticks it in the Area dropdown instead of
                    fighting the pre-filter via free-text search */
+                mapRefit=true;
                 const area=item.dataset.value;
                 if(!selectedAreas.includes(area)) selectedAreas.push(area);
                 document.querySelectorAll('#areaCheckboxList input[type=checkbox]').forEach(cb=>{if(cb.value===area)cb.checked=true;});
@@ -1631,6 +1636,7 @@ function updateMapMarkers() {
     });
     if (!mapFitted) {
         mapFitted = true;
+        mapRefit = false;
         /* default view: median centre of the pins at zoom 14, so the map
            opens on the central district with full price pills showing.
            Median, not bounds: one outlier building (Wembley, Stratford)
@@ -1638,6 +1644,11 @@ function updateMapMarkers() {
         const lats = buildings.map(function(b) { return b.lat; }).sort(function(a, b) { return a - b; });
         const lngs = buildings.map(function(b) { return b.lng; }).sort(function(a, b) { return a - b; });
         map.setView([lats[Math.floor(lats.length / 2)], lngs[Math.floor(lngs.length / 2)]], 14);
+    } else if (mapRefit) {
+        /* an area was picked or cleared: glide to the matching pins.
+           maxZoom stops a one-building area from over-zooming */
+        mapRefit = false;
+        map.fitBounds(pinLayer.getBounds(), { padding: L.point(40, 40), maxZoom: 15 });
     }
 }
 
