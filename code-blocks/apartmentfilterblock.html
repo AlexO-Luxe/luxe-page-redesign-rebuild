@@ -78,7 +78,6 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 .amenity-pill:focus-visible {outline:2px solid var(--lx-gold);outline-offset:2px;}
 .amenity-pill.selected {background:var(--lx-ink);border-color:var(--lx-ink);color:white;}
 .listings-grid {display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:25px; margin-bottom:40px;}
-.grid-meta {display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
 .results-count {font-size:13px;color:var(--lx-muted);letter-spacing:.02em;}
 .results-count b {color:var(--lx-ink);font-weight:600;}
 .results-count button {background:none;border:none;padding:0;font:inherit;color:var(--lx-gold-deep);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
@@ -266,6 +265,13 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
     /* undo the blanket button background so the Weekly/Monthly active state stays navy on desktop too */
     .price-seg button {justify-content:center !important;width:auto !important;min-width:0 !important;max-width:none !important;height:34px !important;padding:0 !important;border:none !important;border-radius:0 !important;}
     .price-seg button.on {background:var(--lx-ink) !important;color:#fff !important;}
+    /* same exemption for the List | Map segments inside their filter group */
+    .view-group .view-toggle {width:150px;}
+    .view-group .view-toggle button {justify-content:center !important;width:auto !important;min-width:0 !important;max-width:none !important;height:40px !important;padding:0 16px !important;border:none !important;border-radius:0 !important;background:transparent !important;}
+    .view-group .view-toggle button.on {background:var(--lx-ink) !important;color:#fff !important;}
+    /* results count rides the filter bar's right edge instead of its own row */
+    .filters-top-row {flex-wrap:wrap;}
+    .filters-top-row .results-count {margin-left:auto;align-self:flex-end;padding-bottom:12px;white-space:nowrap;}
     .search-input {padding-left:14px !important;}
     .search-icon {display:none !important;}
     .filters-amenity-label {font-family:var(--lx-sans);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--lx-muted);white-space:nowrap;flex-shrink:0;}
@@ -287,12 +293,14 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
   #sortSelect {font-size:14px !important;}
   .search-input:focus, #sortSelect:focus {font-size:16px !important;}
   /* price toggle: show only the active mode label */
+  /* the apartment count has no row of its own any more; hide it on mobile */
+  .results-count {display:none !important;}
+  .view-group .view-toggle button {width:50% !important;min-width:0 !important;font-size:11px !important;}
 }
 
-/* ── List | Map view toggle + map view ── */
-.grid-meta {flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.view-toggle {display:flex;height:38px;border:1px solid var(--lx-hair);border-radius:10px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.6);}
-.view-toggle button {border:none;background:transparent;padding:0 18px;font-family:var(--lx-sans);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--lx-muted);cursor:pointer;transition:background .15s,color .15s;}
+/* ── List | Map view toggle (lives in the filter bar) + map view ── */
+.view-toggle {display:flex;height:42px;border:1px solid var(--lx-hair);border-radius:10px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.6);}
+.view-toggle button {flex:1;border:none;background:transparent;padding:0 18px;font-family:var(--lx-sans);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--lx-muted);cursor:pointer;transition:background .15s,color .15s;}
 .view-toggle button.on {background:var(--lx-ink);color:#fff;}
 .view-toggle button:focus-visible {outline:2px solid var(--lx-gold);outline-offset:-2px;}
 #mapWrap {display:none;position:relative;height:560px;border:1px solid var(--lx-hair);border-radius:16px;overflow:hidden;margin-bottom:40px;background:var(--lx-hair-soft);}
@@ -437,18 +445,19 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
                 </div>
             </div>
         </div>
+        <div class="filter-group view-group">
+            <label>View:</label>
+            <div class="view-toggle" id="viewToggle" role="group" aria-label="Switch between list and map view">
+                <button type="button" data-view="list" class="on" aria-pressed="true">List</button>
+                <button type="button" data-view="map" aria-pressed="false">Map</button>
+            </div>
+        </div>
+        <div class="results-count" id="resultsCount" aria-live="polite"></div>
         <div class="shortlist-bar" id="shortlistBar"></div>
         </div>
         <div class="filters-bottom-row">
             <span class="filters-amenity-label">Amenities:</span>
             <div class="amenity-filters" id="amenityFilterContainer" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
-        </div>
-    </div>
-    <div class="grid-meta">
-        <div class="results-count" id="resultsCount" aria-live="polite"></div>
-        <div class="view-toggle" id="viewToggle" role="group" aria-label="Switch between list and map view">
-            <button type="button" data-view="list" class="on" aria-pressed="true">List</button>
-            <button type="button" data-view="map" aria-pressed="false">Map</button>
         </div>
     </div>
     <div class="listings-grid" id="listingsGrid">
