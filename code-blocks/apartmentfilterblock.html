@@ -312,9 +312,10 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 }
 
 /* ── List | Map view toggle (lives in the filter bar) + map view ── */
-/* the site's fixed nav overlays the page top; every scroll-to-filters
-   (view toggle, Adjust Filters, back to top) stops short of it */
-.filters {scroll-margin-top:110px;}
+/* the site's fixed nav overlays the page top on desktop; every
+   scroll-to-filters (view toggle, Adjust Filters, back to top) stops
+   short of it. The mobile nav scrolls away, so no offset there. */
+@media (min-width:769px){ .filters {scroll-margin-top:110px;} }
 .view-toggle {display:flex;height:42px;border:1px solid var(--lx-hair);border-radius:10px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.6);}
 .view-toggle button {flex:1;border:none;background:transparent;padding:0 18px;font-family:var(--lx-sans);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--lx-muted);cursor:pointer;transition:background .15s,color .15s;}
 .view-toggle button.on {background:var(--lx-ink);color:#fff;}
