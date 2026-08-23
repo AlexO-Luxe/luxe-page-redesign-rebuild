@@ -738,7 +738,7 @@ async function loadListings() {
       initPriceSlider();
       renderAmenityPills();
       applyFilters();
-      if (urlView) { urlView = false; setView('map'); }
+      if (urlView) { urlView = false; setView('map'); scrollToTop(); }
   }
 
   if (cached) {
@@ -1878,7 +1878,13 @@ function setView(v) {
     writeUrlState();
 }
 document.querySelectorAll('#viewToggle button').forEach(function(b) {
-    b.addEventListener('click', function() { userTouched = true; setView(b.dataset.view); });
+    b.addEventListener('click', function() {
+        userTouched = true;
+        setView(b.dataset.view);
+        /* settle the viewport with the filter bar at the top, so both
+           views open framed the same way */
+        scrollToTop();
+    });
 });
 (function bindKeyToggle() {
     const key = document.getElementById('mapKey');
