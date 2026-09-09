@@ -2302,3 +2302,51 @@ body.sl-ap-open.sl-ap-rack #page{ /* blur applied via the shared desktop rule ab
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "x2a7c22ekn");
 </script>
+
+<!-- ============================================================
+     Site-wide image capper, added 9 Sept 2026
+     Source of truth: code-injections-and-css/header-image-capper.html
+     ============================================================ -->
+<script data-sl-imgcap="1">
+(function () {
+  var CDN = 'images.squarespace-cdn.com';
+  var WIDTHS = [500, 1000, 1500];
+
+  function fix(img) {
+    if (img.__slCapped) return;
+    var src = img.getAttribute('src') || '';
+    if (src.indexOf(CDN) === -1) return;
+    if (/[?&]format=/.test(src) || img.hasAttribute('srcset')) return;
+    if (/\.png(\?|$)/i.test(src)) return;
+    var base = src.split('?')[0];
+    img.setAttribute('src', base + '?format=1000w');
+    img.setAttribute('srcset', WIDTHS.map(function (w) { return base + '?format=' + w + 'w ' + w + 'w'; }).join(', '));
+    img.setAttribute('sizes', '(max-width: 640px) 100vw, 1000px');
+    if (!img.hasAttribute('loading')) {
+      var slide = img.closest ? img.closest('.slide') : null;
+      var first = !slide || !slide.previousElementSibling;
+      img.setAttribute('loading', first ? 'eager' : 'lazy');
+    }
+    if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async');
+    img.__slCapped = true;
+  }
+
+  function sweep(node) {
+    if (node.tagName === 'IMG') { fix(node); return; }
+    if (!node.querySelectorAll) return;
+    var imgs = node.querySelectorAll('img');
+    for (var i = 0; i < imgs.length; i++) fix(imgs[i]);
+  }
+
+  try {
+    new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var added = muts[i].addedNodes;
+        for (var j = 0; j < added.length; j++) if (added[j].nodeType === 1) sweep(added[j]);
+      }
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  } catch (e) { /* very old browser: the DOMContentLoaded sweep still runs */ }
+
+  document.addEventListener('DOMContentLoaded', function () { sweep(document); });
+})();
+</script>
