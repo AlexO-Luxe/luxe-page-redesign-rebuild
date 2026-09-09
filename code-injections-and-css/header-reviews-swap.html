@@ -1,0 +1,247 @@
+<!--
+  Student Luxe: reviews swap
+  Paste into Squarespace: Settings > Advanced > Code Injection > HEADER.
+
+  On every page, as the HTML is parsed, the Elfsight Google Reviews embed
+  (widget 2acf6c55-4bed-493a-b54c-0c622df34983) is replaced in place with
+  the house review carousel. Nothing else on the page is touched. Pages
+  without that widget are unaffected. The Elfsight loader still downloads
+  (a script tag already in the HTML cannot be cancelled) but has nothing to
+  mount, so no iframe, no widget assets, no layout work.
+
+  Reviews: edit the REVIEWS array below. One place, every page.
+  Compare with the original: add ?sl-revswap=off to any URL.
+  data-sl-revswap is the marker the site-health crawler looks for.
+-->
+<style data-sl-revswap-css>
+.slx-rev, .slx-rev *, .slx-rev *::before, .slx-rev *::after { box-sizing: border-box; }
+.slx-rev {
+  --gold: #B8966E; --gold-l: #D4B896;
+  position: relative; width: 100%; max-width: 460px; min-width: 0; margin: 0 auto;
+  font-family: 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+.slx-rev-viewport {
+  overflow: hidden; width: 100%; border: 0.5px solid rgba(184,150,110,0.32);
+  background: rgba(13,26,46,0.96); border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+  cursor: grab; touch-action: pan-y; user-select: none;
+}
+.slx-rev-viewport:active { cursor: grabbing; }
+.slx-rev-track { display: flex; transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1); transform: translate3d(0,0,0); }
+.slx-rev-track.no-anim { transition: none; }
+.slx-rev-slide { flex: 0 0 100%; padding: 28px 28px 24px; }
+.slx-rev-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+.slx-rev-stars svg { width: 14px; height: 14px; fill: var(--gold-l); }
+.slx-rev-quote-wrap { position: relative; margin-bottom: 18px; }
+.slx-rev-quote {
+  font-size: 13.5px; line-height: 1.65; color: #ffffff; letter-spacing: -0.005em; margin: 0;
+  display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;
+}
+.slx-rev-quote-wrap.expanded .slx-rev-quote { display: block; -webkit-line-clamp: unset; overflow: visible; }
+.slx-rev-toggle {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; background: none; border: none; padding: 0;
+  font-family: 'DM Sans', system-ui, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--gold-l); cursor: pointer; transition: color 0.15s;
+}
+.slx-rev-toggle svg { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s; }
+.slx-rev-quote-wrap.expanded .slx-rev-toggle svg { transform: rotate(180deg); }
+@media (hover: hover) and (pointer: fine) { .slx-rev .slx-rev-toggle:hover { color: #ffffff; } }
+.slx-rev-quote-wrap.no-overflow .slx-rev-toggle { display: none; }
+.slx-rev-attr { display: flex; align-items: center; gap: 10px; padding-top: 14px; }
+.slx-rev-avatar {
+  width: 32px; height: 32px; min-width: 32px; border-radius: 50%; background: var(--gold); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+}
+.slx-rev-attr-text { display: flex; flex-direction: column; gap: 1px; }
+.slx-rev-name { font-size: 12.5px; font-weight: 600; color: #ffffff; letter-spacing: -0.005em; }
+.slx-rev-source { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; color: var(--gold-l); letter-spacing: 0.02em; text-decoration: none; transition: color 0.15s; }
+@media (hover: hover) and (pointer: fine) { .slx-rev .slx-rev-source:hover { color: #ffffff; text-decoration: underline; text-underline-offset: 2px; } }
+.slx-rev-google-g { width: 11px; height: 11px; flex-shrink: 0; display: inline-block; }
+.slx-rev-dots { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
+.slx-rev-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(184,150,110,0.35); border: none; padding: 0; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+.slx-rev-dot.active { background: var(--gold-l); transform: scale(1.25); }
+.slx-rev-dot:focus-visible { outline: 2px solid var(--gold-l); outline-offset: 2px; }
+.slx-rev-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(13,26,46,0.9); border: 0.5px solid rgba(184,150,110,0.5); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.20); transition: background 0.18s, border-color 0.18s; z-index: 2; padding: 0;
+}
+.slx-rev-arrow svg { width: 14px; height: 14px; stroke: var(--gold-l); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.slx-rev-arrow.prev { left: -16px; } .slx-rev-arrow.next { right: -16px; }
+@media (hover: hover) and (pointer: fine) { .slx-rev .slx-rev-arrow:hover { background: var(--gold); border-color: var(--gold); } .slx-rev .slx-rev-arrow:hover svg { stroke: #ffffff; } }
+.slx-rev-arrow:focus-visible { outline: 2px solid var(--gold-l); outline-offset: 2px; }
+.slx-rev-all { display: block; text-align: center; margin-top: 14px; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-l); text-decoration: none; }
+@media (hover: hover) and (pointer: fine) { .slx-rev .slx-rev-all:hover { color: #ffffff; } }
+@media (max-width: 768px) { .slx-rev-arrow { display: none; } .slx-rev-slide { padding: 24px 22px 20px; } }
+@media (prefers-reduced-motion: reduce) { .slx-rev-track, .slx-rev-dot, .slx-rev-arrow { transition: none !important; } }
+</style>
+<script data-sl-revswap="1">
+(function () {
+  if (/[?&]sl-revswap=off\b/.test(location.search)) return;
+  var WIDGET = 'elfsight-app-2acf6c55-4bed-493a-b54c-0c622df34983';
+
+  // REVIEW DATA. Add, edit, remove here; every page updates.
+  var REVIEWS = [
+    { name: 'Holly Clarke', initials: 'HC', url: 'https://maps.app.goo.gl/7n5h5Y9ehEHEy4Ga6',
+      quote: "We used Student Luxe housing for our daughter who was studying abroad in London. They were very helpful during the search process to listen to our needs and help us find the perfect place. We chose a location that was a combo boutique hotel / residence which gave her the best of both worlds. The location was fantastic. The Student Luxe team was responsive and literally took care of everything. Everything was exactly as advertised. They made the process very easy. I highly recommend them." },
+    { name: 'Felix Oljons', initials: 'FO', url: 'https://maps.app.goo.gl/Ktv7X4dspcgu4fVC7',
+      quote: "Amazing service and wonderful selection of apartments. They made everything feel seamless. Would highly recommend for students who value higher degree of freedom in contract length and quality apartments to make your time in London truly special." },
+    { name: 'Alina Elena Olariu', initials: 'AO', url: 'https://maps.app.goo.gl/4DYpRd9tYZgupLMf8',
+      quote: "Student Luxe has been such a helpful source for us to find accommodation for our daughter while she has been at university. It assures me that she is in a safe and well looked after environment and on top of that offers the best and most central locations! A special thank you goes to Mo for guiding us through the process and remaining at our disposal for two years now!" },
+    { name: 'Barbie Lee', initials: 'BL', url: 'https://maps.app.goo.gl/bydUcsGqHWqHGCqm6',
+      quote: "I had an excellent experience with Student Luxe, especially thanks to the amazing help from Rongrong and Lina. After an unexpected issue with my first accommodation, Rongrong patiently guided me through the process of finding and securing a new place. She was understanding, professional, and made what could have been a stressful situation feel manageable. Once I moved in, Lina provided outstanding follow-up support, particularly with arranging my luggage delivery. She was responsive, proactive, and ensured everything went smoothly. Overall, I’m very grateful for their kindness and efficiency. Highly recommend Student Luxe – and especially Rongrong and Lina – to any student looking for reliable and caring housing support!" },
+    { name: 'Sher Singh', initials: 'SS', url: 'https://maps.app.goo.gl/wvpWYWQVAqj7TQMz5',
+      quote: "Katria is an absolute gem! She helped me find the perfect accommodation close to the university, tailored to my son's needs. Not only was she professional and friendly, but she also showed incredible kindness. She even went the extra mile, providing an airfryer when the unit didn't have one! As a foreign parent, I appreciated her understanding and efforts in securing a suitable unit. She regularly checked in to ensure I was happy and resolved any issues promptly. Highly recommend Katria and Student Luxe!" },
+    { name: 'Débora Toledo', initials: 'DT', url: 'https://maps.app.goo.gl/7F5GRmGtPvNzLyCi7',
+      quote: "I had a great experience with Student Luxe. Stefan Hrebenciuc provided VIP service, always attentive and quick to respond, ensuring peace of mind throughout my stay. Truly professional and dedicated!" },
+    { name: 'Mahmoud Arif', initials: 'MA', url: 'https://maps.app.goo.gl/UC1uUgu7C6W9Xzrn7',
+      quote: "I arrived in London a day before my program started with a last minute cancellation of my pre-booked accommodation. When I spoke to Stefan at Student Luxe, he was very understanding and patient. It was a refreshing experience especially with the amount of difficult and unavailable agents around the city. Stefan helped find the best option, and give advice on payment, all while being personable and friendly. Thank you, Stefan! I definitely will be contacting Student Luxe again when I’m back in London." }
+  ];
+
+  var STAR = '<svg viewBox="0 0 14 14"><polygon points="7,1 8.7,5 13,5.4 9.7,8.3 10.7,12.6 7,10.3 3.3,12.6 4.3,8.3 1,5.4 5.3,5"/></svg>';
+  var GOOGLE_G = '<svg class="slx-rev-google-g" viewBox="0 0 48 48" aria-hidden="true">' +
+    '<path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>' +
+    '<path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>' +
+    '<path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/>' +
+    '<path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7C13.42 14.62 18.27 10.75 24 10.75z"/></svg>';
+  var CHEVRON = '<svg viewBox="0 0 10 10"><polyline points="2,3.5 5,6.5 8,3.5"/></svg>';
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  function slideHtml(r, i, total) {
+    var name = esc(r.name);
+    return '<div class="slx-rev-slide" role="group" aria-roledescription="slide" aria-label="' + (i + 1) + ' of ' + total + '">' +
+      '<div class="slx-rev-stars" aria-label="5 out of 5 stars">' + STAR + STAR + STAR + STAR + STAR + '</div>' +
+      '<div class="slx-rev-quote-wrap"><p class="slx-rev-quote">' + esc(r.quote) + '</p></div>' +
+      '<button class="slx-rev-toggle" type="button" aria-expanded="false"><span class="slx-rev-toggle-label">Read more</span>' + CHEVRON + '</button>' +
+      '<div class="slx-rev-attr"><div class="slx-rev-avatar">' + esc(r.initials) + '</div>' +
+      '<div class="slx-rev-attr-text"><span class="slx-rev-name">' + name + '</span>' +
+      '<a class="slx-rev-source" href="' + esc(r.url) + '" target="_blank" rel="noopener" aria-label="Read ' + name + '’s verified review on Google">' + GOOGLE_G + ' Verified review on Google &rarr;</a>' +
+      '</div></div></div>';
+  }
+
+  function build(root) {
+    var total = REVIEWS.length;
+    root.innerHTML =
+      '<button class="slx-rev-arrow prev" type="button" aria-label="Previous review"><svg viewBox="0 0 14 14"><polyline points="9,2 4,7 9,12"/></svg></button>' +
+      '<div class="slx-rev-viewport"><div class="slx-rev-track">' + REVIEWS.map(function (r, i) { return slideHtml(r, i, total); }).join('') + '</div></div>' +
+      '<button class="slx-rev-arrow next" type="button" aria-label="Next review"><svg viewBox="0 0 14 14"><polyline points="5,2 10,7 5,12"/></svg></button>' +
+      '<div class="slx-rev-dots" role="tablist" aria-label="Select review">' + REVIEWS.map(function (_, i) { return '<button class="slx-rev-dot' + (i ? '' : ' active') + '" data-idx="' + i + '" aria-label="Review ' + (i + 1) + '" type="button"></button>'; }).join('') + '</div>' +
+      '<a href="/our-reviews" class="slx-rev-all">Read all reviews &rarr;</a>';
+
+    var viewport = root.querySelector('.slx-rev-viewport');
+    var track = root.querySelector('.slx-rev-track');
+    var dots = root.querySelectorAll('.slx-rev-dot');
+    var slides = root.querySelectorAll('.slx-rev-slide');
+    var current = 0, timer = null, AUTOPLAY_MS = 6500;
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function collapseAll() {
+      root.querySelectorAll('.slx-rev-quote-wrap.expanded').forEach(function (w) {
+        w.classList.remove('expanded');
+        var btn = w.parentNode.querySelector('.slx-rev-toggle');
+        if (btn) { btn.setAttribute('aria-expanded', 'false'); var l = btn.querySelector('.slx-rev-toggle-label'); if (l) l.textContent = 'Read more'; }
+      });
+    }
+    function setIndex(i) {
+      current = (i + total) % total;
+      track.style.transform = 'translateX(' + (-current * 100) + '%)';
+      dots.forEach(function (d, k) { d.classList.toggle('active', k === current); });
+      collapseAll();
+    }
+    function next() { setIndex(current + 1); }
+    function prev() { setIndex(current - 1); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function start() { if (reduced) return; stop(); timer = setInterval(next, AUTOPLAY_MS); }
+    function restart() { stop(); start(); }
+
+    function fitToggles() {
+      slides.forEach(function (s) {
+        var wrap = s.querySelector('.slx-rev-quote-wrap'), q = s.querySelector('.slx-rev-quote');
+        if (!wrap || !q || wrap.classList.contains('expanded')) return;
+        wrap.classList.toggle('no-overflow', q.scrollHeight <= q.clientHeight + 2);
+      });
+    }
+    slides.forEach(function (s) {
+      var wrap = s.querySelector('.slx-rev-quote-wrap'), btn = s.querySelector('.slx-rev-toggle');
+      btn.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var open = wrap.classList.toggle('expanded');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        var l = btn.querySelector('.slx-rev-toggle-label'); if (l) l.textContent = open ? 'Read less' : 'Read more';
+        if (open) stop(); else restart();
+      });
+    });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitToggles); else setTimeout(fitToggles, 100);
+    var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { requestAnimationFrame(fitToggles); }, 200); });
+
+    dots.forEach(function (d) { d.addEventListener('click', function () { setIndex(parseInt(d.getAttribute('data-idx'), 10)); restart(); }); });
+    root.querySelector('.slx-rev-arrow.prev').addEventListener('click', function () { prev(); restart(); });
+    root.querySelector('.slx-rev-arrow.next').addEventListener('click', function () { next(); restart(); });
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) start(); else stop(); }); }, { threshold: 0.2 }).observe(root);
+    } else { start(); }
+
+    var startX = 0, deltaX = 0, dragging = false;
+    viewport.addEventListener('pointerdown', function (e) {
+      if (e.target && e.target.closest && e.target.closest('a, button')) return;
+      if (root.querySelector('.slx-rev-quote-wrap.expanded')) return;
+      dragging = true; startX = e.clientX; deltaX = 0; track.classList.add('no-anim');
+      try { viewport.setPointerCapture(e.pointerId); } catch (_) {}
+      stop();
+    });
+    viewport.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      deltaX = e.clientX - startX;
+      track.style.transform = 'translateX(' + (-current * 100 + (deltaX / viewport.offsetWidth) * 100) + '%)';
+    });
+    function up() {
+      if (!dragging) return;
+      dragging = false; track.classList.remove('no-anim');
+      if (Math.abs(deltaX) > 50) setIndex(current + (deltaX < 0 ? 1 : -1)); else setIndex(current);
+      deltaX = 0; start();
+    }
+    viewport.addEventListener('pointerup', up);
+    viewport.addEventListener('pointercancel', up);
+    viewport.addEventListener('pointerleave', function () { if (dragging) up(); });
+    viewport.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    root.setAttribute('tabindex', '0');
+    root.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { prev(); restart(); } else if (e.key === 'ArrowRight') { next(); restart(); }
+    });
+  }
+
+  function swap(el) {
+    if (el.__slSwapped) return;
+    el.__slSwapped = true;
+    var prevEl = el.previousElementSibling;
+    if (prevEl && prevEl.tagName === 'SCRIPT' && /static\.elfsight\.com\/platform/.test(prevEl.src || '')) prevEl.parentNode.removeChild(prevEl);
+    var root = document.createElement('div');
+    root.className = 'slx-rev';
+    root.setAttribute('aria-roledescription', 'carousel');
+    root.setAttribute('aria-label', 'Customer reviews');
+    el.parentNode.replaceChild(root, el);
+    build(root);
+  }
+
+  function sweep(node) {
+    if (node.nodeType !== 1) return;
+    if (node.classList && node.classList.contains(WIDGET)) { swap(node); return; }
+    if (!node.querySelectorAll) return;
+    var found = node.querySelectorAll('.' + WIDGET);
+    for (var i = 0; i < found.length; i++) swap(found[i]);
+  }
+
+  try {
+    new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var added = muts[i].addedNodes;
+        for (var j = 0; j < added.length; j++) sweep(added[j]);
+      }
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  } catch (e) { /* the DOMContentLoaded sweep still runs */ }
+  document.addEventListener('DOMContentLoaded', function () { sweep(document.documentElement); });
+  window.slRevSwap = { sweep: function () { sweep(document.documentElement); } };
+})();
+</script>
