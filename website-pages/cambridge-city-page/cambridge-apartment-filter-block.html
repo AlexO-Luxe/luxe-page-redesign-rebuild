@@ -3,7 +3,7 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <script>
 const PAGE_CONFIG = {
-  filter: { type: 'city', value: 'London' },
+  filter: { type: 'city', value: 'Cambridge' },
   parentCity: null,
   currency: '£',
   defaultPriceMode: 'weekly',
@@ -11,20 +11,20 @@ const PAGE_CONFIG = {
   apiBase: 'https://luxe-listings-api.vercel.app/api',
 
   /* schema.org address details (parameterise per city skin) */
-  schemaRegion: 'Greater London',
+  schemaRegion: 'Cambridge',
   schemaCountry: 'GB',
 
   /* rotated through listing image alt text, combined with the apartment name */
   seoAltTags: [
-    'Luxury student accommodation London',
-    'Private student accommodation London',
-    'Best student apartments London',
+    'Cambridge student accommodation',
+    'Cambridge student apartments',
+    'Private student accommodation Cambridge',
   ],
 
   /* appended to the results count while an area pre-filter is active,
      e.g. "Showing 8 of 163 apartments within reach of UCL - clear ..." */
-  areaNoticeText: 'in London',
-  areaNoticeClearText: 'clear to see all options',
+  areaNoticeText: 'in the selected areas',
+  areaNoticeClearText: 'clear to see all Cambridge',
 };
 </script>
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -78,6 +78,7 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 .amenity-pill:focus-visible {outline:2px solid var(--lx-gold);outline-offset:2px;}
 .amenity-pill.selected {background:var(--lx-ink);border-color:var(--lx-ink);color:white;}
 .listings-grid {display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:25px; margin-bottom:40px;}
+.grid-meta {display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
 .results-count {display:none !important;}
 .results-count b {color:var(--lx-ink);font-weight:600;}
 .results-count button {background:none;border:none;padding:0;font:inherit;color:var(--lx-gold-deep);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
@@ -185,7 +186,7 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
     .listing-footer {flex-direction:row;align-items:center;gap:10px;}
     .filters {display:flex !important;flex-wrap:wrap;gap:10px;background:none !important;border:none !important;box-shadow:none !important;padding:0 !important;border-radius:0 !important;margin-bottom:25px;}
     .filters-top-row {display:flex !important;flex-wrap:wrap;gap:10px;padding:0 !important;justify-content:flex-start !important;}
-    .filters-bottom-row {display:flex !important;flex-wrap:wrap;gap:8px;padding:0 !important;margin-top:10px;background:none !important;border:none !important;border-radius:0 !important;}
+    .filters-bottom-row {display:flex !important;flex-wrap:wrap;gap:8px;padding:0 !important;background:none !important;border:none !important;border-radius:0 !important;}
     .filters-sep {display:none !important;}
     .filters-amenity-label {display:none;}
     .filters-top-row .filter-group {width:calc(50% - 5px) !important;flex:0 0 calc(50% - 5px) !important;}
@@ -257,21 +258,13 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
     .filter-group label {font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--lx-muted);white-space:nowrap;}
     .filter-group > input, .filter-group > div > input.search-input, .filter-group > select, .filter-group > div > button, .filter-group > button {width:180px !important;min-width:180px !important;max-width:180px !important;height:42px !important;padding:0 14px !important;font-size:12.5px !important;border:1px solid var(--lx-hair) !important;border-radius:10px !important;box-sizing:border-box !important;}
     #areaFilterContainer, #areaFilterContainer > div, #areaDropdownWrapper, #priceDropdownWrapper, #bedroomDropdownWrapper {width:180px !important;min-width:180px !important;max-width:180px !important;}
-    /* menu rows keep their own sizing inside the 180px dropdown panels */
-    .menu-row {width:100% !important;min-width:0 !important;max-width:none !important;height:auto !important;}
+    #bedroomCheckboxList input, #areaCheckboxList input {width:15px !important;min-width:15px !important;max-width:15px !important;height:15px !important;padding:0 !important;border:none !important;}
     .filter-group button {display:flex !important;align-items:center !important;justify-content:space-between !important;gap:8px !important;background:rgba(255,255,255,.6) !important;cursor:pointer !important;font-family:var(--lx-sans) !important;}
     /* the Area button nests one div deeper so the sizing rule above misses it - force all three dropdowns to identical box + font */
     #bedroomDropdownBtn, #areaDropdownBtn, #priceDropdownBtn {width:180px !important;min-width:180px !important;max-width:180px !important;height:42px !important;padding:0 14px !important;font-size:12.5px !important;border:1px solid var(--lx-hair) !important;border-radius:10px !important;box-sizing:border-box !important;}
     /* undo the blanket button background so the Weekly/Monthly active state stays navy on desktop too */
     .price-seg button {justify-content:center !important;width:auto !important;min-width:0 !important;max-width:none !important;height:34px !important;padding:0 !important;border:none !important;border-radius:0 !important;}
     .price-seg button.on {background:var(--lx-ink) !important;color:#fff !important;}
-    /* same exemption for the List | Map segments inside their filter group */
-    .view-group .view-toggle {width:150px;}
-    .view-group .view-toggle button {justify-content:center !important;width:auto !important;min-width:0 !important;max-width:none !important;height:40px !important;padding:0 16px !important;border:none !important;border-radius:0 !important;background:transparent !important;}
-    .view-group .view-toggle button.on {background:var(--lx-ink) !important;color:#fff !important;}
-    /* results count rides the filter bar's right edge instead of its own row */
-    .filters-top-row {flex-wrap:wrap;}
-    .filters-top-row .results-count {margin-left:auto;align-self:flex-end;padding-bottom:12px;white-space:nowrap;}
     .search-input {padding-left:14px !important;}
     .search-icon {display:none !important;}
     .filters-amenity-label {font-family:var(--lx-sans);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--lx-muted);white-space:nowrap;flex-shrink:0;}
@@ -280,20 +273,8 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
 /* ── overrides for inline-styled elements built by the JS ── */
 #bedroomDropdownBtn, #areaDropdownBtn, #priceDropdownBtn {border:1px solid var(--lx-hair) !important;border-radius:10px !important;background:rgba(255,255,255,.6) !important;font-family:var(--lx-sans) !important;color:var(--lx-ink) !important;}
 #bedroomDropdownPanel, #areaDropdownPanel, #priceDropdownPanel {border:1px solid var(--lx-hair) !important;border-radius:12px !important;box-shadow:0 12px 34px rgba(13,26,46,.14) !important;background:var(--lx-paper) !important;}
-/* menu-card rows (Area + Apartment type): serif sentence-case rows, whole
-   row is the tap target, gold tick + gold wash for selected, quiet counts.
-   Explicit font/case/spacing so the site theme cannot uppercase them. */
-.menu-rows {padding:4px 0;}
-.menu-row {display:flex !important;align-items:center !important;justify-content:space-between !important;gap:14px;width:100% !important;padding:10px 16px !important;background:none !important;border:none !important;border-top:1px solid var(--lx-hair-soft) !important;border-radius:0 !important;cursor:pointer;text-align:left !important;font-family:var(--lx-serif) !important;font-size:14.5px !important;letter-spacing:0 !important;text-transform:none !important;color:var(--lx-ink) !important;line-height:1.3;transition:background .15s;}
-.menu-row:first-child {border-top:none !important;}
-.menu-row:hover {background:var(--lx-gold-wash) !important;}
-.menu-row:focus-visible {outline:2px solid var(--lx-gold);outline-offset:-2px;}
-.menu-row.sel {background:var(--lx-gold-wash) !important;}
-.menu-row .mr-side {display:flex;align-items:center;gap:8px;flex:none;}
-.menu-row .mr-count {font-family:var(--lx-sans) !important;font-size:11px !important;letter-spacing:0 !important;color:var(--lx-muted);}
-.menu-row .mr-tick {display:none;color:var(--lx-gold-deep);font-size:14px;}
-.menu-row.sel .mr-count {display:none;}
-.menu-row.sel .mr-tick {display:inline;}
+#bedroomCheckboxList input, #areaCheckboxList input {accent-color:var(--lx-gold) !important;}
+#bedroomCheckboxList label, #areaCheckboxList label {font-family:var(--lx-sans) !important;color:var(--lx-ink) !important;}
 .amenity-show-more {background:var(--lx-hair-soft) !important;color:var(--lx-muted) !important;border-color:transparent !important;}
 .amenity-reset {background:var(--lx-red) !important;border-color:var(--lx-red) !important;color:#fff !important;}
 @media (max-width:768px){
@@ -305,99 +286,12 @@ h1 {font-family:var(--lx-serif);font-weight:400;font-size:2.5rem;letter-spacing:
   #sortSelect {font-size:14px !important;}
   .search-input:focus, #sortSelect:focus {font-size:16px !important;}
   /* price toggle: show only the active mode label */
-  .view-group .view-toggle button {width:50% !important;min-width:0 !important;font-size:11px !important;}
 }
-
-/* ── List | Map view toggle (lives in the filter bar) + map view ── */
-/* the site's fixed nav overlays the page top on desktop; every
-   scroll-to-filters (view toggle, Adjust Filters, back to top) stops
-   short of it. The mobile nav scrolls away, so no offset there. */
-@media (min-width:769px){ .filters {scroll-margin-top:60px;} }
-.view-toggle {display:flex;height:42px;border:1px solid var(--lx-hair);border-radius:10px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.6);}
-.view-toggle button {flex:1;border:none;background:transparent;padding:0 18px;font-family:var(--lx-sans);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--lx-muted);cursor:pointer;transition:background .15s,color .15s;}
-.view-toggle button.on {background:var(--lx-ink);color:#fff;}
-.view-toggle button:focus-visible {outline:2px solid var(--lx-gold);outline-offset:-2px;}
-#mapWrap {display:none;position:relative;height:560px;border:1px solid var(--lx-hair);border-radius:16px;overflow:hidden;margin-bottom:40px;background:var(--lx-hair-soft);}
-#mapWrap.show {display:block;}
-#mapCanvas {position:absolute;inset:0;}
-.map-empty {position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--lx-muted);font-size:14px;z-index:500;background:rgba(251,248,241,.85);}
-@media (max-width:768px){ #mapWrap {height:62vh;min-height:380px;} }
-/* zero-size anchor positioned by Leaflet; the visible pill centres itself
-   on it, so the pin sits exactly on the building and spider legs meet the
-   pill's centre instead of stopping above it */
-.map-pin-a {background:none;border:none;}
-.map-pin {position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:var(--lx-ink);border:1.5px solid var(--lx-gold);border-radius:9999px;box-shadow:0 2px 6px rgba(13,26,46,.25);color:#fff;font-family:var(--lx-sans);font-size:12px;font-weight:600;letter-spacing:.01em;padding:4px 11px;white-space:nowrap;transition:background .15s,color .15s,border-color .15s,padding .15s;}
-/* price-banded navy: lightest when the building starts under £1,000/wk,
-   mid for £1,000-2,000, house ink for £2,000+ and POA */
-.map-pin.map-pin-light {background:#46608C;border-color:var(--lx-gold-lt);}
-.map-pin.map-pin-mid {background:#263C5E;}
-.map-pin:hover {background:var(--lx-gold);border-color:var(--lx-ink);color:var(--lx-ink);}
-/* zoomed out: pills collapse to plain price-banded dots */
-.map-dots .map-pin {width:15px !important;height:15px !important;padding:0;}
-.map-dots .map-pin .mp-price {display:none;}
-/* overlap bubble: only pins stacked on top of each other group into a
-   counted circle; clicking fans them out so each is clickable */
-.map-cluster {background:var(--lx-ink);border:1.5px solid var(--lx-gold);border-radius:50%;box-shadow:0 2px 6px rgba(13,26,46,.25);color:#fff;font-family:var(--lx-sans);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-/* university markers: paper circle, ink ring, gold mortarboard */
-.map-uni {background:var(--lx-paper);border:1.5px solid var(--lx-ink);border-radius:50%;box-shadow:0 2px 6px rgba(13,26,46,.22);display:flex;align-items:center;justify-content:center;color:var(--lx-gold-deep);width:26px !important;height:26px !important;}
-.map-uni svg {width:15px;height:15px;display:block;}
-.leaflet-tooltip.map-uni-tip {background:var(--lx-paper);border:1px solid var(--lx-hair);border-radius:8px;box-shadow:0 4px 14px rgba(13,26,46,.14);color:var(--lx-ink);font-family:var(--lx-sans);font-size:11px;font-weight:500;padding:4px 10px;}
-/* map key: price bands + university marker. Full chip on desktop, an
-   "i" button on mobile that expands the rows to save map space */
-.map-key {position:absolute;left:12px;bottom:12px;z-index:800;pointer-events:none;display:flex;flex-direction:column;align-items:flex-start;gap:6px;background:rgba(251,248,241,.94);border:1px solid var(--lx-hair);border-radius:10px;padding:9px 13px;box-shadow:0 4px 14px rgba(13,26,46,.10);}
-.map-key-rows {display:flex;flex-direction:column;gap:6px;}
-.map-key-row {display:flex;align-items:center;gap:8px;font-family:var(--lx-sans);font-size:10.5px;letter-spacing:.02em;color:var(--lx-ink);white-space:nowrap;}
-.map-key-dot {width:12px;height:12px;border-radius:50%;border:1.5px solid var(--lx-gold);background:var(--lx-ink);flex:none;}
-.map-key-dot.mkd-light {background:#46608C;border-color:var(--lx-gold-lt);}
-.map-key-dot.mkd-mid {background:#263C5E;}
-.map-key-uni {width:14px;height:14px;border-radius:50%;border:1.5px solid var(--lx-ink);background:var(--lx-paper);display:flex;align-items:center;justify-content:center;color:var(--lx-gold-deep);flex:none;}
-.map-key-uni svg {width:9px;height:9px;display:block;}
-.map-reset {pointer-events:auto;background:rgba(251,248,241,.94);border:1px solid var(--lx-hair);border-radius:9999px;padding:7px 14px;font-family:var(--lx-sans);font-size:11px;font-weight:500;letter-spacing:.02em;text-transform:none;color:var(--lx-ink);cursor:pointer;box-shadow:0 2px 8px rgba(13,26,46,.12);transition:background .15s,border-color .15s;}
-.map-reset:hover {background:var(--lx-gold-wash);border-color:var(--lx-gold-line);}
-.map-reset:focus-visible {outline:2px solid var(--lx-gold);outline-offset:2px;}
-.map-key-toggle {display:none;pointer-events:auto;width:32px;height:32px;border-radius:50%;background:var(--lx-paper);border:1px solid var(--lx-hair);box-shadow:0 2px 8px rgba(13,26,46,.16);font-family:var(--lx-serif);font-style:italic;font-size:16px;line-height:1;color:var(--lx-gold-deep);cursor:pointer;align-items:center;justify-content:center;padding:0;}
-.map-key-toggle:focus-visible {outline:2px solid var(--lx-gold);outline-offset:2px;}
-@media (max-width:768px){
-  .map-key {background:none;border:none;box-shadow:none;padding:0;}
-  /* stack order on mobile: the i button on top, then its rows, Reset last */
-  .map-key-toggle {order:1;}
-  .map-key-rows {order:2;}
-  .map-reset {order:3;}
-  .map-key-rows {display:none;background:rgba(251,248,241,.96);border:1px solid var(--lx-hair);border-radius:10px;padding:8px 12px;box-shadow:0 4px 14px rgba(13,26,46,.12);}
-  .map-key.open .map-key-rows {display:flex;}
-  .map-key-row {font-size:10px;}
-  .map-key-toggle {display:flex;}
-}
-.leaflet-popup-content-wrapper {background:var(--lx-paper) !important;border:1px solid var(--lx-hair) !important;border-radius:12px !important;box-shadow:0 12px 34px rgba(13,26,46,.18) !important;}
-.leaflet-popup-tip {background:var(--lx-paper) !important;}
-.leaflet-popup-content {margin:14px 16px !important;font-family:var(--lx-sans) !important;color:var(--lx-ink) !important;}
-.map-pop-title {font-family:var(--lx-serif);font-size:1.17rem;letter-spacing:-.04em;margin-bottom:2px;}
-.map-pop-area {font-size:11px;color:var(--lx-muted);margin-bottom:2px;}
-.map-pop-bams {font-size:9.5px;color:var(--lx-gold-deep);letter-spacing:.02em;margin-bottom:7px;}
-.map-pop-unit {display:flex;gap:10px;align-items:center;padding:8px 6px 8px 0;border-top:1px solid var(--lx-hair-soft);font-size:12.5px;color:var(--lx-ink);text-decoration:none;transition:background .15s;}
-/* the site theme colours anchors blue; rows rest in house navy and invert
-   to ink with white text and light gold chips on hover (same language as
-   the pins' hover) */
-a.map-pop-unit, a.map-pop-unit:visited, a.map-pop-unit:active,
-a.map-pop-unit * {color:var(--lx-ink) !important;text-decoration:none !important;}
-a.map-pop-unit .mp-sub {color:var(--lx-muted) !important;}
-a.map-pop-unit:hover, a.map-pop-unit:hover * {color:#fff !important;text-decoration:none !important;}
-a.map-pop-unit:hover {background:var(--lx-ink);border-radius:8px;}
-a.map-pop-unit:hover .mp-sub {color:rgba(255,255,255,.65) !important;}
-.map-pop-unit img {width:90px;height:60px;border-radius:8px;object-fit:cover;flex:none;}
-.map-pop-list {max-height:290px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(184,150,110,.5) transparent;}
-@media (max-width:768px){ .map-pop-list {max-height:34vh;} }
-.map-pop-main {flex:1;min-width:0;}
-.map-pop-main .mp-bed {font-size:12.5px;}
-.mp-sub {font-size:10px;color:var(--lx-muted);}
-.map-pop-rail {flex:none;text-align:right;}
-.map-pop-rail .mp-pricetop {font-size:13.5px;font-weight:700;white-space:nowrap;}
 
 /* house rule 6: respect reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .listing-card, .listing-image img, .price-seg button,
-  .amenity-pill, .autocomplete-item, .listing-overlay-title, .listing-overlay-view,
-  .view-toggle button, .map-pin {transition:none !important;}
+  .amenity-pill, .autocomplete-item, .listing-overlay-title, .listing-overlay-view {transition:none !important;}
   .listing-card:hover {transform:none !important;}
   .loading-spinner {animation-duration:1.6s;}
 }
@@ -421,12 +315,22 @@ a.map-pop-unit:hover .mp-sub {color:rgba(255,255,255,.65) !important;}
                     <i class="fa-light fa-chevron-down" style="font-size:12px;color:#666;transition:transform 0.2s;" id="bedroomChevron"></i>
                 </button>
                 <div id="bedroomDropdownPanel" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-width:90vw;background:white;border:1.5px solid #e5e7eb;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:1000;text-align:left;direction:ltr;">
-                    <div id="bedroomCheckboxList" class="menu-rows">
-                        <button type="button" class="menu-row" data-value="studio" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">Studio</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
-                        <button type="button" class="menu-row" data-value="1bed" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">1 bedroom</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
-                        <button type="button" class="menu-row" data-value="2bed" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">2 bedrooms</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
-                        <button type="button" class="menu-row" data-value="3bed" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">3 bedrooms</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
-                        <button type="button" class="menu-row" data-value="4bed" onclick="SLAF.toggleBedroomRow(this)" aria-pressed="false"><span class="mr-name">4 bedrooms</span><span class="mr-side"><span class="mr-count"></span><span class="mr-tick">&#10003;</span></span></button>
+                    <div id="bedroomCheckboxList" style="padding:6px 0;text-align:left;">
+                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                            <input type="checkbox" value="studio" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> Studio
+                        </label>
+                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                            <input type="checkbox" value="1bed" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> 1 Bedroom
+                        </label>
+                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                            <input type="checkbox" value="2bed" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> 2 Bedrooms
+                        </label>
+                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                            <input type="checkbox" value="3bed" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> 3 Bedrooms
+                        </label>
+                        <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                            <input type="checkbox" value="4bed" onchange="SLAF.onBedroomCheckboxChange()" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;"> 4 Bedrooms
+                        </label>
                     </div>
                 </div>
             </div>
@@ -471,20 +375,15 @@ a.map-pop-unit:hover .mp-sub {color:rgba(255,255,255,.65) !important;}
                 </div>
             </div>
         </div>
-        <div class="filter-group view-group">
-            <label>View:</label>
-            <div class="view-toggle" id="viewToggle" role="group" aria-label="Switch between list and map view">
-                <button type="button" data-view="list" class="on" aria-pressed="true">List</button>
-                <button type="button" data-view="map" aria-pressed="false">Map</button>
-            </div>
-        </div>
-        <div class="results-count" id="resultsCount" aria-live="polite"></div>
         <div class="shortlist-bar" id="shortlistBar"></div>
         </div>
         <div class="filters-bottom-row">
             <span class="filters-amenity-label">Amenities:</span>
             <div class="amenity-filters" id="amenityFilterContainer" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
         </div>
+    </div>
+    <div class="grid-meta">
+        <div class="results-count" id="resultsCount" aria-live="polite"></div>
     </div>
     <div class="listings-grid" id="listingsGrid">
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
@@ -496,21 +395,11 @@ a.map-pop-unit:hover .mp-sub {color:rgba(255,255,255,.65) !important;}
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
     </div>
-    <div id="mapWrap" aria-label="Map of apartments"><div id="mapCanvas"></div><div class="map-key" id="mapKey">
-        <button type="button" class="map-reset" id="mapResetBtn">Reset map</button>
-        <div class="map-key-rows">
-            <div class="map-key-row"><span class="map-key-dot mkd-light"></span>Under &pound;1,000 a week</div>
-            <div class="map-key-row"><span class="map-key-dot mkd-mid"></span>&pound;1,000 to &pound;2,000</div>
-            <div class="map-key-row"><span class="map-key-dot"></span>&pound;2,000 and up</div>
-            <div class="map-key-row"><span class="map-key-uni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/></svg></span>University</div>
-        </div>
-        <button type="button" class="map-key-toggle" aria-expanded="false" aria-label="Show map key">i</button>
-    </div></div>
     <select id="areaSelect" style="display:none;"><option value="all">All</option></select>
     <noscript>
-        <p>Browse our luxury serviced apartments near UCL:
+        <p>Browse our private student apartments in Cambridge:
             <a href="/find-an-apartment">all apartments</a> ·
-            <a href="/luxury-student-apartments-london">London apartments</a> ·
+            <a href="/cambridge-student-apartments">Cambridge apartments</a> ·
             <a href="/reservations">make an enquiry</a>
         </p>
     </noscript>
@@ -656,23 +545,8 @@ let selectedAreas = [];
 let userTouched = false;   /* URL state is only written after a real interaction */
 let priceBoundMin = 0, priceBoundMax = 0, priceMin = 0, priceMax = 0;   /* weekly £ */
 
-/* map view state: declared with the rest of the state because renderListings
-   and writeUrlState read currentView during the synchronous boot path */
-const LEAFLET_BASE = 'https://unpkg.com/leaflet@1.9.4/dist';
-const CLUSTER_BASE = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist';
-const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-/* below this zoom, pills collapse to plain dots */
-const PIN_DOT_ZOOM = 14;
-/* pins within this many pixels of each other merge into an overlap bubble.
-   Kept tight: this is for pins literally on top of each other, not for
-   grouping a neighbourhood. */
-const OVERLAP_RADIUS = 20;
-let currentView = 'list';
-let map = null, pinLayer = null, leafletReady = null, mapFitted = false;
-let mapRefit = false;   /* area changed: re-frame the map on its next render */
-
 /* ── inbound URL params (comma-separated values supported) ── */
-let urlAreas = [], urlTypes = [], urlAmenities = [], urlQuery = '', urlSort = '', urlView = false;
+let urlAreas = [], urlTypes = [], urlAmenities = [], urlQuery = '', urlSort = '';
 (function readUrlParams() {
     const params = new URLSearchParams(window.location.search);
     const amenityAliases = {
@@ -687,7 +561,6 @@ let urlAreas = [], urlTypes = [], urlAmenities = [], urlQuery = '', urlSort = ''
     if (params.get('amenity')) urlAmenities = decodeURIComponent(params.get('amenity')).toLowerCase().split(',').map(s => amenityAliases[s.trim().replace(/\s+/g, '-')]).filter(Boolean);
     if (params.get('q')) urlQuery = decodeURIComponent(params.get('q'));
     if (params.get('sort')) urlSort = params.get('sort');
-    if (params.get('view') === 'map') urlView = true;
 })();
 let urlPrice = null;
 (function(){ const m = (new URLSearchParams(window.location.search).get('price') || '').match(/^(\d+)-(\d+)$/); if (m) urlPrice = [parseInt(m[1],10), parseInt(m[2],10)]; if (urlPrice && urlPrice[0] >= urlPrice[1]) urlPrice = null; /* collapsed range from a bad link would show zero results */ })();
@@ -696,8 +569,7 @@ let urlPrice = null;
 function writeUrlState() {
     if (!userTouched || !window.history || !history.replaceState) return;
     const params = new URLSearchParams(window.location.search);
-    ['q','type','area','amenity','sort','view'].forEach(k => params.delete(k));
-    if (currentView === 'map') params.set('view', 'map');
+    ['q','type','area','amenity','sort'].forEach(k => params.delete(k));
     if (searchQuery.trim()) params.set('q', searchQuery.trim());
     if (selectedBedrooms.length) params.set('type', selectedBedrooms.join(','));
     if (selectedAreas.length) params.set('area', selectedAreas.join(','));
@@ -726,10 +598,10 @@ async function loadListings() {
       urlTypes.forEach(t => {
           if (bedLabelsLong[t] && !selectedBedrooms.includes(t)) {
               selectedBedrooms.push(t);
+              const cb = document.querySelector('#bedroomCheckboxList input[value="' + t + '"]');
+              if (cb) cb.checked = true;
           }
       });
-      syncMenuRows('bedroomCheckboxList', selectedBedrooms);
-      updateBedroomCounts();
       updateBedroomDropdownLabel();
       urlAmenities.forEach(a => { if (!selectedAmenities.includes(a)) selectedAmenities.push(a); });
       if (urlQuery) { searchQuery = urlQuery; document.getElementById('searchInput').value = urlQuery; }
@@ -739,7 +611,6 @@ async function loadListings() {
       initPriceSlider();
       renderAmenityPills();
       applyFilters();
-      if (urlView) { urlView = false; setView('map'); scrollToTop(); }
   }
 
   if (cached) {
@@ -784,8 +655,6 @@ async function loadListings() {
       minstay90: l.minstay90 || false,
       comingSoon: l.comingSoon || false,
       poa: l.poa || false,
-      lat: (typeof l.lat === 'number') ? l.lat : null,
-      lng: (typeof l.lng === 'number') ? l.lng : null,
     }));
 
     if (fresh.length > 0) {
@@ -804,7 +673,7 @@ async function loadListings() {
       document.getElementById('listingsGrid').innerHTML =
         '<div class="no-results" style="grid-column:1/-1"><h3>No apartments found</h3>' +
         '<p>Check back shortly, or make an enquiry and we will send you a curated list.</p>' +
-        '<a class="enquiry-link" href="/reservations?type=B&city=london">Make an enquiry</a></div>';
+        '<a class="enquiry-link" href="/reservations?type=B&city=cambridge">Make an enquiry</a></div>';
     }
   } catch(e) {
     console.error('Failed to load fresh listings:', e);
@@ -815,7 +684,7 @@ async function loadListings() {
         '<div class="no-results" style="grid-column:1/-1"><h3>Unable to load apartments</h3>' +
         '<p>Something went wrong on our side.</p>' +
         '<button class="retry-btn" onclick="SLAF.retryLoad()">Try again</button>' +
-        '<a class="enquiry-link" href="/reservations">Or make an enquiry and we will send you a curated list</a></div>';
+        '<a class="enquiry-link" href="/reservations?type=B&city=cambridge">Or make an enquiry and we will send you a curated list</a></div>';
     }
   }
 }
@@ -968,45 +837,26 @@ function updateAreaDropdownLabel() {
 
 function clearAreas() {
     userTouched = true;
-    mapRefit = true;
     selectedAreas = [];
-    syncMenuRows('areaCheckboxList', selectedAreas);
+    document.querySelectorAll('#areaCheckboxList input[type=checkbox]').forEach(cb => cb.checked = false);
     updateAreaDropdownLabel();
     applyFilters();
     renderAmenityPills();
 }
 
-/* mark the selected rows in a menu-card list and mirror aria-pressed */
-function syncMenuRows(listId, selected) {
-    document.querySelectorAll('#' + listId + ' .menu-row').forEach(function(b) {
-        const on = selected.indexOf(b.dataset.value) > -1;
-        b.classList.toggle('sel', on);
-        b.setAttribute('aria-pressed', String(on));
-    });
-}
-
-function updateBedroomCounts() {
-    const counts = {};
-    listings.forEach(function(l) { counts[l.bedroomType] = (counts[l.bedroomType] || 0) + 1; });
-    document.querySelectorAll('#bedroomCheckboxList .menu-row').forEach(function(b) {
-        const c = counts[b.dataset.value] || 0;
-        b.querySelector('.mr-count').textContent = c ? String(c) : '';
-    });
-}
-
 function populateAreaFilter() {
-    const areaCounts = {};
+    const locationSet = new Set();
     listings.forEach(listing => {
-        listing.location.split(',').map(p => p.trim()).filter(Boolean).forEach(p => {
-            areaCounts[p] = (areaCounts[p] || 0) + 1;
-        });
+        listing.location.split(',').map(p => p.trim()).filter(Boolean).forEach(p => locationSet.add(p));
     });
-    const areas = Object.keys(areaCounts).sort();
-    const rowsEl = document.getElementById('areaCheckboxList');
-    if (rowsEl) {
-        rowsEl.classList.add('menu-rows');
-        rowsEl.innerHTML = areas.map(area => `
-            <button type="button" class="menu-row" data-value="${escHtml(area)}" onclick="SLAF.toggleAreaRow(this)" aria-pressed="false"><span class="mr-name">${escHtml(area)}</span><span class="mr-side"><span class="mr-count">${areaCounts[area]}</span><span class="mr-tick">&#10003;</span></span></button>`).join('');
+    const areas = [...locationSet].sort();
+    const checkboxList = document.getElementById('areaCheckboxList');
+    if (checkboxList) {
+        checkboxList.innerHTML = areas.map(area => `
+            <label style="display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:8px 14px;cursor:pointer;font-size:14px;color:#333;text-align:left;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                <input type="checkbox" value="${escHtml(area)}" onchange="SLAF.onAreaCheckboxChange(this)" style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb;">
+                ${escHtml(area)}
+            </label>`).join('');
     }
     /* Inbound ?area= links take priority; defaults apply only when none given */
     if (urlAreas.length) {
@@ -1018,17 +868,19 @@ function populateAreaFilter() {
     } else if (PAGE_CONFIG.defaultAreas && PAGE_CONFIG.defaultAreas.length > 0) {
         selectedAreas = PAGE_CONFIG.defaultAreas.filter(a => areas.includes(a));
     }
-    syncMenuRows('areaCheckboxList', selectedAreas);
+    if (checkboxList) {
+        checkboxList.querySelectorAll('input[type=checkbox]').forEach(cb => {
+            cb.checked = selectedAreas.includes(cb.value);
+        });
+    }
     updateAreaDropdownLabel();
 }
 
-function toggleAreaRow(btn) {
+function onAreaCheckboxChange(checkbox) {
     userTouched = true;
-    mapRefit = true;
-    const area = btn.dataset.value;
-    if (selectedAreas.includes(area)) selectedAreas = selectedAreas.filter(a => a !== area);
-    else selectedAreas.push(area);
-    syncMenuRows('areaCheckboxList', selectedAreas);
+    const area = checkbox.value;
+    if (checkbox.checked) { if (!selectedAreas.includes(area)) selectedAreas.push(area); }
+    else { selectedAreas = selectedAreas.filter(a => a !== area); }
     updateAreaDropdownLabel();
     applyFilters();
     renderAmenityPills();
@@ -1073,15 +925,14 @@ function renderAmenityPills(){
     if(resetBtn) {
         resetBtn.addEventListener('click', () => {
             userTouched = true;
-            mapRefit = true;
             selectedAmenities=[]; selectedBedrooms=[]; searchQuery=''; selectedAreas=[];
             priceMin = priceBoundMin; priceMax = priceBoundMax;
             if (drMin) { drMin.value = priceToPos(priceMin); drMax.value = priceToPos(priceMax); updatePriceUi(); }
             document.getElementById('searchInput').value='';
             document.getElementById('areaSelect').value='all';
-            syncMenuRows('bedroomCheckboxList', selectedBedrooms);
+            document.querySelectorAll('#bedroomCheckboxList input[type=checkbox]').forEach(cb=>cb.checked=false);
             updateBedroomDropdownLabel();
-            syncMenuRows('areaCheckboxList', selectedAreas);
+            document.querySelectorAll('#areaCheckboxList input[type=checkbox]').forEach(cb=>cb.checked=false);
             updateAreaDropdownLabel();
             applyFilters(); renderAmenityPills();
         });
@@ -1209,11 +1060,6 @@ function updateResultsCount() {
     if (!el) return;
     const total = currentListings.length;
     if (!listings.length || total === 0) { el.textContent = ''; return; }
-    /* map view shows everything at once - no "Showing 8 of" pagination line */
-    if (currentView === 'map') {
-        el.innerHTML = `<b>${total}</b> apartments`;
-        return;
-    }
     /* one line: count + area context + clear link (search bypasses areas, so hide it then) */
     const areaClause = (PAGE_CONFIG.areaNoticeText && selectedAreas.length > 0 && !searchQuery.trim())
         ? ` ${escHtml(PAGE_CONFIG.areaNoticeText)} - <button type="button" onclick="SLAF.clearAreas()">${escHtml(PAGE_CONFIG.areaNoticeClearText || 'clear')}</button>`
@@ -1249,7 +1095,7 @@ function bindAmenityMore(scope) {
 }
 
 function loadMoreMarkup() {
-    const nudge = `<p class="lm-nudge">Prefer us to do the searching? <a href="https://www.studentluxe.co.uk/reservations?type=B&city=${encodeURIComponent(PAGE_CONFIG.filter.value.toLowerCase())}">Tell us your needs, we'll send options</a></p>`;
+    const nudge = `<p class="lm-nudge">Prefer us to do the searching? <a href="/reservations?type=B&city=cambridge">Tell us your needs, we'll send options</a></p>`;
     return currentListings.length > itemsToShow
         ? `<div class="load-more-container">
             ${nudge}
@@ -1287,7 +1133,6 @@ function renderListings(listingsToRender){
     updateResultsCount();
     updateShortlistBar();
     bindAmenityMore(grid);
-    if (currentView === 'map') updateMapMarkers();
 }
 
 /* Append only the new cards - keeps scroll position, expanded rows, and
@@ -1355,12 +1200,12 @@ function updateBedroomDropdownLabel() {
     else label.textContent = selectedBedrooms.length + ' Types selected';
 }
 
-function toggleBedroomRow(btn) {
+function onBedroomCheckboxChange() {
     userTouched = true;
-    const v = btn.dataset.value;
-    if (selectedBedrooms.includes(v)) selectedBedrooms = selectedBedrooms.filter(x => x !== v);
-    else selectedBedrooms.push(v);
-    syncMenuRows('bedroomCheckboxList', selectedBedrooms);
+    selectedBedrooms = [];
+    document.querySelectorAll('#bedroomCheckboxList input[type=checkbox]').forEach(cb => {
+        if (cb.checked) selectedBedrooms.push(cb.value);
+    });
     updateBedroomDropdownLabel();
     applyFilters();
     renderAmenityPills();
@@ -1414,10 +1259,9 @@ function showAutocompleteSuggestions(query){
             if(item.dataset.type==='area'){
                 /* picking an area ticks it in the Area dropdown instead of
                    fighting the pre-filter via free-text search */
-                mapRefit=true;
                 const area=item.dataset.value;
                 if(!selectedAreas.includes(area)) selectedAreas.push(area);
-                syncMenuRows('areaCheckboxList', selectedAreas);
+                document.querySelectorAll('#areaCheckboxList input[type=checkbox]').forEach(cb=>{if(cb.value===area)cb.checked=true;});
                 updateAreaDropdownLabel();
                 searchInput.value=''; searchQuery='';
             } else {
@@ -1494,7 +1338,7 @@ window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setT
   if (!grid) { loadListings(); return; }
 
   var params = new URLSearchParams(window.location.search);
-  if (params.has('type') || params.has('amenity') || params.has('area') || params.has('q') || params.has('sort') || params.has('view')) {
+  if (params.has('type') || params.has('amenity') || params.has('area') || params.has('q') || params.has('sort')) {
     loadListings();
     return;
   }
@@ -1529,389 +1373,6 @@ window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setT
   }, 3000);
 })();
 
-/* ── List | Map view. Leaflet loads lazily on first Map click, so
-      list-only visitors pay zero extra bytes. The map renders
-      currentListings (the already-filtered set): every existing filter,
-      sort and the price slider drive it with no extra wiring. One pin per
-      building (price pill in a price-banded navy; plain dot when zoomed
-      out; only true stacks merge into a click-to-fan-out overlap bubble),
-      popup lists that building's apartments. A
-      listing without lat/lng (not yet geocoded) simply stays list-only. ── */
-function loadCss(href) {
-    if (document.querySelector('link[href="' + href + '"]')) return;
-    const l = document.createElement('link');
-    l.rel = 'stylesheet'; l.href = href;
-    document.head.appendChild(l);
-}
-function loadScript(src) {
-    return new Promise(function(resolve, reject) {
-        const s = document.createElement('script');
-        s.src = src; s.onload = resolve; s.onerror = reject;
-        document.head.appendChild(s);
-    });
-}
-function ensureLeaflet() {
-    if (leafletReady) return leafletReady;
-    loadCss(LEAFLET_BASE + '/leaflet.css');
-    loadCss(CLUSTER_BASE + '/MarkerCluster.css');
-    leafletReady = loadScript(LEAFLET_BASE + '/leaflet.js')
-        .then(function() { return loadScript(CLUSTER_BASE + '/leaflet.markercluster.js'); });
-    return leafletReady;
-}
-
-/* the default start view: median centre of every mapped listing at zoom
-   14. Median, not bounds, so outliers and bad geocodes cannot drag it */
-function mapHomeView() {
-    if (!map) return;
-    const lats = [], lngs = [];
-    listings.forEach(function(l) { if (l.lat != null && l.lng != null) { lats.push(l.lat); lngs.push(l.lng); } });
-    if (!lats.length) return;
-    lats.sort(function(a, b) { return a - b; });
-    lngs.sort(function(a, b) { return a - b; });
-    map.closePopup();
-    map.setView([lats[Math.floor(lats.length / 2)], lngs[Math.floor(lngs.length / 2)]], 14);
-}
-
-function mapBuildings() {
-    const byBuilding = new Map();
-    currentListings.forEach(function(l) {
-        if (l.lat == null || l.lng == null) return;
-        let b = byBuilding.get(l.buildingId);
-        if (!b) {
-            b = { lat: l.lat, lng: l.lng, title: l.title, location: l.location, units: [] };
-            byBuilding.set(l.buildingId, b);
-        }
-        b.units.push(l);
-    });
-    return Array.from(byBuilding.values());
-}
-
-function minWeekly(b) {
-    const priced = b.units.filter(function(u) { return !u.poa && !u.comingSoon && !u.refurb; });
-    if (!priced.length) return null;
-    return Math.min.apply(null, priced.map(function(u) { return u.weekly; }));
-}
-
-function pinLabel(b) {
-    const m = minWeekly(b);
-    return m == null ? 'POA' : PAGE_CONFIG.currency + formatPrice(m);
-}
-
-function pinBand(b) {
-    const m = minWeekly(b);
-    if (m == null) return '';
-    if (m < 1000) return ' map-pin-light';
-    if (m < 2000) return ' map-pin-mid';
-    return '';
-}
-
-function pinIconHtml(b) {
-    return '<span class="map-pin' + pinBand(b) + '"><span class="mp-price">' + escHtml(pinLabel(b)) + '</span></span>';
-}
-
-/* Universities are fixed landmarks, so their coordinates live here rather
-   than in Monday. Keyed by city page; extend a list to add a campus. */
-const UNI_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/></svg>';
-const UNI_MARKERS = {
-    'london': [
-        { n: "Architectural Association", lat: 51.51956, lng: -0.12975 },
-        { n: "ArtsEd (Chiswick)", lat: 51.49595, lng: -0.25257 },
-        { n: "Bayes Business School", lat: 51.52205, lng: -0.09037 },
-        { n: "BIMM London", lat: 51.47954, lng: -0.19678 },
-        { n: "Birkbeck", lat: 51.52184, lng: -0.13069 },
-        { n: "Brunel University London", lat: 51.53288, lng: -0.47434 },
-        { n: "Camberwell College of Arts (UAL)", lat: 51.47404, lng: -0.08069 },
-        { n: "Central Saint Martins (UAL)", lat: 51.53592, lng: -0.12527 },
-        { n: "Chelsea College of Arts (UAL)", lat: 51.49104, lng: -0.12862 },
-        { n: "City St George's (Northampton Square)", lat: 51.5279, lng: -0.10312 },
-        { n: "Fashion Retail Academy", lat: 51.51761, lng: -0.09463 },
-        { n: "Goldsmiths", lat: 51.47422, lng: -0.03626 },
-        { n: "Guildhall School of Music & Drama", lat: 51.51953, lng: -0.09238 },
-        { n: "Imperial College (White City)", lat: 51.51579, lng: -0.22497 },
-        { n: "Imperial College London", lat: 51.4989, lng: -0.17697 },
-        { n: "Istituto Marangoni London", lat: 51.5184, lng: -0.07296 },
-        { n: "King's College London (Denmark Hill)", lat: 51.46978, lng: -0.09047 },
-        { n: "King's College London (Guy's)", lat: 51.50413, lng: -0.08756 },
-        { n: "King's College London (St Thomas')", lat: 51.4993, lng: -0.11919 },
-        { n: "King's College London (Strand)", lat: 51.51201, lng: -0.11643 },
-        { n: "King's College London (Waterloo)", lat: 51.50581, lng: -0.11226 },
-        { n: "Kingston School of Art (Knights Park)", lat: 51.40506, lng: -0.29855 },
-        { n: "Kingston University (Kingston Hill)", lat: 51.42901, lng: -0.26522 },
-        { n: "Kingston University (Penrhyn Road)", lat: 51.40342, lng: -0.30311 },
-        { n: "Kingston University (Roehampton Vale)", lat: 51.43745, lng: -0.25125 },
-        { n: "LAMDA", lat: 51.49057, lng: -0.21413 },
-        { n: "London Business School", lat: 51.52525, lng: -0.16019 },
-        { n: "London College of Communication (UAL)", lat: 51.49448, lng: -0.10177 },
-        { n: "London College of Fashion (UAL)", lat: 51.54139, lng: -0.01258 },
-        { n: "London Metropolitan University (Holloway)", lat: 51.5522, lng: -0.11119 },
-        { n: "London South Bank University", lat: 51.49689, lng: -0.10173 },
-        { n: "Loughborough University London", lat: 51.5468, lng: -0.0217 },
-        { n: "LSE", lat: 51.51439, lng: -0.11665 },
-        { n: "Met Film School (Ealing)", lat: 51.50864, lng: -0.30701 },
-        { n: "Middlesex University", lat: 51.58986, lng: -0.22928 },
-        { n: "Northeastern University London", lat: 51.50593, lng: -0.0711 },
-        { n: "Northumbria University London", lat: 51.51783, lng: -0.07793 },
-        { n: "NYU London", lat: 51.51938, lng: -0.12897 },
-        { n: "Pointblank Music School", lat: 51.53609, lng: -0.08535 },
-        { n: "Queen Mary (Mile End)", lat: 51.52427, lng: -0.04028 },
-        { n: "Queen Mary (Whitechapel)", lat: 51.51774, lng: -0.06061 },
-        { n: "RADA", lat: 51.52182, lng: -0.13134 },
-        { n: "Ravensbourne University", lat: 51.50166, lng: 0.0057 },
-        { n: "Regent's University London", lat: 51.52597, lng: -0.15605 },
-        { n: "Richmond American University", lat: 51.49323, lng: -0.27426 },
-        { n: "Royal Academy of Dance", lat: 51.47495, lng: -0.17505 },
-        { n: "Royal Academy of Music", lat: 51.52337, lng: -0.15227 },
-        { n: "Royal Central School of Speech and Drama", lat: 51.54434, lng: -0.17415 },
-        { n: "Royal College of Art (Battersea)", lat: 51.47901, lng: -0.1696 },
-        { n: "Royal College of Art (Kensington)", lat: 51.50133, lng: -0.1789 },
-        { n: "Royal College of Music", lat: 51.49968, lng: -0.17712 },
-        { n: "Royal Drawing School", lat: 51.52569, lng: -0.0813 },
-        { n: "Royal Veterinary College (Camden)", lat: 51.53683, lng: -0.1338 },
-        { n: "SOAS", lat: 51.52214, lng: -0.12839 },
-        { n: "Sotheby's Institute of Art", lat: 51.51865, lng: -0.1312 },
-        { n: "St George's (Tooting)", lat: 51.42695, lng: -0.17499 },
-        { n: "TEDI-London", lat: 51.49685, lng: -0.04169 },
-        { n: "The Courtauld Institute of Art", lat: 51.53016, lng: -0.11484 },
-        { n: "Trinity Laban (Greenwich)", lat: 51.48318, lng: -0.0066 },
-        { n: "UCL (Bloomsbury)", lat: 51.52444, lng: -0.13351 },
-        { n: "UCL East", lat: 51.53631, lng: -0.01428 },
-        { n: "University of East London (Docklands)", lat: 51.50719, lng: 0.06561 },
-        { n: "University of Greenwich (Avery Hill)", lat: 51.44602, lng: 0.07999 },
-        { n: "University of Greenwich (Greenwich)", lat: 51.4821, lng: -0.0073 },
-        { n: "University of Law (Bloomsbury)", lat: 51.5204, lng: -0.13177 },
-        { n: "University of Law (Moorgate)", lat: 51.52149, lng: -0.08963 },
-        { n: "University of Roehampton", lat: 51.45677, lng: -0.24307 },
-        { n: "University of West London", lat: 51.50468, lng: -0.30589 },
-        { n: "University of Westminster (Cavendish)", lat: 51.52083, lng: -0.14013 },
-        { n: "University of Westminster (Harrow)", lat: 51.57767, lng: -0.32168 },
-        { n: "University of Westminster (Marylebone)", lat: 51.52202, lng: -0.1546 },
-        { n: "University of Westminster (Regent Street)", lat: 51.51698, lng: -0.14309 },
-        { n: "Vogue College of Fashion", lat: 51.51865, lng: -0.1312 },
-        { n: "Wimbledon College of Arts (UAL)", lat: 51.41331, lng: -0.21173 },
-    ],
-    'cambridge': [
-        { n: 'University of Cambridge', lat: 52.2054, lng: 0.1132 },
-    ],
-    'edinburgh': [
-        { n: 'University of Edinburgh', lat: 55.9473, lng: -3.1872 },
-    ],
-    'paris': [
-        { n: 'Sorbonne Université', lat: 48.8489, lng: 2.3435 },
-        { n: 'Sciences Po', lat: 48.8541, lng: 2.3286 },
-        { n: 'The American University of Paris', lat: 48.8580, lng: 2.2966 },
-    ],
-    'madrid': [
-        { n: 'IE University Madrid', lat: 40.4780, lng: -3.6880 },
-        { n: 'Universidad Complutense de Madrid', lat: 40.4489, lng: -3.7278 },
-    ],
-};
-
-function cityUnis() {
-    const city = PAGE_CONFIG.filter.type === 'city'
-        ? PAGE_CONFIG.filter.value
-        : (PAGE_CONFIG.parentCity && PAGE_CONFIG.parentCity.label) || '';
-    return UNI_MARKERS[String(city).toLowerCase()] || [];
-}
-
-function popupHtml(b) {
-    const unit = priceMode === 'weekly' ? 'per week' : 'per month';
-    /* amenities are building-level, so they appear once under the header
-       as a quiet gold line rather than repeating on every row */
-    const seen = {};
-    b.units.forEach(function(u) { (u.amenities || []).forEach(function(k) { seen[k] = 1; }); });
-    const amLine = Object.keys(seen).slice(0, 4).map(function(k) {
-        const a = amenityIcons[k];
-        return a ? a.label : '';
-    }).filter(Boolean).join(' · ');
-    const rows = b.units.map(function(u) {
-        const thumb = u.imageUrl ? '<img src="' + sqSrc(u.imageUrl, '300w') + '" loading="lazy" decoding="async" alt="">' : '';
-        let priceTop, priceSub = unit;
-        if (u.comingSoon) { priceTop = 'Coming soon'; priceSub = ''; }
-        else if (u.poa) { priceTop = 'POA'; priceSub = ''; }
-        else if (u.refurb) { priceTop = 'Unavailable'; priceSub = ''; }
-        else { priceTop = PAGE_CONFIG.currency + formatPrice(u.weekly); }
-        const inner = thumb
-            + '<div class="map-pop-main"><div class="mp-bed">' + bedLabel(u.bedroomType) + '</div><div class="mp-sub">' + escHtml(u.size) + ' sq/m</div></div>'
-            + '<div class="map-pop-rail"><div class="mp-pricetop">' + priceTop + '</div>' + (priceSub ? '<div class="mp-sub">' + priceSub + '</div>' : '') + '</div>';
-        /* the whole row (photo included) links to the apartment page */
-        return (!u.comingSoon && u.url)
-            ? '<a href="' + u.url + '" class="map-pop-unit">' + inner + '</a>'
-            : '<div class="map-pop-unit">' + inner + '</div>';
-    }).join('');
-    return '<div class="map-pop-title">' + escHtml(b.title) + '</div><div class="map-pop-area">' + escHtml(b.location) + '</div>'
-        + (amLine ? '<div class="map-pop-bams">' + amLine + '</div>' : '')
-        + '<div class="map-pop-list">' + rows + '</div>';
-}
-
-function updateMapMarkers() {
-    if (!map || !window.L || !pinLayer) return;
-    pinLayer.clearLayers();
-    const old = document.getElementById('mapEmpty');
-    if (old) old.remove();
-    const buildings = mapBuildings();
-    if (!buildings.length) {
-        const note = document.createElement('div');
-        note.id = 'mapEmpty'; note.className = 'map-empty';
-        const matching = currentListings.length;
-        if (matching > 0) {
-            /* apartments match but their building has no coordinates yet */
-            note.textContent = matching === 1
-                ? 'The matching apartment is not on the map yet. Switch to List to view it.'
-                : 'These ' + matching + ' apartments are not on the map yet. Switch to List to view them.';
-        } else if (listings.some(function(l) { return l.lat != null; })) {
-            note.textContent = 'No apartments match these filters.';
-        } else {
-            note.textContent = 'The map is warming up - apartment positions appear here shortly.';
-        }
-        document.getElementById('mapWrap').appendChild(note);
-        return;
-    }
-    buildings.forEach(function(b) {
-        const m = L.marker([b.lat, b.lng], {
-            icon: L.divIcon({ className: 'map-pin-a', html: pinIconHtml(b), iconSize: [0, 0] }),
-        });
-        m.bindPopup(popupHtml(b), { maxWidth: 320, minWidth: 250 });
-        pinLayer.addLayer(m);
-    });
-    if (!mapFitted) {
-        mapFitted = true;
-        mapRefit = false;
-        mapHomeView();
-    } else if (mapRefit) {
-        mapRefit = false;
-        if (selectedAreas.length) {
-            /* an area was picked: glide to its pins. maxZoom stops a
-               one-building area from over-zooming */
-            map.fitBounds(pinLayer.getBounds(), { padding: L.point(40, 40), maxZoom: 15 });
-        } else {
-            /* areas cleared: back to the default city view. Never
-               fitBounds here - one mis-geocoded outlier would zoom the
-               map out to the whole country */
-            mapHomeView();
-        }
-    }
-}
-
-function initMap() {
-    if (map) {
-        updateMapMarkers();
-        setTimeout(function() { map.invalidateSize(); }, 60);
-        return;
-    }
-    map = L.map('mapCanvas', {
-        zoomAnimation: !REDUCED_MOTION,
-        fadeAnimation: !REDUCED_MOTION,
-        scrollWheelZoom: false,   /* page scroll must not hijack into zoom; enables on click */
-    });
-    map.setView([51.5074, -0.1278], 14);
-    map.on('click', function() { map.scrollWheelZoom.enable(); });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        maxZoom: 19,
-    }).addTo(map);
-    /* overlap-only grouping: OVERLAP_RADIUS is tight, so distinct buildings
-       keep their own pins; only true stacks merge into a counted bubble.
-       Clicking the bubble spiderfies immediately (no zoom step) so both
-       pins fan out and each can be clicked. */
-    pinLayer = L.markerClusterGroup({
-        maxClusterRadius: OVERLAP_RADIUS,
-        zoomToBoundsOnClick: false,
-        spiderfyOnMaxZoom: true,
-        showCoverageOnHover: false,
-        spiderfyDistanceMultiplier: 1.6,
-        animate: !REDUCED_MOTION,
-        iconCreateFunction: function(c) {
-            return L.divIcon({ className: 'map-cluster', html: String(c.getChildCount()), iconSize: L.point(30, 30) });
-        },
-    });
-    pinLayer.on('clusterclick', function(e) { e.layer.spiderfy(); });
-    map.addLayer(pinLayer);
-    /* university landmarks: static, unaffected by filters */
-    cityUnis().forEach(function(u) {
-        L.marker([u.lat, u.lng], {
-            icon: L.divIcon({ className: 'map-uni', html: UNI_ICON, iconSize: [26, 26] }),
-            zIndexOffset: -100,
-        }).bindTooltip(u.n, { className: 'map-uni-tip', direction: 'top', offset: [0, -8] }).addTo(map);
-    });
-    /* pills above PIN_DOT_ZOOM, plain dots below - no numbered clusters */
-    const canvas = document.getElementById('mapCanvas');
-    function syncPinMode() { canvas.classList.toggle('map-dots', map.getZoom() < PIN_DOT_ZOOM); }
-    map.on('zoomend', syncPinMode);
-    syncPinMode();
-    updateMapMarkers();
-}
-
-/* Squarespace Fluid Engine reserves the section's height as fixed grid
-   rows measured off the tall list view, which leaves a void under the much
-   shorter map. While the map is showing, relax the host section's rows to
-   auto so it hugs the content; restore the original value on List. Safe
-   no-op outside Squarespace or in classic (non fluid) sections. */
-function collapseHostSection(on) {
-    const wrap = document.getElementById('mapWrap');
-    const fe = wrap.closest('.fluid-engine');
-    if (fe) {
-        if (on) {
-            if (fe.dataset.slRows === undefined) fe.dataset.slRows = fe.style.gridTemplateRows || '';
-            fe.style.setProperty('grid-template-rows', 'auto', 'important');
-        } else {
-            fe.style.gridTemplateRows = fe.dataset.slRows || '';
-        }
-    }
-    const blk = wrap.closest('.sqs-block');
-    if (blk) blk.style.height = on ? 'auto' : '';
-}
-
-function setView(v) {
-    if (v === currentView) return;
-    currentView = v;
-    document.querySelectorAll('#viewToggle button').forEach(function(b) {
-        const on = b.dataset.view === v;
-        b.classList.toggle('on', on);
-        b.setAttribute('aria-pressed', String(on));
-    });
-    const grid = document.getElementById('listingsGrid');
-    const wrap = document.getElementById('mapWrap');
-    if (v === 'map') {
-        grid.style.display = 'none';
-        wrap.classList.add('show');
-        ensureLeaflet().then(initMap).catch(function() {
-            wrap.innerHTML = '<div class="map-empty">The map could not load. Please switch back to List view.</div>';
-        });
-    } else {
-        wrap.classList.remove('show');
-        grid.style.display = '';
-    }
-    collapseHostSection(v === 'map');
-    updateResultsCount();
-    writeUrlState();
-}
-document.querySelectorAll('#viewToggle button').forEach(function(b) {
-    b.addEventListener('click', function() {
-        userTouched = true;
-        setView(b.dataset.view);
-        /* settle the viewport with the filter bar at the top, so both
-           views open framed the same way */
-        scrollToTop();
-    });
-});
-(function bindKeyToggle() {
-    const key = document.getElementById('mapKey');
-    const btn = key && key.querySelector('.map-key-toggle');
-    if (!btn) return;
-    btn.addEventListener('click', function() {
-        const open = key.classList.toggle('open');
-        btn.setAttribute('aria-expanded', String(open));
-        btn.setAttribute('aria-label', open ? 'Hide map key' : 'Show map key');
-    });
-})();
-
-/* Reset map: back to the default start view, wherever the user wandered */
-(function bindMapReset() {
-    const btn = document.getElementById('mapResetBtn');
-    if (!btn) return;
-    btn.addEventListener('click', mapHomeView);
-})();
-
 if (PAGE_CONFIG.defaultPriceMode === 'monthly') {
     priceMode = 'weekly';   /* so setPriceMode('monthly') applies the switch */
     setPriceMode('monthly');
@@ -1920,9 +1381,9 @@ if (PAGE_CONFIG.defaultPriceMode === 'monthly') {
 /* only these are reachable from inline onclick attributes */
 return {
     toggleBedroomDropdown: toggleBedroomDropdown,
-    toggleBedroomRow: toggleBedroomRow,
+    onBedroomCheckboxChange: onBedroomCheckboxChange,
     toggleAreaDropdown: toggleAreaDropdown,
-    toggleAreaRow: toggleAreaRow,
+    onAreaCheckboxChange: onAreaCheckboxChange,
     loadMore: loadMore,
     scrollToTop: scrollToTop,
     retryLoad: retryLoad,
