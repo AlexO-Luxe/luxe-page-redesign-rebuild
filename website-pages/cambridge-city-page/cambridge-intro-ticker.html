@@ -1,0 +1,89 @@
+<!-- ============================================================
+     STUDENT LUXE — Intro block (Cambridge Student landing) — DARK BG
+     Sub line + scrolling university/college ticker underneath.
+     Set this section's background to navy #0d1a2e in Squarespace.
+     ============================================================ -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+.sl-intro{
+  --gold:#B8966E; --gold-l:#D4B896; --cream:#FBF8F2; --line:rgba(184,150,110,.28);
+  --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  font-family:var(--sans); -webkit-font-smoothing:antialiased;
+  background:transparent; padding:64px 0; text-align:center;
+}
+.sl-intro *{box-sizing:border-box; margin:0; padding:0}
+.sl-intro-inner{max-width:100%; margin:0 auto}
+.sl-intro-sub{font-size:16.5px; line-height:1.7; color:rgba(255,255,255,.72); max-width:800px; margin:0 auto 28px; padding:0 24px;}
+
+/* ── ticker label ── */
+.sl-ticker-label{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:14px;}
+
+/* ── ticker ── */
+.sl-ticker-wrap{overflow:hidden; padding:0; mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent); -webkit-mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);}
+.sl-ticker-track{display:flex; width:max-content; animation:sl-ticker 40s linear infinite;}
+.sl-ticker-track:hover{animation-play-state:paused;}
+.sl-ticker-item{font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:#D4B896; white-space:nowrap; padding:0 20px; display:inline-flex; align-items:center; gap:20px;}
+.sl-ticker-item::after{content:''; display:inline-block; width:4px; height:4px; border-radius:50%; background:rgba(184,150,110,.5);}
+@keyframes sl-ticker{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+@media(max-width:768px){
+  .sl-intro{padding:44px 0}
+  .sl-intro-sub{font-size:14px;}
+  .sl-ticker-item{font-size:13.5px; letter-spacing:.14em; padding:0 14px; gap:14px;}
+  .sl-ticker-label{font-size:11.5px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .sl-ticker-track{animation:none;}
+}
+</style>
+
+<section class="sl-intro" aria-label="About Student Luxe">
+  <div class="sl-intro-inner">
+    <p class="sl-intro-sub sl-intro-reveal">Whether you're starting a new term, completing a placement, or studying in Cambridge for a semester, we make finding a high-quality furnished apartment simple, fast, and stress-free.</p>
+    <div class="sl-intro-reveal">
+      <p class="sl-ticker-label">Apartments near Cambridge colleges &amp; campuses:</p>
+      <div class="sl-ticker-wrap">
+        <div class="sl-ticker-track">
+          <span class="sl-ticker-item">University of Cambridge</span>
+          <span class="sl-ticker-item">Trinity College</span>
+          <span class="sl-ticker-item">King's College</span>
+          <span class="sl-ticker-item">St John's College</span>
+          <span class="sl-ticker-item">Judge Business School</span>
+          <span class="sl-ticker-item">Anglia Ruskin</span>
+          <span class="sl-ticker-item">Pembroke College</span>
+          <span class="sl-ticker-item">Queens' College</span>
+          <span class="sl-ticker-item">CSVPA</span>
+          <span class="sl-ticker-item">Downing College</span>
+          <!-- duplicate set for seamless loop -->
+          <span class="sl-ticker-item">University of Cambridge</span>
+          <span class="sl-ticker-item">Trinity College</span>
+          <span class="sl-ticker-item">King's College</span>
+          <span class="sl-ticker-item">St John's College</span>
+          <span class="sl-ticker-item">Judge Business School</span>
+          <span class="sl-ticker-item">Anglia Ruskin</span>
+          <span class="sl-ticker-item">Pembroke College</span>
+          <span class="sl-ticker-item">Queens' College</span>
+          <span class="sl-ticker-item">CSVPA</span>
+          <span class="sl-ticker-item">Downing College</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce) return;
+  var els = Array.prototype.slice.call(document.querySelectorAll('.sl-intro-reveal'));
+  els.forEach(function(el,i){
+    if(el.getAttribute('data-rev')) return; el.setAttribute('data-rev','1');
+    el.style.opacity='0'; el.style.transform='translateY(14px)';
+    el.style.transition='opacity .6s cubic-bezier(.23,1,.32,1) '+(i*100)+'ms, transform .6s cubic-bezier(.23,1,.32,1) '+(i*100)+'ms';
+  });
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='none'; io.unobserve(e.target); } });
+  }, {threshold:.2});
+  els.forEach(function(el){ io.observe(el); });
+})();
+</script>

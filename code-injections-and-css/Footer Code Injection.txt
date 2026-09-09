@@ -6,7 +6,7 @@
     var KEY      = 'sl_visited_paths';
     var SRC_KEY  = 'sl_traffic_source';
     var TS_KEY   = 'sl_page_arrived';
-    var MAX_PAGES = 10;
+    var MAX_PAGES = 30;
     var path     = window.location.pathname.replace(/\/$/, '') || '/';
 
     // Skip asset paths
@@ -394,8 +394,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 <!-- ============================================================
-     Student Luxe — Floating Enquiry Widget
+     Student Luxe — Enquiry Command Bar (sitewide floating widget)
      Paste into: Squarespace → Settings → Advanced → Code Injection → Footer
+     Gold "Make an enquiry" pill bottom right on every device; tapping
+     it opens a corner card with the two enquiry paths.
+     Context-aware: on an apartment page Check availability names and
+     prefills the building (apartment-pages API map); when the city is
+     known, Option B reads "Send me London options" etc. Detected
+     apartment and city names render in bold gold.
+     The X hides it for the current page view only (no storage).
      ============================================================ -->
 <script>
 (function () {
@@ -405,102 +412,143 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   var aptMap      = {};
   var currentApt  = null;
 
-  var HIDDEN_PAGES = ['/reservations', '/rest', '/team-new', '/luxury-student-residences', '/onboarding', '/data', '/london-apartments-social', '/luxury-serviced-residences', '/luxury-rentals-all-cities'];
+  var HIDDEN_PAGES = ['/reservations', '/istituto-test', '/istituto-marangoni-london-accommodation', '/rest', '/team-new', '/luxury-student-residences', '/onboarding', '/data', '/london-apartments-social', '/luxury-serviced-residences', '/luxury-rentals-all-cities'];
   if (HIDDEN_PAGES.indexOf(window.location.pathname.replace(/\/$/, '')) !== -1) return;
 
   var style = document.createElement('style');
   style.textContent = [
-    '#sl-widget-trigger{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;align-items:center;gap:8px;background:#B8966E;color:#fff;border:none;border-radius:8px;padding:13px 26px;font-family:"DM Sans",Helvetica,Arial,sans-serif;font-size:11px;font-weight:500;cursor:pointer;letter-spacing:0.12em;text-transform:uppercase;transition:background 0.18s;}',
-    '#sl-widget-trigger:hover{background:#a07d5a;}',
-    '#sl-widget-trigger svg{width:14px;height:14px;flex-shrink:0;}',
-    '#sl-widget-panel{position:fixed;bottom:76px;right:24px;z-index:9999;width:290px;background:#fff;border:0.5px solid rgba(184,150,110,0.4);border-radius:14px 0 14px 14px;overflow:visible;display:none;font-family:"DM Sans",Helvetica,Arial,sans-serif;}',
-    '#sl-widget-panel.sl-open{display:block;}',
-    '.sl-w-close-tab{position:absolute;top:-21px;right:-0.5px;background:#0d1a2e;color:rgba(255,255,255,0.75);border:none;border-radius:4px 4px 0 0;padding:4px 10px;font-family:"DM Sans",Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;}',
-    '.sl-w-close-tab:hover{color:#fff;}',
-    '.sl-w-banner{background:rgba(184,150,110,0.08);border-bottom:0.5px solid rgba(184,150,110,0.2);padding:8px 16px;display:none;align-items:center;gap:6px;}',
-    '.sl-w-banner p{margin:0;font-size:11px;color:#B8966E;line-height:1.4;}',
-    '.sl-w-banner svg{width:12px;height:12px;flex-shrink:0;color:#B8966E;}',
-    '.sl-w-opts{padding:12px;display:flex;flex-direction:column;gap:8px;}',
-    '.sl-w-opt{display:block;border:0.5px solid rgba(184,150,110,0.3);border-radius:10px;padding:12px 14px;cursor:pointer;text-decoration:none;transition:border-color 0.15s,background 0.15s;position:relative;}',
-    '.sl-w-opt:hover{border-color:#B8966E;background:#faf7f3;}',
-    '.sl-w-opt-tag{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#B8966E;margin:0 0 4px;}',
-    '.sl-w-opt-title{font-family:"Baskerville Display PT","Baskerville",Georgia,serif;font-size:22px;font-weight:400;color:#0d1a2e;margin:0 0 3px;letter-spacing:-0.03em;}',
-    '.sl-w-opt-desc{font-size:12px;color:#6b6b6b;margin:0;line-height:1.5;}',
-    '.sl-w-opt-name{color:#B8966E;font-weight:500;}',
-    '.sl-w-opt-arrow{position:absolute;top:12px;right:14px;color:#B8966E;font-size:14px;}',
-    '.sl-w-footer{padding:0 12px 12px;}',
-    '.sl-w-footer p{margin:0;font-size:10px;color:#9b9b9b;text-align:center;line-height:1.5;}',
-    '@media(max-width:400px){#sl-widget-panel{width:calc(100vw - 32px);right:16px;}#sl-widget-trigger{right:16px;bottom:16px;}#sl-widget-panel{bottom:68px;}}'
+    /* pill bottom-right on every device. Guards keep it visible
+       whatever the theme tries. */
+    '#sl-cb{position:fixed;right:24px;bottom:24px;z-index:9998;font-family:"DM Sans",Helvetica,Arial,sans-serif;opacity:1 !important;visibility:visible !important;transform:none !important;}',
+    '#sl-cb-bar{display:flex;align-items:center;gap:8px;border:1px solid rgba(184,150,110,0.55);cursor:pointer;font-family:inherit;background:#FBF8F1;color:#0d1a2e;border-radius:8px;padding:12px 26px;font-size:11.5px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;box-shadow:0 6px 18px rgba(13,26,46,0.25);transition:background 0.18s;}',
+    '#sl-cb-bar:hover{background:#F3EDDE;}',
+    '#sl-cb-chip{display:none;margin-left:4px;background:#0d1a2e;color:#EADFCE;border-radius:6px;padding:4px 9px;font-size:9.5px;letter-spacing:0.1em;white-space:nowrap;}',
+    '@media (min-width:769px){#sl-cb-chip.sl-on{display:inline-block;}}',
+    '#sl-cb-bar svg{width:14px;height:14px;flex-shrink:0;}',
+    '#sl-cb-x{position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:50%;background:#0d1a2e;color:rgba(255,255,255,0.85);border:1px solid rgba(251,248,242,0.5);padding:0;font-size:10px;line-height:18px;text-align:center;cursor:pointer;font-family:"DM Sans",Helvetica,Arial,sans-serif;}',
+    '#sl-cb-x:hover{color:#fff;background:#1a2c4a;}',
+    /* scrim + corner card */
+    '#sl-cb-scrim{position:fixed;inset:0;z-index:9998;background:rgba(8,15,26,0.55);display:none;}',
+    '#sl-cb-scrim.sl-open{display:block;}',
+    '#sl-cb-sheet{position:fixed;z-index:9999;display:none;background:#FBF8F1;border:0.5px solid rgba(184,150,110,0.5);box-shadow:0 18px 50px rgba(13,26,46,0.35);font-family:"DM Sans",Helvetica,Arial,sans-serif;right:24px;bottom:92px;width:340px;max-width:calc(100vw - 40px);border-radius:18px;padding:16px 16px 18px;}',
+    '#sl-cb-sheet.sl-open{display:block;animation:slCbIn 0.24s cubic-bezier(0.22,0.8,0.28,1);}',
+    '@keyframes slCbIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}',
+    '@media (prefers-reduced-motion:reduce){#sl-cb-sheet.sl-open{animation:none;}}',
+    '@media (max-width:400px){#sl-cb{right:16px;bottom:16px;}#sl-cb-sheet{right:16px;bottom:84px;max-width:calc(100vw - 32px);}}',
+    '#sl-cb-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}',
+    '#sl-cb-close{background:none;border:none;padding:2px 4px;cursor:pointer;color:rgba(13,26,46,0.45);font-size:15px;line-height:1;font-family:"DM Sans",Helvetica,Arial,sans-serif;}',
+    '#sl-cb-close:hover{color:#0d1a2e;}',
+    '#sl-cb-sub{font-size:12px;color:rgba(13,26,46,0.6);line-height:1.5;}',
+    '#sl-cb-bot{text-align:right;font-size:11px;letter-spacing:0.04em;color:rgba(13,26,46,0.55);margin-top:10px;}',
+    /* option cards: match the /reservations page (navy card A, slate
+       gold-bordered card B, gold OPTION tags, white serif titles) */
+    '.sl-cb-row{display:block;position:relative;background:#0d1a2e;border:1px solid transparent;border-radius:14px;padding:15px 40px 15px 17px;margin-bottom:10px;text-decoration:none;transition:filter 0.15s;}',
+    '.sl-cb-row.sl-alt{background:#fff;border-color:rgba(184,150,110,0.6);}',
+    '.sl-cb-row.sl-alt .t{color:#0d1a2e;}',
+    '.sl-cb-row.sl-alt .d{color:rgba(13,26,46,0.6);}',
+    '.sl-cb-row.sl-alt .arr{color:#8B6E4E;}',
+    '.sl-cb-row.sl-alt b{color:#8B6E4E;}',
+    '@media (hover:hover) and (pointer:fine){',
+    '.sl-cb-row{transition:background 0.18s,border-color 0.18s,transform 0.18s cubic-bezier(0.22,0.8,0.28,1),box-shadow 0.18s;}',
+    '.sl-cb-row .arr{transition:transform 0.18s cubic-bezier(0.22,0.8,0.28,1),color 0.18s;}',
+    '#sl-cb-a:hover{background:#22345A;border-color:#D4B896;}',
+    '#sl-cb-b:hover{background:#FBF6EA;border-color:#B8966E;}',
+    '#sl-cb-b:hover .arr{color:#8B6E4E !important;}',
+    '.sl-cb-row:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(13,26,46,0.35);}',
+    '.sl-cb-row:hover .arr{transform:translateY(-50%) translateX(4px);color:#F0E7C2;}',
+    '}',
+    '@media (prefers-reduced-motion:reduce){.sl-cb-row,.sl-cb-row .arr{transition:none !important;}.sl-cb-row:hover{transform:none;}.sl-cb-row:hover .arr{transform:translateY(-50%);}}',
+    '.sl-cb-row .t{display:block;font-family:"Baskerville Display PT","Baskerville",Georgia,serif;font-size:19.5px;font-weight:400;letter-spacing:-0.015em;text-transform:none;color:#fff;line-height:1.25;}',
+    '.sl-cb-row .t b{font-family:inherit;font-weight:400;}',
+    '.sl-cb-row .d{display:block;font-size:11.5px;color:rgba(255,255,255,0.78);margin-top:4px;line-height:1.45;}',
+    '.sl-cb-row b{font-weight:600;color:#F0E7C2;}',
+    '.sl-cb-row .arr{position:absolute;top:15px;right:15px;color:#D4B896;font-size:15px;}',
   ].join('');
   document.head.appendChild(style);
 
-  var trigger = document.createElement('button');
-  trigger.id = 'sl-widget-trigger';
-  trigger.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.5"><path d="M14 2H2a1 1 0 00-1 1v8a1 1 0 001 1h3l3 3 3-3h3a1 1 0 001-1V3a1 1 0 00-1-1z"/></svg>Make an enquiry';
-  trigger.addEventListener('click', togglePanel);
+  /* ── build the pill ── */
+  var wrap = document.createElement('div');
+  wrap.id = 'sl-cb';
+  wrap.innerHTML =
+    '<button type="button" id="sl-cb-bar" aria-haspopup="dialog" aria-expanded="false">' +
+      '<svg viewBox="0 0 16 16" fill="none" stroke="#0d1a2e" stroke-width="1.5"><path d="M14 2H2a1 1 0 00-1 1v8a1 1 0 001 1h3l3 3 3-3h3a1 1 0 001-1V3a1 1 0 00-1-1z"/></svg>' +
+      'Make an enquiry' +
+      '<span id="sl-cb-chip"></span>' +
+    '</button>' +
+    '<button type="button" id="sl-cb-x" aria-label="Hide enquiry button">&#x2715;</button>';
 
-  var panel = document.createElement('div');
-  panel.id = 'sl-widget-panel';
-  panel.innerHTML = [
-    '<button class="sl-w-close-tab" id="sl-w-close-btn">Close &#x2715;</button>',
-    '<div style="border-radius:14px 0 14px 14px;overflow:hidden;">',
-    '<div style="background:#0d1a2e;padding:12px 14px;">',
-    '  <p style="margin:0;font-size:11px;line-height:1.55;font-family:\'DM Sans\',Helvetica,Arial,sans-serif;color:rgba(255,255,255,0.75);">Our apartments are available on a <strong style="color:#E8E1C3;font-weight:600;">request-only</strong> basis. Please choose an option below:</p>',
-    '</div>',
-    '<div class="sl-w-opts">',
-    '  <a class="sl-w-opt" id="sl-w-opt-a">',
-    '    <span class="sl-w-opt-tag">Option A</span>',
-    '    <p class="sl-w-opt-title" id="sl-w-a-title">Check availability</p>',
-    '    <p class="sl-w-opt-desc" id="sl-w-a-desc">Enquire about a specific apartment</p>',
-    '    <span class="sl-w-opt-arrow">&rarr;</span>',
-    '  </a>',
-    '  <a class="sl-w-opt" id="sl-w-opt-b">',
-    '    <span class="sl-w-opt-tag">Option B</span>',
-    '    <p class="sl-w-opt-title" id="sl-w-b-title">Send me options</p>',
-    '    <p class="sl-w-opt-desc" id="sl-w-b-desc">Curated to your budget &amp; preferences</p>',
-    '    <span class="sl-w-opt-arrow">&rarr;</span>',
-    '  </a>',
-    '</div>',
-    '</div>'
-  ].join('');
+  var scrim = document.createElement('div');
+  scrim.id = 'sl-cb-scrim';
 
-  document.body.appendChild(trigger);
-  document.body.appendChild(panel);
+  var sheet = document.createElement('div');
+  sheet.id = 'sl-cb-sheet';
+  sheet.setAttribute('role', 'dialog');
+  sheet.setAttribute('aria-label', 'Make an enquiry');
+  sheet.innerHTML =
+    '<div id="sl-cb-top"><div id="sl-cb-sub">Apartments available by request only.</div><button type="button" id="sl-cb-close" aria-label="Close">&#x2715;</button></div>' +
+    '<a class="sl-cb-row" id="sl-cb-a" href="' + FORM_URL + '?type=A">' +
+      '<span class="t" id="sl-cb-a-t">Check availability</span>' +
+      '<span class="d" id="sl-cb-a-d">Enquire about a specific apartment</span>' +
+      '<span class="arr">&rarr;</span>' +
+    '</a>' +
+    '<a class="sl-cb-row sl-alt" id="sl-cb-b" href="' + FORM_URL + '?type=B">' +
+      '<span class="t" id="sl-cb-b-t">Send me options</span>' +
+      '<span class="d">Curated to your budget &amp; preferences</span>' +
+      '<span class="arr">&rarr;</span>' +
+    '</a>' +
+    '<div id="sl-cb-bot">Replies within 24 hours.</div>';
 
-  panel.querySelector('#sl-w-close-btn').addEventListener('click', togglePanel);
+  document.body.appendChild(wrap);
+  document.body.appendChild(scrim);
+  document.body.appendChild(sheet);
 
-  document.addEventListener('click', function (e) {
-    if (!panel.contains(e.target) && e.target !== trigger && !trigger.contains(e.target)) {
-      panel.classList.remove('sl-open');
-    }
-  });
+  var bar = document.getElementById('sl-cb-bar');
 
-  function togglePanel() {
-    panel.classList.toggle('sl-open');
+  function openSheet() {
+    scrim.classList.add('sl-open');
+    sheet.classList.add('sl-open');
+    bar.setAttribute('aria-expanded', 'true');
+  }
+  function closeSheet() {
+    scrim.classList.remove('sl-open');
+    sheet.classList.remove('sl-open');
+    bar.setAttribute('aria-expanded', 'false');
   }
 
-  fetch(API_URL)
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (!data.apartments) return;
-      data.apartments.forEach(function (apt) {
-        aptMap[apt.slug] = { name: apt.name, city: apt.city };
-      });
-      matchCurrentPage();
-    })
-    .catch(function (err) {
-      console.warn('[SL Widget] Could not load apartment map:', err);
-      swapJotformButtons(null);
-    });
+  bar.addEventListener('click', function () {
+    if (sheet.classList.contains('sl-open')) closeSheet(); else openSheet();
+  });
+  scrim.addEventListener('click', closeSheet);
+  sheet.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'sl-cb-close') closeSheet();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && sheet.classList.contains('sl-open')) closeSheet();
+  });
+  document.getElementById('sl-cb-x').addEventListener('click', function (e) {
+    e.stopPropagation();
+    closeSheet();
+    wrap.style.display = 'none';
+  });
 
-  function matchCurrentPage() {
-    var path = window.location.pathname.replace(/\/$/, '').toLowerCase();
-    if (aptMap[path]) {
-      currentApt = aptMap[path];
-      activateAptMode(currentApt);
-    } else {
-      swapJotformButtons(null);
+  /* ── context wiring ── */
+  function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function prettyCity(c) {
+    return String(c || '').replace(/-/g, ' ').replace(/\b\w/g, function (ch) { return ch.toUpperCase(); });
+  }
+
+  function detectCityFromPath() {
+    var path = window.location.pathname.toLowerCase();
+    var cities = ['london', 'paris', 'new-york', 'cambridge', 'madrid', 'edinburgh', 'milan', 'boston', 'chicago', 'washington', 'los-angeles'];
+    for (var i = 0; i < cities.length; i++) {
+      if (path.indexOf(cities[i]) !== -1) return cities[i];
     }
+    return null;
   }
 
   function cleanName(name) {
@@ -509,42 +557,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       .trim();
   }
 
-  function activateAptMode(apt) {
-    var aTitle  = document.getElementById('sl-w-a-title');
-    var aDesc   = document.getElementById('sl-w-a-desc');
-    var bTitle  = document.getElementById('sl-w-b-title');
-    var bDesc   = document.getElementById('sl-w-b-desc');
+  function updateContext() {
+    var aRow    = document.getElementById('sl-cb-a');
+    var aDesc   = document.getElementById('sl-cb-a-d');
+    var bRow    = document.getElementById('sl-cb-b');
+    var bTitle  = document.getElementById('sl-cb-b-t');
 
-    var displayName = cleanName(apt.name);
-    var cityLabel   = apt.city ? apt.city.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); }) : '';
+    var pathCity = detectCityFromPath();
+    var city = currentApt ? currentApt.city : pathCity;
+    var cityLabel = city ? prettyCity(city) : '';
 
-    aTitle.textContent  = 'Check availability';
-    aDesc.innerHTML     = 'Enquire about <span class="sl-w-opt-name">' + displayName + '</span>';
-
-    if (cityLabel) {
-      bTitle.textContent = 'Send me ' + cityLabel + ' options';
+    if (currentApt) {
+      var displayName = cleanName(currentApt.name);
+      aDesc.innerHTML = 'Submit your desired dates for <b>' + escHtml(displayName) + '</b>';
+      aRow.href = FORM_URL + '?type=A&ref=' + encodeURIComponent(displayName) + '&city=' + encodeURIComponent(currentApt.city);
+    } else {
+      aDesc.textContent = 'Enquire about a specific apartment';
+      aRow.href = FORM_URL + '?type=A';
     }
-    bDesc.textContent = 'Curated to your budget & preferences';
 
-    document.getElementById('sl-w-opt-a').href =
-      FORM_URL + '?type=A&ref=' + encodeURIComponent(displayName) + '&city=' + encodeURIComponent(apt.city);
+    bTitle.innerHTML = cityLabel ? 'Send me <b>' + escHtml(cityLabel) + '</b> options' : 'Send me options';
+    bRow.href = FORM_URL + '?type=B' + (city ? '&city=' + encodeURIComponent(city) : '');
 
-    document.getElementById('sl-w-opt-b').href =
-      FORM_URL + '?type=B&city=' + encodeURIComponent(apt.city);
-
-    swapJotformButtons(apt);
-  }
-
-  document.getElementById('sl-w-opt-a').href = FORM_URL + '?type=A';
-  document.getElementById('sl-w-opt-b').href = FORM_URL + '?type=B';
-
-  function detectCityFromPath() {
-    var path = window.location.pathname.toLowerCase();
-    var cities = ['london', 'paris', 'new-york', 'cambridge', 'madrid'];
-    for (var i = 0; i < cities.length; i++) {
-      if (path.indexOf(cities[i]) !== -1) return cities[i];
+    /* desktop-only pill chip: apartment name (first two words) beats city */
+    var chip = document.getElementById('sl-cb-chip');
+    if (chip) {
+      var chipText = '';
+      if (currentApt) chipText = cleanName(currentApt.name).split(/\s+/).slice(0, 2).join(' ');
+      else if (cityLabel) chipText = cityLabel;
+      chip.textContent = chipText;
+      chip.classList.toggle('sl-on', !!chipText);
     }
-    return null;
   }
 
   function swapJotformButtons(apt) {
@@ -561,6 +604,274 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
   }
 
+  function matchCurrentPage() {
+    var path = window.location.pathname.replace(/\/$/, '').toLowerCase();
+    if (aptMap[path]) {
+      currentApt = aptMap[path];
+      updateContext();
+      swapJotformButtons(currentApt);
+    } else {
+      updateContext();
+      swapJotformButtons(null);
+    }
+  }
+
+  updateContext();
+
+  fetch(API_URL)
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.apartments) return;
+      data.apartments.forEach(function (apt) {
+        aptMap[apt.slug] = { name: apt.name, city: apt.city };
+      });
+      matchCurrentPage();
+    })
+    .catch(function (err) {
+      console.warn('[SL Widget] Could not load apartment map:', err);
+      swapJotformButtons(null);
+    });
+
 })();
 </script>
-<!-- End Student Luxe Enquiry Widget -->
+
+
+
+<!-- ============================================================
+  STUDENT LUXE — WhatsApp Pre-Chat Modal (sitewide)
+  Paste into: Settings > Advanced > Code Injection > FOOTER
+  (below the existing footer code, order does not matter)
+
+  Intercepts every link to wa.me / api.whatsapp.com / whatsapp:
+  on any page, shows the Concierge Card modal, mints an enquiry
+  ref via luxe-lead-capture, then opens WhatsApp with the
+  prefilled message. If the API is slow or down, WhatsApp still
+  opens, just without the ref.
+============================================================ -->
+<style>
+  .slwa-overlay {
+    position: fixed; inset: 0; z-index: 100000;
+    background: rgba(8, 15, 26, 0.55);
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .slwa-overlay.slwa-open { display: flex; }
+  .slwa-card {
+    width: 100%; max-width: 420px; background: #fff;
+    border-radius: 14px; border: 0.5px solid rgba(184, 150, 110, 0.5);
+    padding: 30px 32px 22px; text-align: center; position: relative;
+    box-shadow: 0 24px 70px rgba(8, 15, 26, 0.35);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    animation: slwaPop .22s cubic-bezier(.23, 1, .32, 1);
+  }
+  @keyframes slwaPop { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .slwa-card { animation: none; } }
+  .slwa-x {
+    position: absolute; top: 10px; right: 14px; background: none; border: 0;
+    color: #9b9b9b; font-size: 20px; cursor: pointer; padding: 4px; line-height: 1;
+  }
+  .slwa-x:hover { color: #1a1a1a; }
+  .slwa-eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: #B8966E; font-weight: 700; margin: 0 0 8px;
+  }
+  .slwa-title {
+    font-family: 'Baskerville', Georgia, serif; font-weight: 400;
+    font-size: 26px; color: #0d1a2e; letter-spacing: -0.01em; margin: 0 0 6px;
+  }
+  .slwa-sub { font-size: 12.5px; color: #6b6b6b; margin: 0 0 18px; }
+  .slwa-field { margin-bottom: 10px; text-align: left; }
+  .slwa-label {
+    display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #6b6b6b; font-weight: 500; margin-bottom: 4px;
+  }
+  .slwa-label .slwa-req { color: #B8966E; }
+  .slwa-input {
+    width: 100%; box-sizing: border-box;
+    background: #e6f1fb; border: 1px solid #b5d4f4; border-radius: 8px;
+    padding: 11px 12px; font-size: 16px; color: #1a1a1a;
+    font-family: inherit; outline: none;
+    transition: background .18s, border-color .18s;
+  }
+  .slwa-input:focus { background: #ddeefb; border-color: #7ab8f0; }
+  .slwa-input.slwa-error { border-color: #c0392b; background: #fdf0ee; }
+  .slwa-go {
+    width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: #25D366; color: #fff; border: 0; border-radius: 99px;
+    padding: 13px 22px; font-size: 14px; font-weight: 700; cursor: pointer;
+    font-family: inherit; margin-top: 8px;
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
+    transition: transform .18s, box-shadow .18s;
+  }
+  .slwa-go:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(37, 211, 102, 0.45); }
+  .slwa-go:disabled { opacity: 0.6; cursor: wait; transform: none; }
+  .slwa-privacy { font-size: 9.5px; color: #b3aca0; margin: 10px 0 0; }
+  @media (max-width: 480px) {
+    .slwa-card { padding: 24px 20px 18px; }
+    .slwa-title { font-size: 22px; }
+  }
+</style>
+
+<div class="slwa-overlay" id="slwaOverlay" role="dialog" aria-modal="true" aria-labelledby="slwaTitle">
+  <div class="slwa-card">
+    <button class="slwa-x" id="slwaClose" aria-label="Close">&#10005;</button>
+    <p class="slwa-eyebrow">WhatsApp Concierge</p>
+    <h3 class="slwa-title" id="slwaTitle">Message our team</h3>
+    <p class="slwa-sub" id="slwaHours">We're live from 10am to 6pm GMT.</p>
+    <div class="slwa-field">
+      <label class="slwa-label" for="slwaName">Your name <span class="slwa-req">*</span></label>
+      <input class="slwa-input" id="slwaName" type="text" autocomplete="given-name" placeholder="First name">
+    </div>
+    <div class="slwa-field">
+      <label class="slwa-label" for="slwaNeed">What are you looking for? <span class="slwa-req">*</span></label>
+      <input class="slwa-input" id="slwaNeed" type="text" placeholder="e.g. 1 Bed near LSE from September">
+    </div>
+    <button class="slwa-go" id="slwaGo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+      Open WhatsApp
+    </button>
+    <p class="slwa-privacy">We attach a short reference so we know which page you came from.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var API_URL = 'https://luxe-lead-capture.vercel.app/api/submit-whatsapp';
+  var DEFAULT_NUMBER = '442030070017';
+  var API_TIMEOUT_MS = 2500;
+
+  var overlay = document.getElementById('slwaOverlay');
+  var nameInput = document.getElementById('slwaName');
+  var needInput = document.getElementById('slwaNeed');
+  var goBtn = document.getElementById('slwaGo');
+  var pendingNumber = DEFAULT_NUMBER;
+
+  // Localised opening hours: 10:00 to 18:00 London time, shown in the
+  // visitor's own timezone (falls back to the plain GMT line).
+  try {
+    var visitorZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if (visitorZone && visitorZone !== 'Europe/London') {
+      var fmtLondon = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: 'numeric', minute: 'numeric', hour12: false });
+      var fmtLocal = new Intl.DateTimeFormat('en-GB', { hour: 'numeric', minute: 'numeric', hour12: true, timeZoneName: 'short' });
+      var toLocal = function (h) {
+        var d = new Date();
+        var parts = fmtLondon.format(d).split(':');
+        d.setMinutes(d.getMinutes() + ((h * 60) - (parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10))));
+        return fmtLocal.format(d).replace(/\s?([ap]m)/, '$1');
+      };
+      document.getElementById('slwaHours').textContent =
+        "We're live from " + toLocal(10) + ' to ' + toLocal(18) + ' your time.';
+    }
+  } catch (e) { /* keep the GMT default */ }
+
+  function getCookie(name) {
+    var m = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+    if (m) return decodeURIComponent(m[1]);
+    try { return localStorage.getItem('ct_' + name.replace(/^sl_/, '')) || ''; } catch (e) { return ''; }
+  }
+
+  function trackingData() {
+    return {
+      timestamp: new Date().toISOString(),
+      page_path: location.pathname + location.search,
+      last_page: getCookie('sl_last_page'),
+      landing_page: getCookie('sl_landing_page'),
+      utm_source: getCookie('sl_utm_source'),
+      utm_medium: getCookie('sl_utm_medium'),
+      utm_campaign: getCookie('sl_campaign') || getCookie('sl_utm_campaign'),
+      utm_adgroup: getCookie('sl_adgroup'),
+      utm_term: getCookie('sl_term'),
+      utm_matchtype: getCookie('sl_matchtype'),
+      gclid: getCookie('sl_gclid'),
+      gbraid: getCookie('sl_gbraid'),
+      wbraid: getCookie('sl_wbraid'),
+      fbclid: getCookie('sl_fbclid'),
+      session_id: getCookie('sl_session_id'),
+      // The page tracker keeps the journey in localStorage under its own key,
+      // not in a cookie, so read it from there first.
+      visited_paths: (function () { try { return localStorage.getItem('sl_visited_paths') || getCookie('sl_visited_paths'); } catch (e) { return getCookie('sl_visited_paths'); } })(),
+      first_gclid: getCookie('sl_first_gclid'),
+      first_campaign: getCookie('sl_first_campaign'),
+      referrer: getCookie('sl_referrer'),
+      first_referrer: getCookie('sl_first_referrer'),
+      first_seen: getCookie('sl_first_seen'),
+      traffic_source: (function () { try { return localStorage.getItem('sl_traffic_source') || ''; } catch (e) { return ''; } })(),
+      page_arrived: (function () { try { return localStorage.getItem('sl_page_arrived') || ''; } catch (e) { return ''; } })()
+    };
+  }
+
+  function extractNumber(href) {
+    var m = (href || '').match(/(?:wa\.me\/|phone=)\+?(\d{6,15})/);
+    return m ? m[1] : DEFAULT_NUMBER;
+  }
+
+  function openModal(number) {
+    pendingNumber = number || DEFAULT_NUMBER;
+    overlay.classList.add('slwa-open');
+    try { nameInput.value = nameInput.value || localStorage.getItem('slwa_name') || ''; } catch (e) {}
+    (nameInput.value ? needInput : nameInput).focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('slwa-open');
+    goBtn.disabled = false;
+    goBtn.lastChild.textContent = ' Open WhatsApp';
+  }
+
+  document.getElementById('slwaClose').addEventListener('click', closeModal);
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay.classList.contains('slwa-open')) closeModal();
+  });
+
+  // Intercept every WhatsApp link on the page, current and future
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    if (a.hasAttribute('data-slwa-skip')) return;
+    if (!/wa\.me\/|api\.whatsapp\.com|whatsapp\.com\/send|^whatsapp:/i.test(href)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openModal(extractNumber(href));
+  }, true);
+
+  function withTimeout(promise, ms) {
+    return Promise.race([promise, new Promise(function (resolve) { setTimeout(function () { resolve(null); }, ms); })]);
+  }
+
+  goBtn.addEventListener('click', function () {
+    var name = nameInput.value.trim();
+    var need = needInput.value.trim();
+    nameInput.classList.toggle('slwa-error', !name);
+    needInput.classList.toggle('slwa-error', !need);
+    if (!name || !need) { (!name ? nameInput : needInput).focus(); return; }
+
+    try { localStorage.setItem('slwa_name', name); } catch (e) {}
+    goBtn.disabled = true;
+    goBtn.lastChild.textContent = ' Opening…';
+
+    var payload = trackingData();
+    payload.guest_name = name;
+    payload.guest_need = need;
+
+    var post = fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json(); }).catch(function () { return null; });
+
+    withTimeout(post, API_TIMEOUT_MS).then(function (data) {
+      var ref = data && data.ref ? data.ref : null;
+      var msg = 'Hi Student Luxe! I\'m ' + name + '. I\'m looking for: ' + need + '.';
+      if (ref) msg += ' (enquiry ref ' + ref + ')';
+      var url = 'https://wa.me/' + pendingNumber + '?text=' + encodeURIComponent(msg);
+      closeModal();
+      window.location.href = url;
+    });
+  });
+
+  needInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') goBtn.click(); });
+})();
+</script>

@@ -1,28 +1,18 @@
 <!-- ============================================================
-     STUDENT LUXE — Cambridge City Page: Reviews (DARK BG)
-     Manual review carousel with swipe + dots + arrows + autoplay.
-     Paste into a Squarespace Code Block.
-     Standalone: no shared styles block required.
+     STUDENT LUXE — Cambridge City Page: Reviews + "Loved by" (DARK BG)
+     Centred rotating "Loved by [audience]" header, with the
+     Google review carousel beneath. Paste into a Squarespace Code Block.
      Background: set to navy (#0d1a2e) in Squarespace.
      id="reviews" needed on Squarespace section wrapper.
      Edit reviews in the REVIEWS array at the top of the script.
      ============================================================ -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 .slp-reviews {
-  --gold:                  #B8966E;
-  --gold-l:                #D4B896;
-  --pill-font-size:        11px;
-  --pill-letter-spacing:   0.16em;
-  --pill-color:            var(--gold-l);
-  --title-font-size:       clamp(30px, 4.5vw, 54px);
-  --title-font-weight:     300;
-  --title-line-height:     1.00;
-  --title-letter-spacing:  -0.08em;
-  --title-color:           #ffffff;
-  --title-em-color:        var(--gold-l);
-  --body-font-size:        13px;
-  --body-color:            rgba(255,255,255,0.72);
-  --body-line-height:      1.7;
+  --gold:    #B8966E;
+  --gold-l:  #D4B896;
+  --serif:   'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+  --body-color: rgba(255,255,255,0.66);
 }
 
 .slp-reviews,
@@ -39,36 +29,50 @@
   overflow-x: hidden;
 }
 
-.slp-rev-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  overflow: hidden;
-  max-width: 1080px;
+.slp-rev-wrap {
+  max-width: 760px;
   width: 100%;
   margin: 0 auto;
-}
-@media (max-width: 768px) { .slp-rev-grid { grid-template-columns: 1fr; } }
-
-/* ── LEFT: Carousel ── */
-.slp-rev-left {
-  background: transparent;
-  padding: 40px 36px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
-  min-width: 0;
-  overflow: hidden;
+  padding: 44px 24px;
 }
 
+/* ── HEADER: rotating "Loved by" ── */
+.slp-rev-header { text-align: center; margin: 0 auto 34px; }
+.slp-rev-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-l);
+  margin-bottom: 16px;
+}
+.slp-rev-title {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(30px, 4.8vw, 52px);
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  color: #ffffff;
+  margin: 0;
+}
+.slp-rev-word {
+  display: inline-block;
+  color: var(--gold-l);
+  font-style: italic;
+  transition: opacity 0.35s ease;
+}
+.slp-rev-sub {
+  font-size: 13.5px;
+  color: var(--body-color);
+  line-height: 1.65;
+  max-width: 48ch;
+  margin: 16px auto 0;
+}
+
+/* ── CAROUSEL ── */
 .slp-rev-carousel {
   position: relative;
   width: 100%;
-  max-width: 460px;
+  max-width: 600px;
   min-width: 0;
   margin: 0 auto;
 }
@@ -90,6 +94,7 @@
 .slp-rev-track {
   display: flex;
   transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
   transform: translate3d(0, 0, 0);
 }
 .slp-rev-track.no-anim { transition: none; }
@@ -100,27 +105,16 @@
   box-sizing: border-box;
 }
 
-.slp-rev-stars {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 14px;
-}
-.slp-rev-stars svg {
-  width: 14px; height: 14px;
-  fill: var(--gold-l);
-}
+.slp-rev-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+.slp-rev-stars svg { width: 14px; height: 14px; fill: var(--gold-l); }
 
-.slp-rev-quote-wrap {
-  position: relative;
-  margin-bottom: 18px;
-}
+.slp-rev-quote-wrap { position: relative; margin-bottom: 18px; }
 .slp-rev-quote {
   font-size: 13.5px;
   line-height: 1.65;
   color: #ffffff;
   letter-spacing: -0.005em;
   margin: 0;
-  /* collapsed: ~5 lines */
   display: -webkit-box;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
@@ -131,12 +125,7 @@
   -webkit-line-clamp: unset;
   overflow: visible;
 }
-/* Fade removed — clamp simply cuts off at line 5 */
-.slp-rev-fade {
-  display: none;
-}
-.slp-rev-quote-wrap.expanded .slp-rev-fade,
-.slp-rev-quote-wrap.no-overflow .slp-rev-fade { display: none; }
+.slp-rev-fade { display: none; }
 
 .slp-rev-toggle {
   display: inline-flex;
@@ -157,11 +146,8 @@
 }
 .slp-rev-toggle svg {
   width: 9px; height: 9px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   transition: transform 0.2s;
 }
 .slp-rev-quote-wrap.expanded .slp-rev-toggle svg { transform: rotate(180deg); }
@@ -171,88 +157,47 @@
 }
 .slp-rev-quote-wrap.no-overflow .slp-rev-toggle { display: none; }
 
-.slp-rev-attr {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-top: 14px;
-}
+.slp-rev-attr { display: flex; align-items: center; gap: 10px; padding-top: 14px; }
 .slp-rev-avatar {
-  width: 32px; height: 32px;
-  min-width: 32px;
+  width: 32px; height: 32px; min-width: 32px;
   border-radius: 50%;
   background: var(--gold);
   color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
 }
 .slp-rev-attr-text { display: flex; flex-direction: column; gap: 1px; }
-.slp-rev-name {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: -0.005em;
-}
+.slp-rev-name { font-size: 12.5px; font-weight: 600; color: #ffffff; letter-spacing: -0.005em; }
 .slp-rev-source {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10.5px;
-  color: var(--gold-l);
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  transition: color 0.15s;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10.5px; color: var(--gold-l); letter-spacing: 0.02em;
+  text-decoration: none; transition: color 0.15s;
 }
 .slp-rev-source:hover { filter: none !important; }
 @media (hover: hover) and (pointer: fine) {
   .slp-reviews .slp-rev-source:hover { color: #ffffff !important; text-decoration: underline; text-underline-offset: 2px; }
 }
-.slp-rev-google-g {
-  width: 11px; height: 11px;
-  flex-shrink: 0;
-  display: inline-block;
-}
+.slp-rev-google-g { width: 11px; height: 11px; flex-shrink: 0; display: inline-block; }
 
 /* Dots */
-.slp-rev-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 18px;
-}
+.slp-rev-dots { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
 .slp-rev-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
+  width: 7px; height: 7px; border-radius: 50%;
   background: rgba(255,255,255,0.22);
-  border: none;
-  padding: 0;
-  cursor: pointer;
+  border: none; padding: 0; cursor: pointer;
   transition: background 0.2s, transform 0.2s;
 }
-.slp-rev-dot.active {
-  background: var(--gold-l);
-  transform: scale(1.25);
-}
+.slp-rev-dot.active { background: var(--gold-l); transform: scale(1.25); }
 .slp-rev-dot:focus-visible { outline: 2px solid var(--gold-l); outline-offset: 2px; }
 
 /* Arrows (desktop only) */
 .slp-rev-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 36px; height: 36px;
-  border-radius: 50%;
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 36px; height: 36px; border-radius: 50%;
   background: rgba(255,255,255,0.06);
   border: 0.5px solid rgba(184,150,110,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.20);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.20);
   transition: background 0.18s, border-color 0.18s, transform 0.18s;
   z-index: 2;
 }
@@ -266,143 +211,71 @@
 }
 .slp-rev-arrow:focus-visible { outline: 2px solid var(--gold-l); outline-offset: 2px; }
 
-@media (max-width: 768px) {
-  .slp-rev-arrow { display: none; }
-}
-
-/* ── RIGHT: Editorial ── */
-.slp-rev-right {
-  background: transparent;
-  padding: 52px 48px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.slp-rev-pill-wrap { margin-bottom: 28px; }
-@media (max-width: 768px) { .slp-rev-pill-wrap { margin-bottom: 0; } }
-.slp-rev-pill {
-  display: inline-block;
-  padding: 6px 18px;
-  background: rgba(184,150,110,0.15);
-  border: 0.5px solid rgba(184,150,110,0.35);
-  border-radius: 20px;
-  font-size: var(--pill-font-size);
-  font-weight: 400;
-  letter-spacing: var(--pill-letter-spacing);
-  text-transform: uppercase;
-  color: var(--pill-color);
-}
-
-.slp-rev-title {
-  font-size: var(--title-font-size);
-  font-weight: var(--title-font-weight);
-  line-height: var(--title-line-height);
-  letter-spacing: var(--title-letter-spacing);
-  color: var(--title-color);
-  margin-bottom: 10px;
-}
-.slp-rev-title em { font-style: italic; color: var(--title-em-color); }
-
-.slp-rev-body {
-  font-size: var(--body-font-size);
-  color: var(--body-color);
-  line-height: var(--body-line-height);
-  max-width: 320px;
-  margin-bottom: 32px;
-}
-
-.slp-rev-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--gold);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 22px;
-  font-family: 'DM Sans', Helvetica, Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: background 0.18s;
-  align-self: flex-start;
-  cursor: pointer;
-}
-.slp-reviews .slp-rev-cta:hover { filter: none !important; }
-@media (hover: hover) and (pointer: fine) {
-  .slp-reviews .slp-rev-cta:hover { background: var(--gold-l) !important; color: #fff !important; }
-}
-.slp-rev-cta:active { transform: scale(0.97); }
-.slp-rev-cta-mobile { display: none; }
-
 /* ── MOBILE ── */
 @media (max-width: 768px) {
-  .slp-reviews { padding: 0; }
-  .slp-rev-left { padding: 0 28px 36px; order: 2; }
-  .slp-rev-right { order: 1; }
-  .slp-rev-right { padding: 36px 28px 28px; }
-  .slp-rev-body { max-width: 100%; }
-  .slp-rev-cta { display: none; }
-  .slp-rev-cta-mobile { display: inline-flex; align-self: center; margin-top: 28px; padding: 10px 22px; }
+  .slp-rev-arrow { display: none; }
+  .slp-rev-wrap { padding: 34px 20px; }
   .slp-rev-slide { padding: 24px 22px 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .slp-rev-track, .slp-rev-dot, .slp-rev-arrow, .slp-rev-cta { transition: none !important; }
+  .slp-rev-track, .slp-rev-dot, .slp-rev-arrow, .slp-rev-word { transition: none !important; }
 }
 </style>
 
 <section class="slp-reviews">
-  <div class="slp-rev-grid">
+  <div class="slp-rev-wrap slp-reveal">
 
-    <!-- ── LEFT: Manual review carousel ── -->
-    <div class="slp-rev-left">
-      <div class="slp-rev-carousel" id="slpRevCarousel" aria-roledescription="carousel" aria-label="Customer reviews">
-
-        <button class="slp-rev-arrow prev" type="button" aria-label="Previous review" data-dir="-1">
-          <svg viewBox="0 0 14 14"><polyline points="9,2 4,7 9,12"/></svg>
-        </button>
-
-        <div class="slp-rev-viewport" id="slpRevViewport">
-          <div class="slp-rev-track" id="slpRevTrack">
-            <!-- Slides rendered by JS from REVIEWS array below -->
-          </div>
-        </div>
-
-        <button class="slp-rev-arrow next" type="button" aria-label="Next review" data-dir="1">
-          <svg viewBox="0 0 14 14"><polyline points="5,2 10,7 5,12"/></svg>
-        </button>
-
-        <div class="slp-rev-dots" id="slpRevDots" role="tablist" aria-label="Select review">
-          <!-- Dots rendered by JS -->
-        </div>
-
-      </div>
-
-      <a href="/our-reviews" class="slp-rev-cta slp-rev-cta-mobile">Read all reviews →</a>
+    <div class="slp-rev-header">
+      <div class="slp-rev-eyebrow">Who stays with us</div>
+      <h2 class="slp-rev-title">Loved by<br><span class="slp-rev-word" id="slpRevWord">Cambridge students</span></h2>
+      <p class="slp-rev-sub">Trusted since 2019 by guests who demand the very best.</p>
     </div>
 
-    <!-- ── RIGHT: Editorial ── -->
-    <div class="slp-rev-right">
-      <div class="slp-rev-pill-wrap">
-        <span class="slp-rev-pill">Our reviews</span>
+    <div class="slp-rev-carousel" id="slpRevCarousel" aria-roledescription="carousel" aria-label="Customer reviews">
+
+      <button class="slp-rev-arrow prev" type="button" aria-label="Previous review" data-dir="-1">
+        <svg viewBox="0 0 14 14"><polyline points="9,2 4,7 9,12"/></svg>
+      </button>
+
+      <div class="slp-rev-viewport" id="slpRevViewport">
+        <div class="slp-rev-track" id="slpRevTrack">
+          <!-- Slides rendered by JS from REVIEWS array below -->
+        </div>
       </div>
-      <h2 class="slp-rev-title">
-        Come for the city.<br><em>Stay for the service.</em>
-      </h2>
-      <p class="slp-rev-body">
-        Since 2019 we've earned the trust of thousands of students and families who demand the very best. Here's what they say.
-      </p>
-      <a href="/our-reviews" class="slp-rev-cta">Read all reviews →</a>
+
+      <button class="slp-rev-arrow next" type="button" aria-label="Next review" data-dir="1">
+        <svg viewBox="0 0 14 14"><polyline points="5,2 10,7 5,12"/></svg>
+      </button>
+
+      <div class="slp-rev-dots" id="slpRevDots" role="tablist" aria-label="Select review">
+        <!-- Dots rendered by JS -->
+      </div>
+
     </div>
 
   </div>
 </section>
+
+<script>
+/* ── rotating "Loved by [audience]" word ── */
+(function(){
+  var AUDIENCES = ['Cambridge students','postgraduates','families','visiting academics','summer-school guests','extended-stay guests'];
+  var WORD_MS = 2200, WORD_FADE = 350;
+  var el = document.getElementById('slpRevWord');
+  if (!el) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  el.style.transition = 'opacity ' + WORD_FADE + 'ms ease';
+  var i = 0;
+  setInterval(function(){
+    if (document.hidden) return;
+    i = (i + 1) % AUDIENCES.length;
+    el.style.opacity = '0';
+    setTimeout(function(){ el.textContent = AUDIENCES[i]; el.style.opacity = '1'; }, WORD_FADE);
+  }, WORD_MS);
+})();
+</script>
 
 <script>
 (function(){
@@ -471,7 +344,6 @@
   var AUTOPLAY_MS = 6500;
   var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ── Render slides + dots from REVIEWS ──
   var STAR_SVG  = '<svg viewBox="0 0 14 14"><polygon points="7,1 8.7,5 13,5.4 9.7,8.3 10.7,12.6 7,10.3 3.3,12.6 4.3,8.3 1,5.4 5.3,5"/></svg>';
   var GOOGLE_G  = '<svg class="slp-rev-google-g" viewBox="0 0 48 48" aria-hidden="true">' +
                   '<path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>' +
@@ -524,7 +396,6 @@
     current = (i + total) % total;
     track.style.transform = 'translateX(' + (-current * 100) + '%)';
     dots.forEach(function(d, idx){ d.classList.toggle('active', idx === current); });
-    // Collapse any expanded reviews when navigating
     collapseAll();
   }
 
@@ -540,7 +411,6 @@
     });
   }
 
-  // ── Expand / collapse setup ──
   var togglesSetup = false;
   function setupQuoteToggles(){
     if (togglesSetup) return;
@@ -550,13 +420,9 @@
       var quote = slide.querySelector('.slp-rev-quote');
       var btn = slide.querySelector('.slp-rev-toggle');
       if (!wrap || !quote || !btn) return;
-
-      // If clamped content fits already, hide toggle + fade
-      // scrollHeight > clientHeight when text is clamped
       if (quote.scrollHeight <= quote.clientHeight + 2) {
         wrap.classList.add('no-overflow');
       }
-
       btn.addEventListener('click', function(e){
         e.preventDefault();
         e.stopPropagation();
@@ -564,19 +430,16 @@
         btn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
         var lbl = btn.querySelector('.slp-rev-toggle-label');
         if (lbl) lbl.textContent = isExpanded ? 'Read less' : 'Read more';
-        // Pause autoplay while user is reading
         if (isExpanded) stopAutoplay(); else { stopAutoplay(); startAutoplay(); }
       });
     });
   }
 
-  // Run after layout settles (web fonts can shift line counts)
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(setupQuoteToggles);
   } else {
     setTimeout(setupQuoteToggles, 100);
   }
-  // Re-check on resize since column width changes line count
   var resizeTimer;
   window.addEventListener('resize', function(){
     clearTimeout(resizeTimer);
@@ -586,7 +449,7 @@
           var wrap = slide.querySelector('.slp-rev-quote-wrap');
           var quote = slide.querySelector('.slp-rev-quote');
           if (!wrap || !quote) return;
-          if (wrap.classList.contains('expanded')) return; // skip while expanded
+          if (wrap.classList.contains('expanded')) return;
           var fits = quote.scrollHeight <= quote.clientHeight + 2;
           wrap.classList.toggle('no-overflow', fits);
         });
@@ -606,7 +469,6 @@
     if (autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer = null; }
   }
 
-  // Dots
   dots.forEach(function(d){
     d.addEventListener('click', function(){
       setIndex(parseInt(d.getAttribute('data-idx'), 10));
@@ -614,7 +476,6 @@
     });
   });
 
-  // Arrows
   arrows.forEach(function(a){
     a.addEventListener('click', function(){
       var dir = parseInt(a.getAttribute('data-dir'), 10);
@@ -623,11 +484,9 @@
     });
   });
 
-  // Pause on hover (desktop)
   carousel.addEventListener('mouseenter', stopAutoplay);
   carousel.addEventListener('mouseleave', startAutoplay);
 
-  // Pause when off-screen
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
@@ -639,14 +498,11 @@
     startAutoplay();
   }
 
-  // ── Swipe / drag ──
   var startX = 0, deltaX = 0, dragging = false, pointerId = null;
-  var SWIPE_THRESHOLD = 50; // px
+  var SWIPE_THRESHOLD = 50;
 
   function onDown(e){
-    // Don't intercept clicks on links or buttons inside slides
     if (e.target && e.target.closest && e.target.closest('a, button')) return;
-    // Don't intercept gestures when any review is expanded — let the user scroll/read in peace
     if (track.querySelector('.slp-rev-quote-wrap.expanded')) return;
     dragging = true;
     pointerId = e.pointerId;
@@ -669,7 +525,7 @@
     if (Math.abs(deltaX) > SWIPE_THRESHOLD){
       setIndex(current + (deltaX < 0 ? 1 : -1));
     } else {
-      setIndex(current); // snap back
+      setIndex(current);
     }
     deltaX = 0;
     startAutoplay();
@@ -682,7 +538,6 @@
   viewport.addEventListener('pointerleave', function(){ if (dragging) onUp(); });
   viewport.addEventListener('dragstart', function(e){ e.preventDefault(); });
 
-  // Keyboard
   carousel.addEventListener('keydown', function(e){
     if (e.key === 'ArrowLeft') { prev(); stopAutoplay(); startAutoplay(); }
     else if (e.key === 'ArrowRight') { next(); stopAutoplay(); startAutoplay(); }

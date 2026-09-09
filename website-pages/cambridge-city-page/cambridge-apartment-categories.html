@@ -1,0 +1,325 @@
+<!-- ============================================================
+     STUDENT LUXE — Apartment Categories, TABBED (Cambridge, LIGHT BG)
+     Underlined text tabs: Studio / 1 Bed (default) / 2 Bed / 3 Bed.
+     Reskinned for a cream/light section background.
+     Needs the Cambridge hero block (#slEnqModal) on the same page.
+     Background: set to cream (#FBF8F2 / #F7F2EB) in Squarespace.
+     Prices (per week): Studio £570 / 1 Bed £570 / 2 Bed £800 /
+     3 Bed £1,000.
+     ============================================================ -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+.sla{
+  --gold:#B8966E; --gold-d:#8F6E4A; --gold-l:#D4B896;
+  --navy:#0F1923; --line:rgba(15,25,35,.12); --gold-border:rgba(184,150,110,.35);
+  --serif:'baskerville-display-pt','Baskerville Display PT',Georgia,'Times New Roman',serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  font-family:var(--sans); -webkit-font-smoothing:antialiased;
+  background:transparent; padding:72px 24px 24px;
+}
+.sla *{box-sizing:border-box; margin:0; padding:0}
+@media(max-width:768px){ .sla{padding:48px 18px 16px} }
+
+.sla-inner{max-width:1180px; margin:0 auto}
+.sla-head{margin-bottom:26px}
+.sla-pill{display:inline-block; padding:6px 16px; background:rgba(184,150,110,.12); border:.5px solid rgba(184,150,110,.45); border-radius:20px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-d); margin-bottom:22px}
+.sla-heading{font-family:var(--serif); font-weight:300; font-size:clamp(30px,4.5vw,54px); letter-spacing:-.045em; line-height:1; color:var(--navy); margin-bottom:16px}
+.sla-heading em{font-style:italic; color:var(--gold-d)}
+.sla-sub{font-size:14.5px; letter-spacing:-.010em; color:rgba(15,25,35,.72); line-height:1.5; max-width:760px}
+
+/* tabs: quiet underlined text */
+.sla-tabs{display:flex; gap:28px; border-bottom:.5px solid var(--gold-border); margin-bottom:24px}
+.sla-tab{padding:0 0 12px; background:none; border:none; color:rgba(15,25,35,.45); font-family:var(--sans); font-size:13.5px; letter-spacing:.04em; cursor:pointer; position:relative; transition:color .2s}
+.sla-tab:hover{color:rgba(15,25,35,.75)}
+.sla-tab.on{color:var(--navy)}
+.sla-tab.on::after{content:''; position:absolute; left:0; right:0; bottom:-.5px; height:2px; background:var(--gold)}
+@media(max-width:768px){ .sla-tabs{gap:20px} }
+
+/* panels */
+.sla-panel{display:none}
+.sla-panel.on{display:block}
+.sla-row{display:grid; grid-template-columns:600px 1fr; gap:50px; align-items:center}
+@media(max-width:768px){ .sla-row{grid-template-columns:1fr; gap:22px} }
+
+/* carousel (overlays sit on the photo, so they stay dark) */
+.sla-carousel{position:relative; aspect-ratio:3/2; border-radius:12px; overflow:hidden; background:#c9bca6}
+.sla-slide{position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity .8s ease}
+.sla-badge{position:absolute; top:14px; left:14px; z-index:3; background:rgba(13,26,46,.7); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); color:#fff; font-size:11.5px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; padding:9px 18px; border-radius:100px; border:.5px solid rgba(212,184,150,.5)}
+.sla-arrow{position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:32px; height:32px; border-radius:50%; background:rgba(13,26,46,.55); border:.5px solid rgba(255,255,255,.32); color:#fff; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s, background .2s; padding:0}
+.sla-carousel:hover .sla-arrow{opacity:1}
+.sla-arrow:hover{background:rgba(13,26,46,.8)}
+.sla-prev{left:10px} .sla-next{right:10px}
+.sla-dots{position:absolute; bottom:12px; left:0; right:0; z-index:3; display:flex; gap:6px; justify-content:center}
+.sla-dot{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.5); cursor:pointer; transition:width .25s, background .25s; padding:0; border:none}
+.sla-dot.on{width:18px; border-radius:3px; background:var(--gold-l)}
+
+/* summary */
+.sla-summary{display:flex; flex-direction:column; justify-content:center}
+.sla-price{font-family:var(--serif); font-weight:300; letter-spacing:-.055em; line-height:1.5; color:var(--navy); font-size:clamp(26px,2.6vw,35px)}
+.sla-price b{color:var(--gold-d); font-weight:300}
+.sla-desc{margin-top:15px; font-size:13.5px; line-height:1.55; color:rgba(15,25,35,.62)}
+.sla-cta{order:2; align-self:flex-start; margin-top:26px; display:inline-flex; align-items:center; gap:10px; padding:17px 38px; background:var(--gold); color:#0d1a2e; font-size:13.5px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; border:none; border-radius:10px; text-decoration:none; cursor:pointer; transition:background .2s, transform .2s}
+.sla-cta:hover{background:var(--gold-l); transform:translateY(-1px)}
+.sla-div{height:.5px; background:var(--line); margin:23px 0}
+.sla-incl{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:14px 18px}
+.sla-incl li{display:flex; align-items:center; gap:10px; font-size:13.5px; color:rgba(15,25,35,.82)}
+.sla-incl svg{width:14px; height:14px; stroke:var(--gold-d); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; flex:none}
+@media(max-width:768px){
+  .sla-incl{gap:9px 14px}
+  .sla-incl li{font-size:12px; gap:8px}
+  .sla-incl svg{width:12px; height:12px}
+  .sla-div{margin:22px 0}
+}
+
+@media (prefers-reduced-motion:reduce){ .sla-slide{transition:none} }
+</style>
+
+<section class="sla" id="apartment-categories" aria-label="Apartments by category">
+  <div class="sla-inner">
+
+    <div class="sla-head sla-reveal">
+      <span class="sla-pill">Available by enquiry only</span>
+      <h2 class="sla-heading">Some of our options <em>in Cambridge</em></h2>
+      <p class="sla-sub">Apartments in Cambridge's most requested neighbourhoods. Minimum stay 21 nights.</p>
+    </div>
+
+    <div class="sla-tabs sla-reveal" role="tablist" aria-label="Apartment type">
+      <button type="button" class="sla-tab on" data-type="studio" role="tab" aria-selected="false">Studio</button>
+      <button type="button" class="sla-tab" data-type="1bed" role="tab" aria-selected="true">1 Bed</button>
+      <button type="button" class="sla-tab" data-type="2bed" role="tab" aria-selected="false">2 Bed</button>
+      <button type="button" class="sla-tab" data-type="3bed" role="tab" aria-selected="false">3 Bed</button>
+    </div>
+
+    <div class="sla-stage sla-reveal">
+
+      <!-- ===== STUDIO ===== -->
+      <div class="sla-panel on" data-type="studio" role="tabpanel">
+        <div class="sla-row">
+          <div class="sla-carousel" aria-label="Studio apartment photos">
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1715332421168-FNR09TTS6A6MB6UU05B2/The+Cambridge+Oasis+Studio+Apartment+%2812%29.jpeg?format=1000w')" role="img" aria-label="Studio apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1728304576725-G1IPAM9WNER7FQPJR32U/christchurch-villas-cambridge-5.jpg?format=1000w')" role="img" aria-label="Studio apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1754574060971-MSMMH0DMG6DF96MT6R62/chapel-court-views-studio-new-2.jpeg?format=1000w')" role="img" aria-label="Studio apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1712339207878-BBL9L4DZ1GRSMTTTAP47/St+Matthew%27s+Residences+Studio+Apartments+%287%29.jpeg?format=1000w')" role="img" aria-label="Studio apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1770391260403-KYRYNX14W28W1O5IKM1T/victoria-road-studio-12.jpg?format=1000w')" role="img" aria-label="Studio apartment"></div>
+            <span class="sla-badge">Studio</span>
+            <button type="button" class="sla-arrow sla-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="sla-arrow sla-next" aria-label="Next photo">›</button>
+            <div class="sla-dots"></div>
+          </div>
+          <div class="sla-summary">
+            <p class="sla-price">Studios from <b>£570</b> per week</p>
+            <p class="sla-desc">For guests who want everything in easy reach, beautifully designed and ready to live in. A considered, self-contained space that works as hard as you do, whether you're studying, working or simply unwinding.</p>
+            <a class="sla-cta" href="/reservations?type=B&city=cambridge&apt=studio" data-apt="studio">Make a studio enquiry →</a>
+            <div class="sla-div"></div>
+            <ul class="sla-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Prime Cambridge locations</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> No UK guarantor needed</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Local team on the ground</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 1 BED (default) ===== -->
+      <div class="sla-panel" data-type="1bed" role="tabpanel">
+        <div class="sla-row">
+          <div class="sla-carousel" aria-label="1 bed apartment photos">
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1715332479459-5NPVAK3WBGQ2K8E7CAR4/The+Cambridge+Oasis+1+Bed+Apartment+%2811%29.jpeg?format=1000w')" role="img" aria-label="1 bed apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1728304977866-JD3L4CQIX8HNJFVWCXQK/christchurch-villas-cambridge-1-bed8.jpg?format=1000w')" role="img" aria-label="1 bed apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/931b75eb-a010-4b35-8fab-be91c9292ee2/the-five-acres-1bed-9.jpg?format=1000w')" role="img" aria-label="1 bed apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1716538621653-8HQP0KLAJHJ3WXFK1G0X/Verde+Bridge+Apartments+1+Bed+%281%29.jpg?format=1000w')" role="img" aria-label="1 bed apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1716473395534-B0AY6YANBE3S5FRN829B/The+Arbury+Apartments+%281%29.jpeg?format=1000w')" role="img" aria-label="1 bed apartment"></div>
+            <span class="sla-badge">1 bed</span>
+            <button type="button" class="sla-arrow sla-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="sla-arrow sla-next" aria-label="Next photo">›</button>
+            <div class="sla-dots"></div>
+          </div>
+          <div class="sla-summary">
+            <p class="sla-price">1 Beds from <b>£570</b> per week</p>
+            <p class="sla-desc">For guests seeking a true sense of home with room to breathe. A separate bedroom and living space mean you can work, rest and host without compromise, all within your own private retreat.</p>
+            <a class="sla-cta" href="/reservations?type=B&city=cambridge&apt=1bed" data-apt="1bed">Make a 1 bed enquiry →</a>
+            <div class="sla-div"></div>
+            <ul class="sla-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Prime Cambridge locations</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> No UK guarantor needed</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Local team on the ground</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 2 BED ===== -->
+      <div class="sla-panel" data-type="2bed" role="tabpanel">
+        <div class="sla-row">
+          <div class="sla-carousel" aria-label="2 bed apartment photos">
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1716548770693-S085M1AFN5G1FQ32ID05/Ross+Street+Apartments+1+Bed+%281%29.jpg?format=1000w')" role="img" aria-label="2 bed apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1728305039703-N02GEJX0WAXXCBR4XKWZ/christchurch-villas-cambridge-2-bed4.jpg?format=1000w')" role="img" aria-label="2 bed apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1752221662120-UGZBVICX4D1UCOZNAOZ8/skylark-residences-2bed-7.jpg.jpeg?format=1000w')" role="img" aria-label="2 bed apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1712339538207-KDUHYG1JBSDLB9C5470J/St+Matthew%27s+Residences+Pentahouse+%288%29.jpeg?format=1000w')" role="img" aria-label="2 bed apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1727436070258-CRLAASJXC0OETSJY5B82/Coleridge+Apartments+%281%29.jpg?format=1000w')" role="img" aria-label="2 bed apartment"></div>
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1732032002717-191TNIGOVZL3CJYNHPVU/the-prospect-apartments-2bed-6.jpeg?format=1000w')" role="img" aria-label="2 bed apartment"></div>
+            <span class="sla-badge">2 bed</span>
+            <button type="button" class="sla-arrow sla-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="sla-arrow sla-next" aria-label="Next photo">›</button>
+            <div class="sla-dots"></div>
+          </div>
+          <div class="sla-summary">
+            <p class="sla-price">2 Beds from <b>£800</b> per week</p>
+            <p class="sla-desc">For guests who like room to share without sacrificing privacy. Generous living space and two distinct bedrooms make it ideal for friends, partners or visiting family, with comfort enough for everyone.</p>
+            <a class="sla-cta" href="/reservations?type=B&city=cambridge&apt=2bed" data-apt="2bed">Make a 2 bed enquiry →</a>
+            <div class="sla-div"></div>
+            <ul class="sla-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Prime Cambridge locations</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> No UK guarantor needed</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Local team on the ground</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 3 BED ===== -->
+      <div class="sla-panel" data-type="3bed" role="tabpanel">
+        <div class="sla-row">
+          <div class="sla-carousel" aria-label="3 bed apartment photos">
+            <div class="sla-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1750074452759-Z8OTS7E4WG5UUHKE9BQO/cambridge-station-residences-3bed-4.jpg?format=1000w')" role="img" aria-label="3 bed apartment"></div>
+            <span class="sla-badge">3 bed</span>
+            <button type="button" class="sla-arrow sla-prev" aria-label="Previous photo">‹</button>
+            <button type="button" class="sla-arrow sla-next" aria-label="Next photo">›</button>
+            <div class="sla-dots"></div>
+          </div>
+          <div class="sla-summary">
+            <p class="sla-price">3 Beds from <b>£1,000</b> per week</p>
+            <p class="sla-desc">For guests seeking a spacious retreat away from the hustle &amp; bustle of city life. More than enough space to live, work and host friends &amp; family.</p>
+            <a class="sla-cta" href="/reservations?type=B&city=cambridge&apt=3bed" data-apt="3bed">Make a 3 bed enquiry →</a>
+            <div class="sla-div"></div>
+            <ul class="sla-incl">
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Prime Cambridge locations</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Hotel-style amenities</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Fully furnished &amp; equipped</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> All bills &amp; Wi-Fi included</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly housekeeping</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Flexible length of stay</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> No UK guarantor needed</li>
+              <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Local team on the ground</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+  var INTERVAL    = 4000;
+  var FIRST_DELAY = 1500;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var slice = function(n){ return Array.prototype.slice.call(n); };
+
+  function slOpenEnquiry(apt){
+    var m=document.getElementById('slEnqModal');
+    if(!m) return false;
+    var sel=document.getElementById('slAptType');
+    if(sel && apt){ try{ sel.value=apt; sel.dispatchEvent(new Event('change')); }catch(e){} }
+    m.classList.add('sl-open'); document.body.style.overflow='hidden';
+    return true;
+  }
+
+  function setupCarousel(car){
+    if(!car || car.getAttribute('data-init')) return null; car.setAttribute('data-init','1');
+    var slides = slice(car.querySelectorAll('.sla-slide'));
+    if(!slides.length) return null;
+    slides.forEach(function(s,i){ s.style.opacity = i===0?'1':'0'; });
+    var pn=car.querySelector('.sla-next'), pp=car.querySelector('.sla-prev');
+    if(slides.length<2){ if(pn) pn.style.display='none'; if(pp) pp.style.display='none'; return { next:function(){}, hovered:function(){ return false; } }; }
+    var dotsWrap=car.querySelector('.sla-dots'), dots=[], idx=0, hover=false;
+    function show(n){
+      n=(n+slides.length)%slides.length;
+      slides[idx].style.opacity='0'; if(dots[idx]) dots[idx].classList.remove('on');
+      idx=n;
+      slides[idx].style.opacity='1'; if(dots[idx]) dots[idx].classList.add('on');
+    }
+    if(dotsWrap){
+      slides.forEach(function(s,i){
+        var d=document.createElement('button'); d.type='button'; d.className='sla-dot'+(i===0?' on':''); d.setAttribute('aria-label','Photo '+(i+1));
+        d.addEventListener('click', function(){ show(i); resetClock(); });
+        dotsWrap.appendChild(d); dots.push(d);
+      });
+    }
+    if(pn) pn.addEventListener('click', function(){ show(idx+1); resetClock(); });
+    if(pp) pp.addEventListener('click', function(){ show(idx-1); resetClock(); });
+    car.addEventListener('mouseenter', function(){ hover=true; });
+    car.addEventListener('mouseleave', function(){ hover=false; });
+    return { next:function(){ show(idx+1); }, hovered:function(){ return hover; } };
+  }
+
+  var panels={}, tabs=[], active='1bed', clock=null, firstTimer=null;
+
+  function tick(){
+    if(document.hidden) return;
+    var p=panels[active]; if(!p || !p.car) return;
+    if(p.car.hovered()) return;
+    p.car.next();
+  }
+  function clearClock(){ if(firstTimer){ clearTimeout(firstTimer); firstTimer=null; } if(clock){ clearInterval(clock); clock=null; } }
+  function startClock(){ if(reduce) return; firstTimer=setTimeout(function(){ tick(); clock=setInterval(tick, INTERVAL); }, FIRST_DELAY); }
+  function resetClock(){ clearClock(); if(!reduce){ clock=setInterval(tick, INTERVAL); } }
+
+  function activate(type){
+    if(!panels[type]) return;
+    active=type;
+    Object.keys(panels).forEach(function(t){ panels[t].el.classList.toggle('on', t===type); });
+    tabs.forEach(function(tb){ var on=tb.getAttribute('data-type')===type; tb.classList.toggle('on',on); tb.setAttribute('aria-selected', on?'true':'false'); });
+    resetClock();
+  }
+
+  function initLinks(){
+    slice(document.querySelectorAll('.sla-cta')).forEach(function(a){
+      if(a.getAttribute('data-enqwired')) return; a.setAttribute('data-enqwired','1');
+      a.addEventListener('click', function(e){ if(slOpenEnquiry(a.getAttribute('data-apt'))) e.preventDefault(); });
+    });
+  }
+
+  function initReveal(){
+    if(reduce) return;
+    var els = slice(document.querySelectorAll('.sla-reveal'));
+    els.forEach(function(el,i){ if(el.getAttribute('data-rev')) return; el.setAttribute('data-rev','1'); el.style.opacity='0'; el.style.transform='translateY(14px)'; el.style.transition='opacity .5s cubic-bezier(.23,1,.32,1) '+(i*90)+'ms, transform .5s cubic-bezier(.23,1,.32,1) '+(i*90)+'ms'; });
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='none'; io.unobserve(e.target); } }); }, {threshold:.15});
+    els.forEach(function(el){ io.observe(el); });
+  }
+
+  function init(){
+    slice(document.querySelectorAll('.sla-panel')).forEach(function(el){
+      var t=el.getAttribute('data-type');
+      panels[t]={ el:el, car:setupCarousel(el.querySelector('.sla-carousel')) };
+    });
+    tabs = slice(document.querySelectorAll('.sla-tab'));
+    tabs.forEach(function(tb){ tb.addEventListener('click', function(){ activate(tb.getAttribute('data-type')); }); });
+    initLinks();
+    initReveal();
+    active='1bed';
+    startClock();
+  }
+
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', init); }
+  else { init(); }
+})();
+</script>
