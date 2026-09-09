@@ -1,0 +1,59 @@
+<!--
+  Student Luxe: site-wide image capper
+  Paste into Squarespace: Settings > Advanced > Code Injection > HEADER.
+
+  What it does, on every page, as the HTML is parsed:
+    - finds hand-coded <img src="https://images.squarespace-cdn.com/..."> tags
+      that carry no ?format= cap and no srcset (the gallery slides pasted
+      into blog posts). Squarespace's own image blocks are left alone.
+    - rewrites src to ?format=1000w and adds a 500 / 1000 / 1500 srcset with
+      sizes, so phones get the small file and retina desktops the sharp one
+    - lazy-loads every gallery slide except the first, async decode on all
+    - PNGs (logos, icons) are skipped
+
+  The data-sl-imgcap attribute is the marker the site-health crawler looks
+  for: when it is present, uncapped tags are treated as handled.
+-->
+<script data-sl-imgcap="1">
+(function () {
+  var CDN = 'images.squarespace-cdn.com';
+  var WIDTHS = [500, 1000, 1500];
+
+  function fix(img) {
+    if (img.__slCapped) return;
+    var src = img.getAttribute('src') || '';
+    if (src.indexOf(CDN) === -1) return;
+    if (/[?&]format=/.test(src) || img.hasAttribute('srcset')) return;
+    if (/\.png(\?|$)/i.test(src)) return;
+    var base = src.split('?')[0];
+    img.setAttribute('src', base + '?format=1000w');
+    img.setAttribute('srcset', WIDTHS.map(function (w) { return base + '?format=' + w + 'w ' + w + 'w'; }).join(', '));
+    img.setAttribute('sizes', '(max-width: 640px) 100vw, 1000px');
+    if (!img.hasAttribute('loading')) {
+      var slide = img.closest ? img.closest('.slide') : null;
+      var first = !slide || !slide.previousElementSibling;
+      img.setAttribute('loading', first ? 'eager' : 'lazy');
+    }
+    if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async');
+    img.__slCapped = true;
+  }
+
+  function sweep(node) {
+    if (node.tagName === 'IMG') { fix(node); return; }
+    if (!node.querySelectorAll) return;
+    var imgs = node.querySelectorAll('img');
+    for (var i = 0; i < imgs.length; i++) fix(imgs[i]);
+  }
+
+  try {
+    new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var added = muts[i].addedNodes;
+        for (var j = 0; j < added.length; j++) if (added[j].nodeType === 1) sweep(added[j]);
+      }
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  } catch (e) { /* very old browser: the DOMContentLoaded sweep still runs */ }
+
+  document.addEventListener('DOMContentLoaded', function () { sweep(document); });
+})();
+</script>
