@@ -244,7 +244,7 @@
 
 
 <!-- Collection Carousel from Will-Myers -->
-<script src="https://cdn.jsdelivr.net/gh/willmyerscode/collection-carousel@1/carousel.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/willmyerscode/collection-carousel@1.0.30/carousel.min.js"></script>
 
 
 <!-- Google Tag Manager (noscript) -->

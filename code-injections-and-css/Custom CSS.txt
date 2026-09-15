@@ -129,7 +129,7 @@ footer a:hover span {
   line-height: 1.4;
   margin: 0;
 }
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..600;1,9..40,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+/* DM Sans is loaded from the header injection (Settings > Advanced > Code Injection > Header); no @import here. */
 
 /* ========================================@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..600;1,9..40,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 
