@@ -34,17 +34,28 @@ window.slOnMarketingConsent = function (run) {
       });
     } catch (e) {}
   }
-  var answer = state();
-  if (answer === true)  return run();
-  // Declined: store nothing, and clear whatever was stored before this
-  // gate existed so an old click id cannot sit out its 90 days and go on
-  // being reported to Google as consented.
-  if (answer === false) return clearTracking();
-  // Not answered yet. Cookiebot fires this once the banner resolves,
-  // covering both a fresh choice and a stored one being replayed.
-  window.addEventListener('CookiebotOnConsentReady', function () {
-    if (state() === true) run(); else clearTracking();
-  }, { once: true });
+  // Cookiebot reports marketing:false BEFORE the banner has been answered,
+  // so an initial false is not a decision. The first version treated it as
+  // one, cleared, and stopped listening, which meant a visitor who then
+  // clicked accept was never tracked for that visit. Found on the live site
+  // 2026-09-18; a sandbox could not have shown it, because only Cookiebot
+  // itself reports that pre-answer false.
+  //
+  // So: always listen, and re-evaluate on every change. Accept, decline and
+  // accept again all behave.
+  var started = false;
+  function apply() {
+    if (state() === true) {
+      if (!started) { started = true; run(); }
+    } else {
+      started = false;
+      clearTracking();
+    }
+  }
+  window.addEventListener('CookiebotOnAccept', apply);
+  window.addEventListener('CookiebotOnDecline', apply);
+  window.addEventListener('CookiebotOnConsentReady', apply);
+  apply();
 };
 </script>
 
