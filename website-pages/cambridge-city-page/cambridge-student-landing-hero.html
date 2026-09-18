@@ -577,7 +577,7 @@ span.flatpickr-weekday{font-family:'DM Sans',sans-serif;font-size:11px;font-weig
   var DISPOSABLE=['mailinator.com','guerrillamail.com','tempmail.com','temp-mail.org','throwaway.email','yopmail.com','trashmail.com','maildrop.cc','sharklasers.com','getairmail.com','dispostable.com','fakeinbox.com','tempinbox.com','spam4.me','mailnesia.com','discard.email','10minutemail.com'];
   var ROLE=['info','admin','noreply','no-reply','support','help','contact','sales','marketing','hello','enquiries','enquiry','office','team','webmaster','postmaster','abuse'];
   var TYPO={'gmial.com':'gmail.com','gmal.com':'gmail.com','gmail.co':'gmail.com','gmail.con':'gmail.com','gmai.com':'gmail.com','gnail.com':'gmail.com','gamil.com':'gmail.com','hotmial.com':'hotmail.com','hotmail.co':'hotmail.com','hotmail.con':'hotmail.com','hotmal.com':'hotmail.com','outlok.com':'outlook.com','outlook.co':'outlook.com','outlook.con':'outlook.com','yaho.com':'yahoo.com','yahoo.co':'yahoo.com','yahoo.con':'yahoo.com','iclod.com':'icloud.com','icloud.co':'icloud.com','icould.com':'icloud.com'};
-  function validateEmail(doShow){var el=document.getElementById('slEmail');var err=document.getElementById('slErr-email');var v=el.value.trim().toLowerCase();var hint=document.getElementById('slEmailDomainHint');if(hint)hint.style.display='none';if(!v){if(doShow){showErr('slErr-email',true);err.textContent='Please enter your email address';setFs(el,'err');}return false;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){if(doShow){showErr('slErr-email',true);err.textContent='Please enter a valid email address';setFs(el,'err');}return false;}var p=v.split('@');var pre=p[0];var dom=p[1];if(TYPO[dom]&&hint){var hs=hint.querySelector('span');if(hs)hs.textContent='Did you mean '+pre+'@'+TYPO[dom]+'? Tap to fix';hint.style.display='flex';var f=el.closest?el.closest('.sl-field'):null;if(f)f.removeAttribute('data-filled');hint.onclick=function(){el.value=pre+'@'+TYPO[dom];hint.style.display='none';applyFilled(el,true);setFs(el,'ok');showErr('slErr-email',false);};}if(DISPOSABLE.indexOf(dom)>-1){if(doShow){showErr('slErr-email',true);err.textContent='Please use a personal email address, temporary inboxes are not accepted';setFs(el,'err');}return false;}if(ROLE.indexOf(pre)>-1){if(doShow){showErr('slErr-email',true);err.textContent='Please use your personal email rather than a shared inbox';setFs(el,'err');}return false;}if(TYPO[dom]){if(doShow){showErr('slErr-email',true);err.textContent='Please double-check your email address, or tap the suggestion below to fix it';setFs(el,'err');}return false;}if(doShow){showErr('slErr-email',false);setFs(el,'ok');}return true;}
+  function validateEmail(doShow){var el=document.getElementById('slEmail');var err=document.getElementById('slErr-email');var v=el.value.trim().toLowerCase();var hint=document.getElementById('slEmailDomainHint');if(hint)hint.style.display='none';if(!v){if(doShow){showErr('slErr-email',true);err.textContent='Please enter your email address';setFs(el,'err');}return false;}if(!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(v)){if(doShow){showErr('slErr-email',true);err.textContent='Please enter a valid email address';setFs(el,'err');}return false;}var p=v.split('@');var pre=p[0];var dom=p[1];if(TYPO[dom]&&hint){var hs=hint.querySelector('span');if(hs)hs.textContent='Did you mean '+pre+'@'+TYPO[dom]+'? Tap to fix';hint.style.display='flex';var f=el.closest?el.closest('.sl-field'):null;if(f)f.removeAttribute('data-filled');hint.onclick=function(){el.value=pre+'@'+TYPO[dom];hint.style.display='none';applyFilled(el,true);setFs(el,'ok');showErr('slErr-email',false);};}if(DISPOSABLE.indexOf(dom)>-1){if(doShow){showErr('slErr-email',true);err.textContent='Please use a personal email address, temporary inboxes are not accepted';setFs(el,'err');}return false;}if(ROLE.indexOf(pre)>-1){if(doShow){showErr('slErr-email',true);err.textContent='Please use your personal email rather than a shared inbox';setFs(el,'err');}return false;}if(TYPO[dom]){if(doShow){showErr('slErr-email',true);err.textContent='Please double-check your email address, or tap the suggestion below to fix it';setFs(el,'err');}return false;}if(doShow){showErr('slErr-email',false);setFs(el,'ok');}return true;}
   document.getElementById('slEmail').addEventListener('blur',function(){validateEmail(true);});
   document.getElementById('slEmail').addEventListener('input',function(){if(this.classList.contains('sl-err'))validateEmail(true);});
 
@@ -678,6 +678,17 @@ span.flatpickr-weekday{font-family:'DM Sans',sans-serif;font-size:11px;font-weig
       budget:document.getElementById('slBudget').value,
       areas:document.getElementById('slArea').value,
       response_methods: Array.prototype.map.call(document.querySelectorAll('input[name="responseMethod"]:checked'), function(r){return r.value;}).join(', '),
+      // The visitor's own answer to the cookie banner. Empty when the banner has
+      // not been answered, and the server then claims nothing on their behalf.
+      consent_marketing: (function(){ var c = window.Cookiebot && window.Cookiebot.consent; return (c && typeof c.marketing === 'boolean') ? (c.marketing ? 'granted' : 'denied') : ''; })(),
+      // Meta: one id shared by the browser Pixel event and the server copy, so
+      // Meta merges them into a single lead. _fbp and _fbc only exist once the
+      // visitor has accepted marketing cookies, and the server sends nothing
+      // unless consent_marketing above says granted.
+      meta_event_id: 'lead-' + ((window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(16).slice(2)),
+      meta_fbp: (document.cookie.match(/(?:^|; )_fbp=([^;]*)/) || [])[1] || '',
+      meta_fbc: (document.cookie.match(/(?:^|; )_fbc=([^;]*)/) || [])[1] || '',
+      meta_event_source_url: window.location.href,
       marketing_opt_in:document.getElementById('slMarketingOptIn') ? !document.getElementById('slMarketingOptIn').checked : true,
       utm_source:t.utm_source,utm_medium:t.utm_medium,utm_campaign:t.utm_campaign,utm_adgroup:t.utm_adgroup,utm_term:t.utm_term,utm_matchtype:t.utm_matchtype,utm_content:t.utm_content,
       gclid:t.gclid,gbraid:t.gbraid,wbraid:t.wbraid,fbclid:t.fbclid,session_id:t.session_id,
@@ -716,6 +727,14 @@ span.flatpickr-weekday{font-family:'DM Sans',sans-serif;font-size:11px;font-weig
     }
 
     window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'reservations_form_success',email:payload.email,phone:payload.phone});
+
+    // ── META PIXEL: Lead ── fires with the Google success event, only when the
+    // visitor said yes to marketing cookies and the Pixel actually loaded.
+    if (typeof window.fbq === 'function' && payload.consent_marketing === 'granted') {
+      try {
+        fbq('track', 'Lead', { content_name: payload.apartment_ref || '', content_category: payload.city || '' }, { eventID: payload.meta_event_id });
+      } catch (e) { console.warn('[Student Luxe] Meta Lead skipped:', e); }
+    }
     document.getElementById('slEnqForm').style.display='none';
     document.getElementById('slEnqSuccess').classList.add('sl-show');updateResponseStatus();slBuildTeamStrip();
     document.getElementById('slEnqSuccess').scrollIntoView({behavior:'smooth',block:'start'});
