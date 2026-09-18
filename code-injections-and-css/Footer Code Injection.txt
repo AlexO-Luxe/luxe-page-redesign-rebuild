@@ -15,12 +15,18 @@ window.slOnMarketingConsent = function (run) {
     return (c && typeof c.marketing === 'boolean') ? c.marketing : null;
   }
   function clearTracking() {
-    ['sl_gclid','sl_gbraid','sl_wbraid','sl_fbclid','sl_campaign','sl_adgroup','sl_term',
-     'sl_matchtype','sl_utm_source','sl_utm_medium','sl_first_gclid','sl_first_gbraid',
-     'sl_first_wbraid','sl_first_campaign','sl_first_adgroup','sl_first_term',
-     'sl_session_id','sl_first_seen','sl_referrer','sl_first_referrer',
-     'sl_landing_page','sl_first_landing_page','sl_last_page'].forEach(function (n) {
-      document.cookie = n + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+    // Sweep every sl_ cookie rather than naming them. A fixed list missed
+    // sl_utm_campaign on the first live test, because the forms write
+    // sl_utm_* while this file writes sl_*, and it would miss any key added
+    // later. Everything under this prefix is our own attribution; none of it
+    // is needed to serve the site.
+    document.cookie.split('; ').forEach(function (pair) {
+      var name = pair.split('=')[0];
+      if (name.indexOf('sl_') !== 0) return;
+      // Clear on the bare host and the dotted domain: a cookie set on
+      // .studentluxe.co.uk is not removed by a host-only expiry.
+      document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+      document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.' + location.hostname.replace(/^www\./, '');
     });
     try {
       ['sl_visited_paths','sl_traffic_source','sl_page_arrived'].forEach(function (k) {
