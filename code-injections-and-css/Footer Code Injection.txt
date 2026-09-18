@@ -1,7 +1,51 @@
+<!-- ============================================================
+     Student Luxe — consent gate for everything below
+     Nothing in this footer is needed to serve the site: the path
+     tracker and the attribution snippet are both ad and analytics
+     measurement, so neither may store anything until the visitor has
+     said yes. Cookiebot blocks third-party tags it recognises; it
+     cannot block first-party code like this, so we ask it ourselves.
+     Until 2026-09-18 we did not, and the banner's answer changed
+     nothing at all.
+     ============================================================ -->
+<script>
+window.slOnMarketingConsent = function (run) {
+  function state() {
+    var c = window.Cookiebot && window.Cookiebot.consent;
+    return (c && typeof c.marketing === 'boolean') ? c.marketing : null;
+  }
+  function clearTracking() {
+    ['sl_gclid','sl_gbraid','sl_wbraid','sl_fbclid','sl_campaign','sl_adgroup','sl_term',
+     'sl_matchtype','sl_utm_source','sl_utm_medium','sl_first_gclid','sl_first_gbraid',
+     'sl_first_wbraid','sl_first_campaign','sl_first_adgroup','sl_first_term',
+     'sl_session_id','sl_first_seen','sl_referrer','sl_first_referrer',
+     'sl_landing_page','sl_first_landing_page','sl_last_page'].forEach(function (n) {
+      document.cookie = n + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+    });
+    try {
+      ['sl_visited_paths','sl_traffic_source','sl_page_arrived'].forEach(function (k) {
+        localStorage.removeItem(k);
+      });
+    } catch (e) {}
+  }
+  var answer = state();
+  if (answer === true)  return run();
+  // Declined: store nothing, and clear whatever was stored before this
+  // gate existed so an old click id cannot sit out its 90 days and go on
+  // being reported to Google as consented.
+  if (answer === false) return clearTracking();
+  // Not answered yet. Cookiebot fires this once the banner resolves,
+  // covering both a fresh choice and a stored one being replayed.
+  window.addEventListener('CookiebotOnConsentReady', function () {
+    if (state() === true) run(); else clearTracking();
+  }, { once: true });
+};
+</script>
+
 <!-- Student Luxe — Page path tracker -->
 <!-- Paste into: Squarespace → Settings → Advanced → Code Injection → Footer -->
 <script>
-(function() {
+window.slOnMarketingConsent(function () {
   try {
     var KEY      = 'sl_visited_paths';
     var SRC_KEY  = 'sl_traffic_source';
@@ -94,7 +138,7 @@
     localStorage.setItem(TS_KEY, now.toString());
 
   } catch(e) {}
-})();
+});
 </script>
 
 
@@ -107,7 +151,7 @@
      Coexists with the path-tracker above (different storage keys).
      ============================================================ -->
 <script>
-(function () {
+window.slOnMarketingConsent(function () {
   'use strict';
 
   var COOKIE_DAYS = 90;
@@ -228,6 +272,21 @@
         input.value = getCookie(cookieMap[name]) || '';
         form.appendChild(input);
       });
+
+      // The visitor's own answer to the cookie banner, which is what the
+      // server reports to Google. It does not come from a cookie: this
+      // mirror only runs once consent is granted, so it is always
+      // 'granted' here, but the forms that carry their own copy of this
+      // field read Cookiebot live at submit time and can say 'denied'.
+      // Sent as a field rather than inferred from a click id, because the
+      // click id used to be written whether or not anyone agreed.
+      if (!form.querySelector('input[name="consent_marketing"]')) {
+        var consentInput = document.createElement('input');
+        consentInput.type  = 'hidden';
+        consentInput.name  = 'consent_marketing';
+        consentInput.value = 'granted';
+        form.appendChild(consentInput);
+      }
     });
   }
 
@@ -238,7 +297,7 @@
   }
   var mo = new MutationObserver(mirrorIntoForms);
   mo.observe(document.body, { childList: true, subtree: true });
-})();
+});
 </script>
 <!-- End Attribution Snippet -->
 
