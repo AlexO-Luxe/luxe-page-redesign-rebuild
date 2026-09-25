@@ -319,6 +319,83 @@ window.slOnMarketingConsent(function () {
 <!-- End Attribution Snippet -->
 
 
+<!-- ============================================================
+     Student Luxe — carry ad parameters through the site, storage-free
+     For visitors who have NOT accepted marketing cookies.
+
+     Campaign, ad group, keyword, match type and the click id all
+     arrive in the landing page's query string. The forms read them
+     from there at submit time. The only thing that loses them is
+     navigating: land on /london-apartments?gclid=..., click through
+     to the form, and the query string is gone.
+
+     This keeps them in the URL as the visitor moves, by appending
+     them to every same-host link on the page. Nothing is written to
+     or read from the device, so it is outside PECR reg 6, and it
+     stops the moment the tab is closed or a fresh page is typed in.
+     Everything it carries lands on the Monday row only. The server
+     refuses to send a declined visitor's lead to Google or Meta, so
+     the click id in that URL never leaves the board.
+
+     Runs only while marketing consent is not granted. A consented
+     visitor already has the cookies, and decorating their links
+     would put utm parameters on every internal page view, which
+     makes GA4 re-attribute the session on each click.
+     ============================================================ -->
+<script>
+(function () {
+  'use strict';
+  var KEEP = ['gclid', 'gbraid', 'wbraid', 'fbclid',
+              'utm_source', 'utm_medium', 'utm_campaign', 'utm_adgroup',
+              'utm_term', 'utm_matchtype', 'utm_content'];
+
+  var here  = new URLSearchParams(window.location.search);
+  var carry = [];
+  KEEP.forEach(function (k) {
+    var v = here.get(k);
+    if (v) carry.push([k, v]);
+  });
+  if (!carry.length) return;
+
+  function consented() {
+    var c = window.Cookiebot && window.Cookiebot.consent;
+    return !!(c && c.marketing === true);
+  }
+
+  function decorate(a) {
+    if (a.getAttribute('data-sl-carried') === '1') return;
+    var href = a.getAttribute('href');
+    if (!href || /^(#|mailto:|tel:|javascript:)/i.test(href)) return;
+    var url;
+    try { url = new URL(href, window.location.href); } catch (e) { return; }
+    if (url.hostname !== window.location.hostname) return;
+    if (/\.(pdf|jpe?g|png|gif|svg|webp|css|js|ico)$/i.test(url.pathname)) return;
+    carry.forEach(function (kv) {
+      if (!url.searchParams.has(kv[0])) url.searchParams.set(kv[0], kv[1]);
+    });
+    a.setAttribute('href', url.pathname + url.search + url.hash);
+    a.setAttribute('data-sl-carried', '1');
+  }
+
+  function run() {
+    if (consented()) return;
+    var links = document.querySelectorAll('a[href]');
+    for (var i = 0; i < links.length; i++) decorate(links[i]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+  // Squarespace renders navigation and cards after load, and swaps page
+  // content on AJAX navigation, so links keep appearing.
+  new MutationObserver(run).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
+<!-- End ad parameter carry -->
+
+
 <!-- Collection Carousel from Will-Myers -->
 <script defer src="https://cdn.jsdelivr.net/gh/willmyerscode/collection-carousel@1.0.30/carousel.min.js"></script>
 
