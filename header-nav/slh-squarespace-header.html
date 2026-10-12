@@ -30,6 +30,10 @@
         open) and the social links. The capsule there is the luxe mark,
         the page's apartments, Back to top and a menu button opening a
         short list of this page's sections and the rest of the site.
+     v1.1 (12 Oct 2026, Alex): London's panel drops the size and amenity
+        column. Universities and neighbourhoods take two columns each,
+        and Istituto Marangoni joins the universities. Under 1200px each
+        list goes back to one column so the names do not wrap.
      INSTALL: Settings > Advanced > Code Injection > HEADER. Replace the
      Aperture header block (the comment that reads "CUSTOM HEADER
      (Aperture / Browse Directory edition)" plus its one <style> and one
@@ -109,9 +113,11 @@ html.slh-lock #sl-cb { display: none !important; }
 #slh .slh-city span { font-family: var(--sans); font-size: 13px; color: var(--gold-l); opacity: 0; transition: opacity 0.15s; }
 #slh .slh-city.is-on { color: var(--paper); }
 #slh .slh-city.is-on span { opacity: 1; }
-#slh .slh-pbody { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) 270px; gap: 40px; }
+#slh .slh-pbody { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 270px; gap: 40px; }
 #slh .slh-pbody[hidden] { display: none; }
-#slh .slh-plist a { display: block; padding: 6px 0; font-size: 13px; line-height: 1.35; color: rgba(251,248,242,0.8); transition: color 0.15s; }
+/* Universities and neighbourhoods each run down two columns */
+#slh .slh-plist { column-count: 2; column-gap: 28px; }
+#slh .slh-plist a { break-inside: avoid; display: block; padding: 6px 0; font-size: 13px; line-height: 1.35; color: rgba(251,248,242,0.8); transition: color 0.15s; }
 #slh .slh-plist a[aria-current="page"] { color: var(--gold-l); }
 #slh .slh-pimg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 3px; background: linear-gradient(150deg, #6b6157, #343640 60%, #14181f); }
 #slh .slh-pn { display: block; margin-top: 12px; font-family: var(--serif); font-size: 20px; line-height: 1.2; letter-spacing: -0.035em; }
@@ -209,6 +215,11 @@ html.slh-lock #sl-cb { display: none !important; }
   #slh .slh-cmenu a.is-here { color: var(--gold-l); }
 }
 
+/* Narrow desktops: each list back to one column */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  #slh .slh-plist { column-count: 1; }
+}
+
 /* The smallest phones: Back to top steps out of the pill so it fits */
 @media (max-width: 359px) {
   #slh .slh-pill .slh-top { display: none; }
@@ -256,7 +267,7 @@ html.slh-lock #sl-cb { display: none !important; }
     ['WhatsApp', 'https://wa.me/442030070017']
   ];
   var LONDON = '/luxury-student-apartments-london';
-  /* A city with unis, areas and types gets the three columns; the rest
+  /* A city with unis and areas gets the two lists; the rest
      show their photograph. The capsule names a page from these lists. */
   var CITIES = [
     { name: 'London', page: LONDON, line: 'From Mayfair to Fitzrovia', sizes: 'Studios to 4 bed',
@@ -269,7 +280,8 @@ html.slh-lock #sl-cb { display: none !important; }
         ['Queen Mary', '/queen-mary-university-of-london-accommodation'],
         ['City University', '/city-university-of-london-accommodation'],
         ['SOAS', '/soas-accommodation'],
-        ['Regent’s University', '/regents-university-london-accommodation']
+        ['Regent’s University', '/regents-university-london-accommodation'],
+        ['Istituto Marangoni', '/istituto-marangoni-london-accommodation']
       ],
       areas: [
         ['Mayfair', '/mayfair-student-accommodation'],
@@ -282,18 +294,6 @@ html.slh-lock #sl-cb { display: none !important; }
         ['Marylebone', '/marylebone-student-accommodation'],
         ['Soho', '/student-accommodation-soho'],
         ['King’s Cross', '/student-apartments-kings-cross']
-      ],
-      types: [
-        ['Studios', LONDON + '?type=studio'],
-        ['1 bedroom', LONDON + '?type=1bed'],
-        ['2 bedrooms', LONDON + '?type=2bed'],
-        ['3 bedrooms', LONDON + '?type=3bed'],
-        ['4 bedrooms', LONDON + '?type=4bed'],
-        ['With reception', LONDON + '?amenity=reception'],
-        ['Allows pets', LONDON + '?amenity=pets'],
-        ['Outdoor space', LONDON + '?amenity=outdoor'],
-        ['Air conditioned', LONDON + '?amenity=aircon'],
-        ['Gym', LONDON + '?amenity=gym']
       ] },
     { name: 'New York', page: '/student-apartments-new-york', line: 'Greenwich Village to Brooklyn', sizes: 'Studios to 3 bed',
       img: '102919c5-c50a-4c61-9909-caab93e80bcc/manhattanville-heights-facilities-17.jpg' },
@@ -364,7 +364,6 @@ html.slh-lock #sl-cb { display: none !important; }
       return '<div class="slh-pbody" data-i="' + i + '"' + (on ? '' : ' hidden') + '>' +
         '<div><p class="slh-lab">' + c.name + ' by university</p><div class="slh-plist">' + links(c.unis) + '</div></div>' +
         '<div><p class="slh-lab">' + c.name + ' by neighbourhood</p><div class="slh-plist">' + links(c.areas) + '</div></div>' +
-        '<div><p class="slh-lab">By size and amenity</p><div class="slh-plist">' + links(c.types) + '</div></div>' +
         '<a class="slh-pcard" href="' + c.page + '">' + photo(c, '270px') +
         '<span class="slh-pn">' + c.name + '</span><span class="slh-pa">' + c.sizes + ' · ' + c.line + '</span><span class="slh-ul">' + all + '</span></a></div>';
     }
