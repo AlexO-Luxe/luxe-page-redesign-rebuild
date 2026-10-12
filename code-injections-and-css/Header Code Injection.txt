@@ -240,6 +240,12 @@
         column. Universities and neighbourhoods take two columns each,
         and Istituto Marangoni joins the universities. Under 1200px each
         list goes back to one column so the names do not wrap.
+     v1.2 (12 Oct 2026, Alex): option A from the nav groupings canvas
+        (https://claude.ai/artifact/RpwBKe2MQ8zvJBVSMDMx9H), the decision
+        journey: Our apartments, How it works, Why Luxe, Reviews, About.
+        How it works is its own list (booking process, FAQs, group
+        bookings, contact), Life at Luxe moves into Why Luxe, and About
+        keeps the company pages. The phone menu follows the same order.
      INSTALL: Settings > Advanced > Code Injection > HEADER. Replace the
      Aperture header block (the comment that reads "CUSTOM HEADER
      (Aperture / Browse Directory edition)" plus its one <style> and one
@@ -454,17 +460,20 @@ html.slh-lock #sl-cb { display: none !important; }
   var WHY = [
     ['All-inclusive living', '/services'],
     ['Guest experience', '/guest-experience-team'],
-    ['Us vs. other rentals', '/luxe-vs-renting']
+    ['Us vs. other rentals', '/luxe-vs-renting'],
+    ['Life at Luxe journal', JOURNAL]
+  ];
+  var HOW_LIST = [
+    ['Booking process', HOW],
+    ['FAQs', '/faqs'],
+    ['Group bookings', '/group-bookings'],
+    ['Contact us', '/reservations#speak-to-us']
   ];
   var ABOUT = [
     ['Our story', '/about-us'],
     ['Meet our team', '/meet-the-team'],
-    ['How it works', HOW],
-    ['FAQs', '/faqs'],
-    ['Group bookings', '/group-bookings'],
     ['Partnerships', '/partnerships'],
-    ['Careers', '/careers-at-luxe'],
-    ['Contact us', '/reservations#speak-to-us']
+    ['Careers', '/careers-at-luxe']
   ];
   var SOCIAL = [
     ['Instagram', 'https://www.instagram.com/student_luxe'],
@@ -598,8 +607,8 @@ html.slh-lock #sl-cb { display: none !important; }
     var bar = '<header class="slh-bar slh-dm">' + LOCKUP +
       '<nav class="slh-nav" aria-label="Main">' +
         '<button type="button" class="slh-nb" data-open="apts" aria-expanded="false" aria-controls="slh-panel">Our apartments<span class="slh-cv"></span></button>' +
-        dropdown('why', 'Why Luxe', WHY) + dropdown('about', 'About', ABOUT) +
-        link(REVIEWS, 'Reviews', 'slh-nb') + link(JOURNAL, 'Life at Luxe', 'slh-nb') +
+        dropdown('how', 'How it works', HOW_LIST) + dropdown('why', 'Why Luxe', WHY) +
+        link(REVIEWS, 'Reviews', 'slh-nb') + dropdown('about', 'About', ABOUT) +
       '</nav>' +
       link(ENQUIRE, 'Make an enquiry', 'slh-cta') +
       '<button type="button" class="slh-mbtn slh-open" aria-expanded="false" aria-controls="slh-menu" aria-label="Menu">' + BURGER + '</button>' +
@@ -649,9 +658,10 @@ html.slh-lock #sl-cb { display: none !important; }
       '<div class="slh-mbody"><p class="slh-lab">Our cities</p>' +
         CITIES.map(function (c) { return '<a class="slh-mcity" href="' + c.page + '"><b>' + c.name + '</b><span>' + c.line + '</span></a>'; }).join('') +
         '<p class="slh-lab slh-lab2">Navigation</p><div class="slh-msite">' +
+          '<details><summary>How it works<span class="slh-cv"></span></summary><div>' + links(HOW_LIST) + '</div></details>' +
           '<details><summary>Why Luxe<span class="slh-cv"></span></summary><div>' + links(WHY) + '</div></details>' +
+          link(REVIEWS, 'Reviews') +
           '<details><summary>About<span class="slh-cv"></span></summary><div>' + links(ABOUT) + '</div></details>' +
-          link(REVIEWS, 'Reviews') + link(JOURNAL, 'Life at Luxe') + link(HOW, 'How it works') +
         '</div></div>' +
       '<div class="slh-msoc">' + SOCIAL.map(function (s) { return link(s[1], s[0], '', ' target="_blank" rel="noopener"'); }).join('') + '</div></div>';
 
