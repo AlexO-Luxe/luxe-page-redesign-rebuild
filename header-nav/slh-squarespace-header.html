@@ -1,0 +1,595 @@
+<!-- ============================================================
+     STUDENT LUXE · Custom Header: the dark bar and the capsule
+     Block: slh. Option N2 from the design canvas
+     https://claude.ai/artifact/U1i7zuJDPcJgjT57fgbYR3 (Alex, 12 Oct 2026):
+     Stay Luxe's header and its scroll-back capsule (stayluxe-site
+     app/layout.tsx, components/NavApartments.tsx, ReturnNav.tsx and
+     SiteNavMenu.tsx) carried over to Student Luxe.
+     v1 (12 Oct 2026, Alex): replaces the light Aperture header.
+        The bar: the white logo with "Luxury student apartments" under
+        it, Our apartments, Why Luxe, About, Reviews and Life at Luxe in
+        the middle, Make an enquiry in gold on the right, all on the deep
+        navy with the gold damask. Our apartments opens a panel under the
+        bar: the seven cities down the left; London with its
+        universities, neighbourhoods, sizes and amenities; every other
+        city as its photograph and a link to its page (their old size
+        links were all 404s). Why Luxe and About open short lists.
+        Reservations is folded in: Make an enquiry is the gold button,
+        and About carries How it works, Group bookings and Contact us.
+        The bar is no longer sticky: the capsule does that job.
+        The capsule: once past 320px, scrolling back up drops a navy pill
+        in at the top; scrolling down sends it away. It reads the page:
+        when the page has sections with the IDs apartments, compare,
+        reviews or faqs, it carries those (the first named for the page,
+        "LSE apartments" on /lse-accommodation, worked out from the
+        university, neighbourhood and city links below) and Back to top;
+        on any other page it carries Apartments, Why Luxe, Reviews, How
+        it works and Enquire.
+        Under 1024px the bar is the logo and a menu button that opens the
+        whole screen: the cities, the pages (Why Luxe and About fold
+        open) and the social links. The capsule there is the luxe mark,
+        the page's apartments, Back to top and a menu button opening a
+        short list of this page's sections and the rest of the site.
+     INSTALL: Settings > Advanced > Code Injection > HEADER. Replace the
+     Aperture header block (the comment that reads "CUSTOM HEADER
+     (Aperture / Browse Directory edition)" plus its one <style> and one
+     <script>) with everything in this file. Keep it where that block
+     was, above the WhatsApp number swap, so the WhatsApp link in the
+     phone menu is on the page when that script looks for wa.me links.
+     Leave every other header block as it is.
+     Nothing outside the header used the Aperture classes, and Make an
+     enquiry still goes to /reservations, so tracking is unchanged.
+     Rules: no backdrop-filter (Rule 1), no fonts (Rule 19), nothing
+     animates on its own (Rule 18). The header is built by the script
+     because Code Injection HEADER sits in <head>, where markup cannot go.
+     ============================================================ -->
+
+<style>
+/* Squarespace's own header and every earlier custom header step aside.
+   Its empty shell stays fixed at the top with a dark strip of its own,
+   so it is hidden from view; its skip link still shows on focus. */
+[data-test="header-inner"], #header .header-inner { display: none !important; }
+#header { visibility: hidden !important; }
+#header .header-skip-link { visibility: visible !important; }
+#slHeader, .sl-header, .sl-drawer, .sl-drawer-overlay, .sl-city-bar, #sl-ap { display: none !important; }
+/* The cookie banner always sits above the header */
+#CybotCookiebotDialog, #CybotCookiebotDialogBodyUnderlay, #CookiebotWidget, .sqs-cookie-banner-v2, [data-test="cookie-banner"] { z-index: 2147483647 !important; }
+/* Sections the capsule jumps to land clear of it */
+#apartments, #compare, #reviews, #faqs, #faq, #about { scroll-margin-top: 84px; }
+/* While the phone menu is open the page stays put and the enquiry pill steps out */
+html.slh-lock { overflow: hidden; }
+html.slh-lock #sl-cb { display: none !important; }
+
+#slh {
+  --ink:    #02040a;
+  --gold:   #B8966E;
+  --gold-l: #D4B896;
+  --paper:  #FBF8F2;
+  --serif:  'baskerville-display-pt', 'Baskerville Display PT', Georgia, 'Times New Roman', serif;
+  --sans:   'DM Sans', 'dm-sans', system-ui, sans-serif;
+  --ease:   cubic-bezier(0.16, 1, 0.3, 1);
+  --damask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'><defs><symbol id='m' viewBox='-60 -60 120 120'><path vector-effect='non-scaling-stroke' d='M0-54c8 14 24 18 24 34 0 12-12 20-24 20S-24-8-24-20c0-16 16-20 24-34z'/><path vector-effect='non-scaling-stroke' d='M0 54c-8-14-24-18-24-34 0-12 12-20 24-20s24 8 24 20c0 16-16 20-24 34z'/><path vector-effect='non-scaling-stroke' d='M-54 0c14-8 18-24 34-24 12 0 20 12 20 24s-8 24-20 24c-16 0-20-16-34-24z'/><path vector-effect='non-scaling-stroke' d='M54 0c-14 8-18 24-34 24-12 0-20-12-20-24s8-24 20-24c16 0 20 16 34 24z'/><circle vector-effect='non-scaling-stroke' r='5'/></symbol></defs><g fill='none' stroke='%23D4B896' stroke-width='1'><use href='%23m' x='35' y='35' width='150' height='150'/><use href='%23m' x='-42' y='-42' width='84' height='84'/><use href='%23m' x='178' y='-42' width='84' height='84'/><use href='%23m' x='-42' y='178' width='84' height='84'/><use href='%23m' x='178' y='178' width='84' height='84'/></g></svg>");
+  position: relative; z-index: 9000;
+  font-family: var(--sans); font-size: 16px; font-weight: 400; line-height: 1.4; color: var(--paper); text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+#slh *, #slh *::before, #slh *::after { box-sizing: border-box; margin: 0; padding: 0; }
+#slh a { color: inherit; text-decoration: none; border: 0; }
+#slh button { -webkit-appearance: none; appearance: none; background: none; border: 0; border-radius: 0; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: inherit; cursor: pointer; }
+#slh :focus-visible { outline: 2px solid var(--gold-l); outline-offset: 3px; }
+/* The damask, as on the About band and Stay Luxe's bar */
+#slh .slh-dm { isolation: isolate; }
+#slh .slh-dm::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0.08; background-image: var(--damask); background-size: 220px 220px; }
+
+/* ── THE BAR ── */
+#slh .slh-bar { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; padding: 18px clamp(20px, 3.4vw, 48px); background: var(--ink); border-bottom: 0.5px solid rgba(184,150,110,0.28); }
+#slh .slh-lock { justify-self: start; display: inline-flex; flex-direction: column; gap: 8px; }
+#slh .slh-lock img { display: block; width: auto; height: 24px; max-width: none; }
+/* The line under the logo runs exactly its width */
+#slh .slh-tag { display: block; width: 0; min-width: 100%; font-size: 7.7px; line-height: 1; letter-spacing: 0.2em; text-transform: uppercase; white-space: nowrap; text-align: justify; text-align-last: justify; color: rgba(251,248,242,0.8); }
+#slh .slh-nav { display: flex; align-items: center; gap: clamp(18px, 2vw, 28px); justify-self: center; }
+#slh .slh-nb { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #fff; white-space: nowrap; transition: color 0.15s; }
+#slh .slh-nb[aria-expanded="true"], #slh .slh-nb[aria-current="page"] { color: var(--gold-l); }
+#slh .slh-cv { display: inline-block; flex: none; width: 6px; height: 6px; border-right: 1px solid var(--gold-l); border-bottom: 1px solid var(--gold-l); transform: rotate(45deg) translateY(-2px); transition: transform 0.3s var(--ease); }
+#slh [aria-expanded="true"] > .slh-cv { transform: rotate(-135deg) translateY(-2px); }
+#slh .slh-cta { justify-self: end; display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 8px; background: var(--gold); color: var(--ink); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; transition: background 0.2s, transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+
+/* Why Luxe and About: a short list under the item */
+#slh .slh-dd { position: relative; }
+#slh .slh-drop { position: absolute; top: calc(100% + 18px); left: 50%; min-width: 230px; padding: 10px 0; background: var(--ink); border: 1px solid rgba(184,150,110,0.35); border-top: 0; box-shadow: 0 26px 60px rgba(2,4,10,0.4); opacity: 0; visibility: hidden; transform: translate(-50%, -6px); transition: opacity 0.25s, transform 0.3s var(--ease), visibility 0s linear 0.3s; }
+#slh .slh-dd.is-open .slh-drop { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+#slh .slh-drop a { display: block; padding: 10px 22px; font-size: 13px; line-height: 1.35; color: rgba(251,248,242,0.82); white-space: nowrap; transition: color 0.15s; }
+
+/* Our apartments: the panel the width of the bar */
+#slh .slh-panel { position: absolute; left: 0; right: 0; top: 100%; padding: 28px clamp(20px, 3.4vw, 48px) 22px; background: #03050c; border-bottom: 1px solid rgba(184,150,110,0.35); box-shadow: 0 26px 60px rgba(2,4,10,0.45); opacity: 0; visibility: hidden; transition: opacity 0.28s, visibility 0s linear 0.28s; }
+#slh .slh-bar.is-apts .slh-panel { opacity: 1; visibility: visible; transition-delay: 0s; }
+#slh .slh-pgrid { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; }
+#slh .slh-lab { font-size: 9.5px; line-height: 1.4; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-l); margin-bottom: 12px; }
+#slh .slh-city { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(251,248,242,0.12); font-family: var(--serif); font-size: 18px; line-height: 1.3; letter-spacing: -0.03em; color: rgba(251,248,242,0.72); transition: color 0.15s; }
+#slh .slh-city span { font-family: var(--sans); font-size: 13px; color: var(--gold-l); opacity: 0; transition: opacity 0.15s; }
+#slh .slh-city.is-on { color: var(--paper); }
+#slh .slh-city.is-on span { opacity: 1; }
+#slh .slh-pbody { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) 270px; gap: 40px; }
+#slh .slh-pbody[hidden] { display: none; }
+#slh .slh-plist a { display: block; padding: 6px 0; font-size: 13px; line-height: 1.35; color: rgba(251,248,242,0.8); transition: color 0.15s; }
+#slh .slh-plist a[aria-current="page"] { color: var(--gold-l); }
+#slh .slh-pimg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 3px; background: linear-gradient(150deg, #6b6157, #343640 60%, #14181f); }
+#slh .slh-pn { display: block; margin-top: 12px; font-family: var(--serif); font-size: 20px; line-height: 1.2; letter-spacing: -0.035em; }
+#slh .slh-pa { display: block; margin-top: 6px; font-size: 9.5px; line-height: 1.5; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(251,248,242,0.6); }
+#slh .slh-ul { display: inline-block; margin-top: 14px; padding-bottom: 4px; border-bottom: 1px solid var(--gold); font-size: 10px; line-height: 1.4; letter-spacing: 0.18em; text-transform: uppercase; color: var(--paper); white-space: nowrap; transition: border-color 0.15s; }
+/* Every other city: its photograph wide, the city beside it */
+#slh .slh-pfeat { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+#slh .slh-pfeat .slh-pimg { aspect-ratio: 16 / 9; }
+#slh .slh-pftxt { align-self: center; }
+#slh .slh-pfn { font-family: var(--serif); font-size: 32px; line-height: 1.15; letter-spacing: -0.04em; color: var(--paper); }
+#slh .slh-pfoot { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(251,248,242,0.14); font-size: 11px; line-height: 1.4; color: rgba(251,248,242,0.62); }
+#slh .slh-pfoot .slh-ul { margin: 0 0 0 28px; }
+
+/* ── THE MENU BUTTON (phones and tablets) ── */
+#slh .slh-mbtn { display: none; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; margin-right: -11px; }
+#slh .slh-burger { position: relative; display: block; width: 22px; height: 13px; }
+#slh .slh-burger i { position: absolute; left: 0; right: 0; height: 1px; background: var(--paper); transition: transform 0.35s var(--ease), background 0.25s; }
+#slh .slh-burger i:first-child { top: 2px; }
+#slh .slh-burger i:last-child { bottom: 2px; }
+/* The close is the same two hairlines folded into a cross */
+#slh .slh-burger.is-x i, #slh .slh-cap.is-open .slh-burger i { background: var(--gold-l); }
+#slh .slh-burger.is-x i:first-child, #slh .slh-cap.is-open .slh-burger i:first-child { transform: translateY(4px) rotate(45deg); }
+#slh .slh-burger.is-x i:last-child, #slh .slh-cap.is-open .slh-burger i:last-child { transform: translateY(-4px) rotate(-45deg); }
+
+/* ── THE WHOLE-SCREEN MENU ── */
+#slh .slh-menu { position: fixed; inset: 0; z-index: 9997; display: flex; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; background: var(--ink); opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0s linear 0.3s; }
+#slh.is-menu .slh-menu { opacity: 1; visibility: visible; transition-delay: 0s; }
+#slh .slh-menu.slh-dm::before { position: fixed; opacity: 0.06; }
+#slh .slh-mhead { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(251,248,242,0.12); }
+#slh .slh-mhead .slh-mbtn { display: flex; }
+#slh .slh-mbody { padding: 22px 16px 28px; }
+#slh .slh-lab2 { margin-top: 26px; }
+#slh .slh-mcity { display: block; padding: 10px 0; border-bottom: 1px solid rgba(251,248,242,0.14); }
+#slh .slh-mcity b { display: block; font-family: var(--serif); font-weight: 400; font-size: 20px; line-height: 1.15; letter-spacing: -0.035em; }
+#slh .slh-mcity span { display: block; margin-top: 4px; font-size: 9.5px; line-height: 1.4; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(251,248,242,0.6); }
+#slh .slh-msite > a, #slh .slh-msite summary { display: flex; align-items: center; justify-content: space-between; min-height: 44px; font-size: 12px; line-height: 1.3; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(251,248,242,0.85); list-style: none; cursor: pointer; }
+#slh .slh-msite summary::-webkit-details-marker { display: none; }
+#slh .slh-msite details[open] > summary { color: var(--gold-l); }
+#slh .slh-msite details[open] > summary .slh-cv { transform: rotate(-135deg) translateY(-2px); }
+#slh .slh-msite details > div { margin: 0 0 8px 2px; padding: 0 0 4px 14px; border-left: 1px solid rgba(184,150,110,0.35); }
+#slh .slh-msite details a { display: flex; align-items: center; min-height: 40px; font-size: 14px; line-height: 1.3; color: rgba(251,248,242,0.78); }
+#slh .slh-msoc { display: flex; flex-wrap: wrap; gap: 0 22px; margin-top: auto; padding: 8px 16px 14px; border-top: 1px solid rgba(251,248,242,0.12); }
+#slh .slh-msoc a { display: inline-flex; align-items: center; min-height: 44px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(251,248,242,0.62); }
+
+/* ── THE CAPSULE ── Not tappable while it moves (iOS cancels taps on a
+   moving target); inert, so off-screen links take no focus */
+#slh .slh-cap { position: fixed; top: 14px; left: 0; right: 0; z-index: 9990; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+#slh.is-menu .slh-cap { display: none; }
+#slh .slh-pill { position: relative; display: flex; align-items: center; gap: 22px; padding: 6px 6px 6px 22px; background: rgba(2,4,10,0.94); border: 1px solid rgba(212,184,150,0.35); border-radius: 999px; box-shadow: 0 18px 44px rgba(2,4,10,0.4); white-space: nowrap; opacity: 0; transform: translateY(-140%); transition: transform 0.45s var(--ease), opacity 0.3s; pointer-events: none; }
+#slh .slh-cap.is-on .slh-pill { opacity: 1; transform: none; }
+#slh .slh-cap.is-ready .slh-pill { pointer-events: auto; }
+#slh .slh-pill.is-res { padding-right: 22px; }
+/* STUDENT set in the nav capitals beside the luxe script, cut from the
+   logo itself: at pill size the logo's own STUDENT is too small to read */
+#slh .slh-mk { display: inline-flex; align-items: flex-end; gap: 7px; line-height: 1; }
+#slh .slh-mk-s { font-size: 9.5px; font-weight: 500; letter-spacing: 0.38em; text-transform: uppercase; padding-bottom: 3px; }
+#slh .slh-mk-l { display: block; width: 43px; height: 20px; background: url("https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/b4112f3c-4153-4544-b7bd-2c93282a68a2/Logo+White+website.png?format=500w") no-repeat right center / auto 100%; }
+#slh .slh-lk { display: inline-flex; align-items: center; min-height: 40px; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--paper); white-space: nowrap; transition: color 0.15s; }
+#slh .slh-lk.is-here { color: var(--gold-l); }
+#slh .slh-ar { margin-left: 5px; color: var(--gold-l); }
+#slh .slh-sep { flex: none; width: 1px; height: 22px; background: rgba(251,248,242,0.18); }
+#slh .slh-go { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px; background: var(--gold); color: var(--ink); font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; transition: background 0.2s; }
+#slh .slh-cmenu { display: none; }
+#slh .slh-p { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  #slh .slh-nb:hover, #slh .slh-drop a:hover, #slh .slh-plist a:hover, #slh .slh-lk:hover, #slh .slh-pcard:hover .slh-pn { color: var(--gold-l); }
+  #slh .slh-ul:hover { border-bottom-color: var(--gold-l); }
+  #slh .slh-cta:hover { background: var(--gold-l); transform: scale(1.04); box-shadow: 0 0 30px rgba(212,184,150,0.4); }
+  #slh .slh-go:hover { background: var(--gold-l); }
+}
+
+/* ── PHONES AND TABLETS ── */
+@media (max-width: 1023px) {
+  #slh .slh-bar { display: flex; justify-content: space-between; padding: 14px 16px; }
+  #slh .slh-nav, #slh .slh-cta, #slh .slh-panel { display: none; }
+  #slh .slh-lock img { height: 20px; }
+  #slh .slh-tag { font-size: 6.4px; }
+  #slh .slh-bar .slh-mbtn { display: flex; }
+  /* The capsule spans the screen: the luxe mark, the pair, the menu */
+  #slh .slh-cap { top: 12px; left: 14px; right: 14px; }
+  #slh .slh-pill, #slh .slh-pill.is-res { width: 100%; gap: 2px; padding: 4px 6px 4px 18px; }
+  #slh .slh-d { display: none; }
+  #slh .slh-p { display: inline-flex; }
+  #slh .slh-mk-s { display: none; }
+  #slh .slh-mk-l { width: 47px; height: 22px; }
+  #slh .slh-pill .slh-lk { min-height: 44px; padding: 0 8px; font-size: 10px; }
+  #slh .slh-first { margin-left: auto; }
+  #slh .slh-pill .slh-mbtn { display: flex; margin: 0 0 0 auto; }
+  #slh .slh-cmenu { display: flex; flex-direction: column; width: 100%; margin-top: 8px; padding: 6px 0 8px; background: #03050c; border: 1px solid rgba(212,184,150,0.35); border-radius: 18px; box-shadow: 0 18px 44px rgba(2,4,10,0.45); opacity: 0; transform: translateY(-8px); transition: opacity 0.25s, transform 0.3s var(--ease); pointer-events: none; }
+  #slh .slh-cap.is-open .slh-cmenu { opacity: 1; transform: none; pointer-events: auto; }
+  #slh .slh-cl { padding: 14px 20px 6px; font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-l); }
+  #slh .slh-cmenu a { display: flex; align-items: center; min-height: 44px; padding: 0 20px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; border-top: 1px solid rgba(251,248,242,0.1); }
+  #slh .slh-cmenu .slh-cl + a { border-top: 0; }
+  #slh .slh-cmenu a.is-here { color: var(--gold-l); }
+}
+
+/* The smallest phones: Back to top steps out of the pill so it fits */
+@media (max-width: 359px) {
+  #slh .slh-pill .slh-top { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #slh *, #slh *::before { transition: none !important; }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     CONFIG · links and labels; everything below reads these
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  var LOGO = 'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/b4112f3c-4153-4544-b7bd-2c93282a68a2/Logo+White+website.png';
+  var CDN = 'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/';
+  var ENQUIRE = '/reservations';
+  var FIND = '/find-an-apartment';
+  var HOW = '/booking-process';
+  var WHY_HREF = '/services';
+  var REVIEWS = '/our-reviews';
+  var JOURNAL = '/journal';
+  var WHY = [
+    ['All-inclusive living', '/services'],
+    ['Guest experience', '/guest-experience-team'],
+    ['Us vs. other rentals', '/luxe-vs-renting']
+  ];
+  var ABOUT = [
+    ['Our story', '/about-us'],
+    ['Meet our team', '/meet-the-team'],
+    ['How it works', HOW],
+    ['FAQs', '/faqs'],
+    ['Group bookings', '/group-bookings'],
+    ['Partnerships', '/partnerships'],
+    ['Careers', '/careers-at-luxe'],
+    ['Contact us', '/reservations#speak-to-us']
+  ];
+  var SOCIAL = [
+    ['Instagram', 'https://www.instagram.com/student_luxe'],
+    ['TikTok', 'https://www.tiktok.com/@studentluxe'],
+    ['YouTube', 'https://www.youtube.com/@studentluxe'],
+    ['WhatsApp', 'https://wa.me/442030070017']
+  ];
+  var LONDON = '/luxury-student-apartments-london';
+  /* A city with unis, areas and types gets the three columns; the rest
+     show their photograph. The capsule names a page from these lists. */
+  var CITIES = [
+    { name: 'London', page: LONDON, line: 'From Mayfair to Fitzrovia', sizes: 'Studios to 4 bed',
+      img: 'f810a164-d25b-4d2d-8a25-3c19e7ca1e8f/belgravia-heights-2bed-deluxe-12.jpeg',
+      unis: [
+        ['UCL', '/apartments-near-ucl'],
+        ['King’s College London', '/kings-college-london-accommodation'],
+        ['LSE', '/lse-accommodation'],
+        ['Imperial College', '/imperial-college-london-accommodation'],
+        ['Queen Mary', '/queen-mary-university-of-london-accommodation'],
+        ['City University', '/city-university-of-london-accommodation'],
+        ['SOAS', '/soas-accommodation'],
+        ['Regent’s University', '/regents-university-london-accommodation']
+      ],
+      areas: [
+        ['Mayfair', '/mayfair-student-accommodation'],
+        ['Covent Garden', '/covent-garden-student-accommodation'],
+        ['Fitzrovia', '/student-accommodation-fitzrovia'],
+        ['Holborn', '/holborn-student-accommodation'],
+        ['Kensington', '/kensington-student-accommodation'],
+        ['Knightsbridge', '/knightsbridge-student-accommodation'],
+        ['Notting Hill', '/student-accommodation-notting-hill'],
+        ['Marylebone', '/marylebone-student-accommodation'],
+        ['Soho', '/student-accommodation-soho'],
+        ['King’s Cross', '/student-apartments-kings-cross']
+      ],
+      types: [
+        ['Studios', LONDON + '?type=studio'],
+        ['1 bedroom', LONDON + '?type=1bed'],
+        ['2 bedrooms', LONDON + '?type=2bed'],
+        ['3 bedrooms', LONDON + '?type=3bed'],
+        ['4 bedrooms', LONDON + '?type=4bed'],
+        ['With reception', LONDON + '?amenity=reception'],
+        ['Allows pets', LONDON + '?amenity=pets'],
+        ['Outdoor space', LONDON + '?amenity=outdoor'],
+        ['Air conditioned', LONDON + '?amenity=aircon'],
+        ['Gym', LONDON + '?amenity=gym']
+      ] },
+    { name: 'New York', page: '/student-apartments-new-york', line: 'Greenwich Village to Brooklyn', sizes: 'Studios to 3 bed',
+      img: '102919c5-c50a-4c61-9909-caab93e80bcc/manhattanville-heights-facilities-17.jpg' },
+    { name: 'Paris', page: '/student-apartments-paris', line: 'Le Marais to Saint-Germain', sizes: 'Studios to 3 bed',
+      img: '1738171720459-UTH6USS5XI83OWWD3PN5/paris-amphitheatre-residences-1.jpeg' },
+    { name: 'Madrid', page: '/luxury-student-apartments-madrid', line: 'Salamanca to Chamberí', sizes: 'Studios to 3 bed',
+      img: '1729173561841-W4526O6HPWODQ5XH10WG/sol-ana-suites-studio-1.jpeg' },
+    { name: 'Cambridge', page: '/cambridge-student-apartments', line: 'Moments from the colleges', sizes: 'Studios to 3 bed',
+      img: '898f3e70-31e6-4726-87f0-3adf5112de81/the-five-acres-1bed-3.jpg' },
+    { name: 'Milan', page: '/luxury-student-apartments-milan', line: 'Brera to Porta Nuova', sizes: 'Studios to 3 bed',
+      img: '54d0d138-86ba-4f56-8f38-54e0b743c4a3/Sempione-Residences-studio-1.JPG' },
+    { name: 'Edinburgh', page: '/private-student-accommodation-edinburgh', line: 'Old Town to Stockbridge', sizes: 'Studios to 3 bed',
+      img: '47efb97f-27b1-4e0c-919e-e0c970d701e2/queen-street-gardens-2bed-7.jpeg' }
+  ];
+  /* The page sections the capsule looks for, by Squarespace section ID:
+     [id, in the pill, in the phone list] */
+  var SECTIONS = [
+    ['apartments', 'Apartments', 'Apartments'],
+    ['compare', 'Compare', 'Compare your options'],
+    ['reviews', 'Reviews', 'Reviews'],
+    ['faqs', 'FAQs', 'FAQs']
+  ];
+  var SHOW_AFTER = 320;
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  function link(href, text, cls, extra) {
+    return '<a href="' + href + '"' + (cls ? ' class="' + cls + '"' : '') + (extra || '') + '>' + text + '</a>';
+  }
+  function links(items, cls) {
+    return items.map(function (x) { return link(x[1], x[0], cls); }).join('');
+  }
+
+  /* What this page is: a university, a neighbourhood or a city page */
+  function here(path) {
+    for (var i = 0; i < CITIES.length; i++) {
+      var c = CITIES[i];
+      if (c.page === path) return { i: i, city: c, label: c.name + ' apartments', near: '' };
+      var kinds = [['near ', c.unis || []], ['in ', c.areas || []]];
+      for (var k = 0; k < kinds.length; k++) {
+        for (var j = 0; j < kinds[k][1].length; j++) {
+          var p = kinds[k][1][j];
+          if (p[1] === path) return { i: i, city: c, label: p[0] + ' apartments', near: 'Apartments ' + kinds[k][0] + p[0] };
+        }
+      }
+    }
+    return { i: 0, city: null, label: 'Apartments', near: '' };
+  }
+
+  var LOCKUP = '<a class="slh-lock" href="/" aria-label="Student Luxe home">' +
+    '<img src="' + LOGO + '?format=500w" srcset="' + LOGO + '?format=300w 300w, ' + LOGO + '?format=500w 500w" sizes="(max-width: 1023px) 131px, 157px" width="1500" height="230" alt="">' +
+    '<span class="slh-tag" aria-hidden="true">Luxury student apartments</span></a>';
+  var BURGER = '<span class="slh-burger" aria-hidden="true"><i></i><i></i></span>';
+
+  function dropdown(key, label, items) {
+    return '<div class="slh-dd"><button type="button" class="slh-nb" data-open="' + key + '" aria-expanded="false" aria-controls="slh-' + key + '">' + label + '<span class="slh-cv"></span></button>' +
+      '<div class="slh-drop slh-dm" id="slh-' + key + '">' + links(items) + '</div></div>';
+  }
+
+  /* Photographs wait for the panel: data-src until a city is shown */
+  function photo(c, sizes) {
+    var u = CDN + c.img;
+    return '<img class="slh-pimg" alt="Student apartment in ' + c.name + '" data-src="' + u + '?format=750w" data-srcset="' + u + '?format=750w 750w, ' + u + '?format=1000w 1000w" sizes="' + sizes + '" width="1500" height="1000" decoding="async">';
+  }
+
+  function cityBody(c, i, on) {
+    var all = 'View all ' + c.name + ' apartments';
+    if (c.unis) {
+      return '<div class="slh-pbody" data-i="' + i + '"' + (on ? '' : ' hidden') + '>' +
+        '<div><p class="slh-lab">' + c.name + ' by university</p><div class="slh-plist">' + links(c.unis) + '</div></div>' +
+        '<div><p class="slh-lab">' + c.name + ' by neighbourhood</p><div class="slh-plist">' + links(c.areas) + '</div></div>' +
+        '<div><p class="slh-lab">By size and amenity</p><div class="slh-plist">' + links(c.types) + '</div></div>' +
+        '<a class="slh-pcard" href="' + c.page + '">' + photo(c, '270px') +
+        '<span class="slh-pn">' + c.name + '</span><span class="slh-pa">' + c.sizes + ' · ' + c.line + '</span><span class="slh-ul">' + all + '</span></a></div>';
+    }
+    return '<div class="slh-pbody slh-pfeat" data-i="' + i + '"' + (on ? '' : ' hidden') + '>' +
+      '<a href="' + c.page + '" tabindex="-1" aria-hidden="true">' + photo(c, '(max-width: 1440px) 50vw, 660px') + '</a>' +
+      '<div class="slh-pftxt"><p class="slh-lab">' + c.name + '</p><p class="slh-pfn">' + c.line + '</p><span class="slh-pa">' + c.sizes + '</span>' +
+      link(c.page, all, 'slh-ul') + '</div></div>';
+  }
+
+  function boot() {
+    if (document.getElementById('slh') || !document.body) return;
+    var path = location.pathname.replace(/\/+$/, '') || '/';
+    var h = here(path);
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* The sections this page has (FAQs may be "faq") */
+    var secs = [];
+    SECTIONS.forEach(function (s) {
+      var el = document.getElementById(s[0]) || (s[0] === 'faqs' ? document.getElementById('faq') : null);
+      if (el) secs.push({ id: el.id, key: s[0], short: s[1], long: s[2] });
+    });
+    var apts = secs.length && secs[0].key === 'apartments';
+    var hasReviews = secs.some(function (s) { return s.key === 'reviews'; });
+
+    /* ── the bar and its panel ── */
+    var bar = '<header class="slh-bar slh-dm">' + LOCKUP +
+      '<nav class="slh-nav" aria-label="Main">' +
+        '<button type="button" class="slh-nb" data-open="apts" aria-expanded="false" aria-controls="slh-panel">Our apartments<span class="slh-cv"></span></button>' +
+        dropdown('why', 'Why Luxe', WHY) + dropdown('about', 'About', ABOUT) +
+        link(REVIEWS, 'Reviews', 'slh-nb') + link(JOURNAL, 'Life at Luxe', 'slh-nb') +
+      '</nav>' +
+      link(ENQUIRE, 'Make an enquiry', 'slh-cta') +
+      '<button type="button" class="slh-mbtn slh-open" aria-expanded="false" aria-controls="slh-menu" aria-label="Menu">' + BURGER + '</button>' +
+      '<div class="slh-panel slh-dm" id="slh-panel"><div class="slh-pgrid">' +
+        '<div><p class="slh-lab">Our cities</p>' + CITIES.map(function (c, i) {
+          return '<a href="' + c.page + '" class="slh-city' + (i === h.i ? ' is-on' : '') + '" data-i="' + i + '">' + c.name + '<span aria-hidden="true">&rarr;</span></a>';
+        }).join('') + '</div>' +
+        '<div>' + CITIES.map(function (c, i) { return cityBody(c, i, i === h.i); }).join('') + '</div>' +
+      '</div><div class="slh-pfoot"><span>Not sure where to start? Tell us your dates and budget, and we will suggest apartments.</span>' +
+      '<span>' + link(FIND, 'Find an apartment', 'slh-ul') + link(ENQUIRE, 'Make an enquiry', 'slh-ul') + '</span></div></div>' +
+    '</header>';
+
+    /* ── the capsule: this page's sections, or the site's own links ── */
+    var firstHref = apts ? '#' + secs[0].id : (h.city ? h.city.page : FIND);
+    var firstWide = apts ? h.label : 'Apartments';
+    var firstPhone = apts ? (h.label.length <= 15 ? h.label : 'Apartments') : 'View apartments';
+    var toTop = function (cls) {
+      return '<button type="button" class="slh-lk slh-top' + cls + '">Back to top<span class="slh-ar" aria-hidden="true">&uarr;</span></button>';
+    };
+    var pill = '<nav class="slh-pill slh-dm' + (secs.length ? ' is-res' : '') + '" aria-label="Quick navigation">' +
+      '<a class="slh-mk" href="/" aria-label="Student Luxe home"><span class="slh-mk-s" aria-hidden="true">Student</span><span class="slh-mk-l" aria-hidden="true"></span></a>' +
+      '<a class="slh-lk slh-first' + (apts ? ' is-here' : '') + '" href="' + firstHref + '"><span class="slh-d">' + firstWide + '</span><span class="slh-p">' + firstPhone + '</span></a>';
+    if (secs.length) {
+      pill += '<span class="slh-sep slh-d"></span>' +
+        secs.filter(function (s) { return s.key !== 'apartments'; }).map(function (s) { return link('#' + s.id, s.short, 'slh-lk slh-d'); }).join('') +
+        link(HOW, 'How it works', 'slh-lk slh-d') + '<span class="slh-sep slh-d"></span>' + toTop('');
+    } else {
+      pill += link(WHY_HREF, 'Why Luxe', 'slh-lk slh-d') + link(REVIEWS, 'Reviews', 'slh-lk slh-d') + link(HOW, 'How it works', 'slh-lk slh-d') +
+        toTop(' slh-p') + link(ENQUIRE, 'Enquire', 'slh-go slh-d');
+    }
+    pill += '<button type="button" class="slh-mbtn slh-capbtn" aria-expanded="false" aria-label="Menu">' + BURGER + '</button></nav>';
+
+    var short = '<div class="slh-cmenu">';
+    if (secs.length) {
+      short += '<p class="slh-cl">On this page</p>' + secs.map(function (s) {
+        var text = s.key === 'apartments' ? (h.near || h.label) : s.long;
+        return link('#' + s.id, text, s.key === 'apartments' ? 'is-here' : '');
+      }).join('');
+    }
+    short += '<p class="slh-cl">Student Luxe</p>' +
+      (h.city ? (h.city.page !== path ? link(h.city.page, 'All ' + h.city.name + ' apartments') : '') + link(FIND, 'Other cities') : link(FIND, 'Find an apartment')) +
+      link(WHY_HREF, 'Why Luxe') + (hasReviews ? '' : link(REVIEWS, 'Reviews')) + link(HOW, 'How it works') + link(ENQUIRE, 'Make an enquiry') + '</div>';
+
+    /* ── the whole-screen menu ── */
+    var whole = '<div class="slh-menu slh-dm" id="slh-menu" role="dialog" aria-modal="true" aria-label="Menu">' +
+      '<div class="slh-mhead">' + LOCKUP + '<button type="button" class="slh-mbtn slh-close" aria-label="Close menu"><span class="slh-burger is-x" aria-hidden="true"><i></i><i></i></span></button></div>' +
+      '<div class="slh-mbody"><p class="slh-lab">Our cities</p>' +
+        CITIES.map(function (c) { return '<a class="slh-mcity" href="' + c.page + '"><b>' + c.name + '</b><span>' + c.line + '</span></a>'; }).join('') +
+        '<p class="slh-lab slh-lab2">Navigation</p><div class="slh-msite">' +
+          '<details><summary>Why Luxe<span class="slh-cv"></span></summary><div>' + links(WHY) + '</div></details>' +
+          '<details><summary>About<span class="slh-cv"></span></summary><div>' + links(ABOUT) + '</div></details>' +
+          link(REVIEWS, 'Reviews') + link(JOURNAL, 'Life at Luxe') + link(HOW, 'How it works') +
+        '</div></div>' +
+      '<div class="slh-msoc">' + SOCIAL.map(function (s) { return link(s[1], s[0], '', ' target="_blank" rel="noopener"'); }).join('') + '</div></div>';
+
+    var root = document.createElement('div');
+    root.id = 'slh';
+    root.innerHTML = bar + '<div class="slh-cap">' + pill + short + '</div>' + whole;
+    document.body.insertBefore(root, document.body.firstChild);
+
+    /* This page's own links, wherever they appear */
+    Array.prototype.forEach.call(root.querySelectorAll('a[href]'), function (a) {
+      if (a.getAttribute('href') === path && path !== '/') a.setAttribute('aria-current', 'page');
+    });
+
+    var barEl = root.querySelector('.slh-bar');
+    var cap = root.querySelector('.slh-cap');
+    var capBtn = cap.querySelector('.slh-capbtn');
+    var menuEl = root.querySelector('.slh-menu');
+    var openBtn = root.querySelector('.slh-open');
+    var openKey = null;
+    var cityOn = h.i;
+    var menuOn = false;
+    var capOn = false;
+
+    /* ── the bar: the panel and the two short lists, one at a time ── */
+    function show(key) {
+      openKey = key;
+      barEl.classList.toggle('is-apts', key === 'apts');
+      Array.prototype.forEach.call(root.querySelectorAll('[data-open]'), function (b) {
+        var on = b.getAttribute('data-open') === key;
+        b.setAttribute('aria-expanded', on);
+        if (b.parentNode.classList.contains('slh-dd')) b.parentNode.classList.toggle('is-open', on);
+      });
+      if (key === 'apts') load(cityOn);
+    }
+    function load(i) {
+      var img = barEl.querySelector('.slh-pbody[data-i="' + i + '"] img[data-src]');
+      if (!img) return;
+      img.srcset = img.getAttribute('data-srcset');
+      img.src = img.getAttribute('data-src');
+      img.removeAttribute('data-src');
+    }
+    function city(i) {
+      if (i === cityOn) return;
+      cityOn = i;
+      Array.prototype.forEach.call(barEl.querySelectorAll('.slh-city'), function (a) { a.classList.toggle('is-on', +a.getAttribute('data-i') === i); });
+      Array.prototype.forEach.call(barEl.querySelectorAll('.slh-pbody'), function (b) { b.hidden = +b.getAttribute('data-i') !== i; });
+      load(i);
+    }
+    function pickCity(e) {
+      var c = e.target.closest && e.target.closest('.slh-city');
+      if (c) city(+c.getAttribute('data-i'));
+    }
+    barEl.addEventListener('mouseover', pickCity);
+    barEl.addEventListener('focusin', pickCity);
+    /* The photograph starts loading as the pointer reaches Our apartments */
+    var trigger = barEl.querySelector('[data-open="apts"]');
+    trigger.addEventListener('mouseenter', function () { load(cityOn); });
+    trigger.addEventListener('focus', function () { load(cityOn); });
+
+    /* ── the whole-screen menu ── */
+    var site = document.getElementById('siteWrapper');
+    menuEl.inert = true;
+    function menu(on, stay) {
+      if (on === menuOn) return;
+      menuOn = on;
+      root.classList.toggle('is-menu', on);
+      document.documentElement.classList.toggle('slh-lock', on);
+      menuEl.inert = !on;
+      barEl.inert = on;
+      if (site) site.inert = on;
+      openBtn.setAttribute('aria-expanded', on);
+      if (on) menuEl.querySelector('.slh-close').focus();
+      else if (!stay) openBtn.focus();
+    }
+
+    /* ── the capsule ── */
+    cap.inert = true;
+    function capMenu(on) {
+      cap.classList.toggle('is-open', on);
+      capBtn.setAttribute('aria-expanded', on);
+      capBtn.setAttribute('aria-label', on ? 'Close menu' : 'Menu');
+    }
+    function capsule(on) {
+      if (on === capOn) return;
+      capOn = on;
+      cap.classList.toggle('is-on', on);
+      cap.inert = !on;
+      if (on && still) cap.classList.add('is-ready');
+      if (!on) { cap.classList.remove('is-ready'); capMenu(false); }
+    }
+    cap.querySelector('.slh-pill').addEventListener('transitionend', function (e) {
+      if (capOn && e.propertyName === 'transform') cap.classList.add('is-ready');
+    });
+    var last = window.scrollY;
+    var ticking = false;
+    function read() {
+      ticking = false;
+      var y = window.scrollY;
+      var up = y < last - 4;
+      var down = y > last + 4;
+      last = y;
+      if (y < SHOW_AFTER || down) capsule(false);
+      else if (up && !menuOn) capsule(true);
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(read); }
+    }, { passive: true });
+
+    /* ── one listener for every button and link in the header ── */
+    root.addEventListener('click', function (e) {
+      var t = e.target.closest('button, a');
+      if (!t) return;
+      var key = t.getAttribute('data-open');
+      if (key) { show(openKey === key ? null : key); return; }
+      if (t.classList.contains('slh-open')) { show(null); menu(true); return; }
+      if (t.classList.contains('slh-close')) { menu(false); return; }
+      if (t === capBtn) { capMenu(!cap.classList.contains('is-open')); return; }
+      if (t.classList.contains('slh-top')) {
+        capMenu(false);
+        window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' });
+        return;
+      }
+      if (t.tagName === 'A') { show(null); capMenu(false); menu(false, true); }
+    });
+    /* Anything outside the bar closes its panel, as a menu should */
+    document.addEventListener('pointerdown', function (e) {
+      if (openKey && !barEl.contains(e.target)) show(null);
+      if (cap.classList.contains('is-open') && !cap.contains(e.target)) capMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (menuOn) menu(false);
+      else if (openKey) { var b = barEl.querySelector('[data-open="' + openKey + '"]'); show(null); b.focus(); }
+      else if (cap.classList.contains('is-open')) { capMenu(false); capBtn.focus(); }
+    });
+    /* Turning a tablet to landscape, or coming back to the page, starts clean */
+    var wide = window.matchMedia('(min-width: 1024px)');
+    var reset = function () { menu(false, true); capMenu(false); show(null); };
+    if (wide.addEventListener) wide.addEventListener('change', reset);
+    window.addEventListener('pageshow', reset);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>

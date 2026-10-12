@@ -204,36 +204,601 @@
 <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 
 
-<!-- ════════════════════════════════════════════════════════════════════════════
-     STUDENT LUXE — CUSTOM HEADER  (Aperture / Browse Directory edition)
-     ────────────────────────────────────────────────────────────────────────────
-     INSTALL (Squarespace):
-       Settings → Advanced → Code Injection → HEADER.
-       Find your existing block delimited by:  "Student Luxe — Custom Header"
-       and REPLACE THAT BLOCK ONLY with everything below (this comment + the
-       single <style> + the single <script>).
+<!-- ============================================================
+     STUDENT LUXE · Custom Header: the dark bar and the capsule
+     Block: slh. Option N2 from the design canvas
+     https://claude.ai/artifact/U1i7zuJDPcJgjT57fgbYR3 (Alex, 12 Oct 2026):
+     Stay Luxe's header and its scroll-back capsule (stayluxe-site
+     app/layout.tsx, components/NavApartments.tsx, ReturnNav.tsx and
+     SiteNavMenu.tsx) carried over to Student Luxe.
+     v1 (12 Oct 2026, Alex): replaces the light Aperture header.
+        The bar: the white logo with "Luxury student apartments" under
+        it, Our apartments, Why Luxe, About, Reviews and Life at Luxe in
+        the middle, Make an enquiry in gold on the right, all on the deep
+        navy with the gold damask. Our apartments opens a panel under the
+        bar: the seven cities down the left; London with its
+        universities, neighbourhoods, sizes and amenities; every other
+        city as its photograph and a link to its page (their old size
+        links were all 404s). Why Luxe and About open short lists.
+        Reservations is folded in: Make an enquiry is the gold button,
+        and About carries How it works, Group bookings and Contact us.
+        The bar is no longer sticky: the capsule does that job.
+        The capsule: once past 320px, scrolling back up drops a navy pill
+        in at the top; scrolling down sends it away. It reads the page:
+        when the page has sections with the IDs apartments, compare,
+        reviews or faqs, it carries those (the first named for the page,
+        "LSE apartments" on /lse-accommodation, worked out from the
+        university, neighbourhood and city links below) and Back to top;
+        on any other page it carries Apartments, Why Luxe, Reviews, How
+        it works and Enquire.
+        Under 1024px the bar is the logo and a menu button that opens the
+        whole screen: the cities, the pages (Why Luxe and About fold
+        open) and the social links. The capsule there is the luxe mark,
+        the page's apartments, Back to top and a menu button opening a
+        short list of this page's sections and the rest of the site.
+     INSTALL: Settings > Advanced > Code Injection > HEADER. Replace the
+     Aperture header block (the comment that reads "CUSTOM HEADER
+     (Aperture / Browse Directory edition)" plus its one <style> and one
+     <script>) with everything in this file. Keep it where that block
+     was, above the WhatsApp number swap, so the WhatsApp link in the
+     phone menu is on the page when that script looks for wa.me links.
+     Leave every other header block as it is.
+     Nothing outside the header used the Aperture classes, and Make an
+     enquiry still goes to /reservations, so tracking is unchanged.
+     Rules: no backdrop-filter (Rule 1), no fonts (Rule 19), nothing
+     animates on its own (Rule 18). The header is built by the script
+     because Code Injection HEADER sits in <head>, where markup cannot go.
+     ============================================================ -->
 
-       LEAVE EVERY OTHER HEADER BLOCK UNTOUCHED, e.g.:
-         • Google Consent Mode v2
-         • gtag.js / Google Analytics
-         • Google Tag Manager (GTM)
-         • UTM cookie-capture
-         • WhatsApp number swap / click tracking
-         • Microsoft Clarity
-       This block builds the floating nav and hides Squarespace's native header.
-       The WhatsApp link is rendered as <a href="https://wa.me/442030070017">
-       so your existing WhatsApp-swap/tracking script still binds to it.
+<style>
+/* Squarespace's own header and every earlier custom header step aside.
+   Its empty shell stays fixed at the top with a dark strip of its own,
+   so it is hidden from view; its skip link still shows on focus. */
+[data-test="header-inner"], #header .header-inner { display: none !important; }
+#header { visibility: hidden !important; }
+#header .header-skip-link { visibility: visible !important; }
+#slHeader, .sl-header, .sl-drawer, .sl-drawer-overlay, .sl-city-bar, #sl-ap { display: none !important; }
+/* The cookie banner always sits above the header */
+#CybotCookiebotDialog, #CybotCookiebotDialogBodyUnderlay, #CookiebotWidget, .sqs-cookie-banner-v2, [data-test="cookie-banner"] { z-index: 2147483647 !important; }
+/* Sections the capsule jumps to land clear of it */
+#apartments, #compare, #reviews, #faqs, #faq, #about { scroll-margin-top: 84px; }
+/* While the phone menu is open the page stays put and the enquiry pill steps out */
+html.slh-lock { overflow: hidden; }
+html.slh-lock #sl-cb { display: none !important; }
 
-     EDITING:
-       The <style> and <script> below are minified for paste. The editable
-       source is header-nav/aperture-squarespace-header.html in the repo:
-       edit CONFIG there, re-minify (clean-css, terser --no-rename), paste.
-     ════════════════════════════════════════════════════════════════════════════ -->
+#slh {
+  --ink:    #02040a;
+  --gold:   #B8966E;
+  --gold-l: #D4B896;
+  --paper:  #FBF8F2;
+  --serif:  'baskerville-display-pt', 'Baskerville Display PT', Georgia, 'Times New Roman', serif;
+  --sans:   'DM Sans', 'dm-sans', system-ui, sans-serif;
+  --ease:   cubic-bezier(0.16, 1, 0.3, 1);
+  --damask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'><defs><symbol id='m' viewBox='-60 -60 120 120'><path vector-effect='non-scaling-stroke' d='M0-54c8 14 24 18 24 34 0 12-12 20-24 20S-24-8-24-20c0-16 16-20 24-34z'/><path vector-effect='non-scaling-stroke' d='M0 54c-8-14-24-18-24-34 0-12 12-20 24-20s24 8 24 20c0 16-16 20-24 34z'/><path vector-effect='non-scaling-stroke' d='M-54 0c14-8 18-24 34-24 12 0 20 12 20 24s-8 24-20 24c-16 0-20-16-34-24z'/><path vector-effect='non-scaling-stroke' d='M54 0c-14 8-18 24-34 24-12 0-20-12-20-24s8-24 20-24c16 0 20 16 34 24z'/><circle vector-effect='non-scaling-stroke' r='5'/></symbol></defs><g fill='none' stroke='%23D4B896' stroke-width='1'><use href='%23m' x='35' y='35' width='150' height='150'/><use href='%23m' x='-42' y='-42' width='84' height='84'/><use href='%23m' x='178' y='-42' width='84' height='84'/><use href='%23m' x='-42' y='178' width='84' height='84'/><use href='%23m' x='178' y='178' width='84' height='84'/></g></svg>");
+  position: relative; z-index: 9000;
+  font-family: var(--sans); font-size: 16px; font-weight: 400; line-height: 1.4; color: var(--paper); text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+#slh *, #slh *::before, #slh *::after { box-sizing: border-box; margin: 0; padding: 0; }
+#slh a { color: inherit; text-decoration: none; border: 0; }
+#slh button { -webkit-appearance: none; appearance: none; background: none; border: 0; border-radius: 0; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: inherit; cursor: pointer; }
+#slh :focus-visible { outline: 2px solid var(--gold-l); outline-offset: 3px; }
+/* The damask, as on the About band and Stay Luxe's bar */
+#slh .slh-dm { isolation: isolate; }
+#slh .slh-dm::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0.08; background-image: var(--damask); background-size: 220px 220px; }
 
-<style>[data-test=header-inner]{display:none!important}#header .header-inner{display:none!important}#slHeader,.sl-city-bar,.sl-drawer,.sl-drawer-overlay,.sl-header{display:none!important}#CookiebotWidget,#CybotCookiebotDialog,#CybotCookiebotDialogBodyUnderlay,.sqs-cookie-banner-v2,[data-test=cookie-banner]{z-index:2147483647!important}#sl-ap{--sl-ivory:#F4F0E6;--sl-paper:#FBF8F1;--sl-glass:rgba(251,248,241,.72);--sl-glass-strong:rgba(251,248,241,.86);--sl-ink:#0a0a0a;--sl-muted:rgba(10,10,10,.46);--sl-muted-2:rgba(10,10,10,.62);--sl-hair:rgba(10,10,10,.10);--sl-hair-soft:rgba(10,10,10,.06);--sl-gold:#B8966E;--sl-gold-hover:#a07d5a;--sl-gold-wash:rgba(184,150,110,.10);--sl-gold-wash-2:rgba(184,150,110,.16);--sl-bevel:inset 0 1px 0 rgba(255,255,255,.6);--sl-serif:'baskerville-display-pt',Georgia,'Times New Roman',Times,serif;--sl-sans:'dm-sans',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;--sl-body-serif:'adobe-garamond-pro',Georgia,serif;--sl-shadow-cap:0 1px 2px rgba(10,10,10,.04),0 8px 24px rgba(10,10,10,.07),0 24px 60px rgba(10,10,10,.07);--sl-shadow-cap-tight:0 2px 6px rgba(10,10,10,.10),0 14px 40px rgba(10,10,10,.16),0 30px 80px rgba(10,10,10,.12);--sl-shadow-console:0 1px 0 rgba(255,255,255,.6) inset,0 20px 50px rgba(10,10,10,.10),0 50px 120px rgba(10,10,10,.16);--sl-ease-spring:cubic-bezier(.16,1,.3,1);--sl-ease-soft:cubic-bezier(.4,0,.2,1);--sl-topgap:var(--sqs-announcement-bar-height, 0px);display:block;position:sticky;top:var(--sl-topgap);z-index:2147483646}#sl-ap *{box-sizing:border-box}#sl-ap a{color:inherit;text-decoration:none}#sl-ap button{font-family:inherit;cursor:pointer;border:none;background:0 0;color:inherit}#sl-ap ::selection{background:var(--sl-gold-wash-2);color:var(--sl-ink)}#sl-ap .sl-ap-veil{position:fixed;inset:0;z-index:2147483640;background:radial-gradient(120% 100% at 50% -10%,rgba(251,248,241,.42),rgba(251,248,241,.74) 70%,rgba(244,240,230,.86));opacity:0;pointer-events:none;transition:opacity .3s var(--sl-ease-soft)}body.sl-ap-open #sl-ap .sl-ap-veil{opacity:1;pointer-events:auto}body.sl-ap-open #page,body.sl-ap-open #siteWrapper,body.sl-ap-open .sqs-announcement-bar-dropzone{transition:filter .42s var(--sl-ease-soft),transform .42s var(--sl-ease-soft)!important}body.sl-ap-open.sl-ap-rack #page,body.sl-ap-open.sl-ap-rack #siteWrapper{filter:blur(8px) saturate(.85) brightness(1.06)!important}#sl-ap .sl-ap-cap{position:relative;width:100%;height:64px;border-radius:0;padding:8px max(20px,calc((100% - 1240px)/ 2));z-index:2147483647;display:flex;align-items:center;gap:6px;font-family:var(--sl-sans);background:var(--sl-glass-strong);-webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);border-bottom:1px solid var(--sl-hair);box-shadow:var(--sl-bevel),0 6px 24px rgba(10,10,10,.05);transition:box-shadow .42s var(--sl-ease-soft),height .3s var(--sl-ease-soft)}@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#sl-ap .sl-ap-cap{background:var(--sl-paper)}}#sl-ap .sl-ap-cap.sl-ap-tight{box-shadow:var(--sl-bevel),0 6px 22px rgba(10,10,10,.13)}#sl-ap .sl-ap-wordmark{font-family:var(--sl-serif);font-size:18px;letter-spacing:-.01em;font-weight:400;padding:0 14px 0 12px;white-space:nowrap;display:flex;align-items:center;color:var(--sl-ink)}#sl-ap .sl-ap-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sl-gold);margin:0 4px;position:relative;top:-3px}#sl-ap .sl-ap-wordmark-logo{padding:0 14px 0 12px}#sl-ap .sl-ap-logo-img{height:var(--sl-logo-h,24px);width:auto;display:block;transition:height .42s var(--sl-ease-spring)}#sl-ap .sl-ap-logo-invert{filter:brightness(0)}#sl-ap .sl-ap-nav{display:flex;align-items:center;gap:2px;margin-left:4px}#sl-ap .sl-ap-navwrap{position:relative}#sl-ap .sl-ap-navlink{font-size:12.5px;letter-spacing:.02em;color:var(--sl-muted-2);padding:9px 13px;border-radius:9px;position:relative;transition:color .2s var(--sl-ease-soft),background .2s var(--sl-ease-soft);white-space:nowrap}#sl-ap .sl-ap-navlink:hover{color:var(--sl-ink);background:var(--sl-hair-soft)}#sl-ap .sl-ap-navlink.sl-ap-has-panel::after{content:"";position:absolute;left:13px;right:13px;bottom:5px;height:1px;background:var(--sl-gold);transform:scaleX(0);transform-origin:left;transition:transform .26s var(--sl-ease-spring)}#sl-ap .sl-ap-navwrap:focus-within .sl-ap-navlink.sl-ap-has-panel::after,#sl-ap .sl-ap-navwrap:hover .sl-ap-navlink.sl-ap-has-panel::after{transform:scaleX(1)}#sl-ap .sl-ap-navlink:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-spacer{flex:1}#sl-ap .sl-ap-lens{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--sl-gold);flex:none;position:relative}#sl-ap .sl-ap-lens::after{content:"";position:absolute;top:50%;left:50%;width:3px;height:3px;background:var(--sl-gold);border-radius:50%;transform:translate(-50%,-50%)}#sl-ap .sl-ap-icon{width:44px;height:44px;flex:none;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.42);border:1px solid var(--sl-hair);box-shadow:var(--sl-bevel);color:var(--sl-muted-2);transition:background .2s,color .2s,border-color .2s,transform .2s var(--sl-ease-spring)}#sl-ap .sl-ap-icon:hover{background:rgba(255,255,255,.7);color:var(--sl-ink);transform:translateY(-1px)}#sl-ap .sl-ap-icon:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-icon svg{width:20px;height:20px}#sl-ap .sl-ap-socialtext{display:flex;align-items:center;gap:4px;flex:none}#sl-ap .sl-ap-socialtext a{font-size:12.5px;letter-spacing:.02em;color:var(--sl-muted-2);padding:9px 10px;border-radius:9px;transition:color .2s var(--sl-ease-soft),background .2s var(--sl-ease-soft)}#sl-ap .sl-ap-socialtext a:hover{color:var(--sl-ink);background:rgba(255,255,255,.55)}#sl-ap .sl-ap-socialtext a:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-cta{height:44px;flex:none;padding:0 20px;border-radius:11px;background:var(--sl-ink);color:#f6f2e8;font-size:12.5px;letter-spacing:.02em;font-weight:500;display:flex;align-items:center;white-space:nowrap;box-shadow:0 4px 14px rgba(10,10,10,.22);transition:transform .2s var(--sl-ease-spring),box-shadow .2s,background .2s}#sl-ap .sl-ap-cta:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(10,10,10,.3);background:#181818}#sl-ap .sl-ap-cta:focus-visible{outline:2px solid var(--sl-gold);outline-offset:3px}#sl-ap .sl-ap-drop{position:absolute;top:calc(100% + 14px);left:-8px;width:300px;background:var(--sl-glass-strong);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);border:1px solid rgba(255,255,255,.55);border-radius:16px;box-shadow:var(--sl-shadow-console);padding:12px;opacity:0;visibility:hidden;transform:translateY(-6px) scale(.99);transform-origin:top left;transition:opacity .22s var(--sl-ease-soft),transform .26s var(--sl-ease-spring),visibility 0s linear .26s;z-index:2147483645}@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#sl-ap .sl-ap-drop{background:var(--sl-paper)}}#sl-ap .sl-ap-navwrap:focus-within .sl-ap-drop,#sl-ap .sl-ap-navwrap:hover .sl-ap-drop{opacity:1;visibility:visible;transform:translateY(0) scale(1);transition:opacity .22s var(--sl-ease-soft),transform .26s var(--sl-ease-spring),visibility 0s}#sl-ap .sl-ap-drop-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--sl-gold);font-weight:600;padding:6px 10px 8px}#sl-ap .sl-ap-drop a{display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border-radius:10px;font-size:13.5px;color:var(--sl-ink);transition:background .16s var(--sl-ease-soft)}#sl-ap .sl-ap-drop a:hover{background:var(--sl-gold-wash);color:var(--sl-gold-hover)}#sl-ap .sl-ap-dir{position:fixed;top:calc(64px + var(--sl-topgap));left:50%;transform:translateX(-50%) translateY(8px) scale(.985);width:min(1100px,calc(100% - 32px));max-height:calc(100vh - 84px - var(--sl-topgap));z-index:2147483646;font-family:var(--sl-sans);background:var(--sl-glass-strong);-webkit-backdrop-filter:blur(28px) saturate(1.5);backdrop-filter:blur(28px) saturate(1.5);border:1px solid rgba(255,255,255,.55);border-radius:20px;box-shadow:var(--sl-shadow-console);opacity:0;visibility:hidden;pointer-events:none;display:flex;flex-direction:column;overflow:hidden;transition:opacity .26s var(--sl-ease-soft),transform .32s var(--sl-ease-spring),visibility 0s linear .32s}@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#sl-ap .sl-ap-dir{background:var(--sl-paper)}}body.sl-ap-dir-open #sl-ap .sl-ap-dir{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0) scale(1);transition:opacity .26s var(--sl-ease-soft),transform .32s var(--sl-ease-spring),visibility 0s}#sl-ap .sl-ap-dir-head{display:flex;align-items:center;gap:14px;padding:18px 22px;border-bottom:1px solid var(--sl-hair);flex:none}#sl-ap .sl-ap-dir-lens{width:13px;height:13px;border-radius:50%;border:2px solid var(--sl-gold);flex:none;position:relative}#sl-ap .sl-ap-dir-lens::after{content:"";position:absolute;top:50%;left:50%;width:4px;height:4px;background:var(--sl-gold);border-radius:50%;transform:translate(-50%,-50%)}#sl-ap .sl-ap-dir-title{flex:1;font-family:var(--sl-serif);font-size:19px;letter-spacing:-.005em;color:var(--sl-ink)}#sl-ap .sl-ap-esc-float{position:absolute;top:14px;right:16px;z-index:2}#sl-ap .sl-ap-esc{font-size:10.5px;letter-spacing:.02em;color:var(--sl-muted-2);border:1px solid var(--sl-hair);background:rgba(251,248,241,.7);border-radius:7px;padding:5px 9px;box-shadow:var(--sl-bevel);flex:none}#sl-ap .sl-ap-esc:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-dir-body{display:grid;grid-template-columns:1fr 0fr;gap:0;overflow:hidden;min-height:0;transition:grid-template-columns .45s var(--sl-ease-spring)}#sl-ap .sl-ap-dir.sl-ap-city-open .sl-ap-dir-body{grid-template-columns:1.05fr 1fr}#sl-ap .sl-ap-dir.sl-ap-city-open .sl-ap-citygrid{grid-template-columns:repeat(2,minmax(0,1fr))}#sl-ap .sl-ap-dir.sl-ap-city-open .sl-ap-browsebtn{display:none}#sl-ap .sl-ap-col{padding:20px 22px 24px;overflow-y:auto;-webkit-overflow-scrolling:touch}#sl-ap .sl-ap-col-right{padding:0;min-width:0;overflow:hidden;opacity:0;visibility:hidden;max-height:0;transition:opacity .3s var(--sl-ease-soft),visibility 0s linear .45s,max-height 0s linear .45s}#sl-ap .sl-ap-dir.sl-ap-city-open .sl-ap-col-right{opacity:1;visibility:visible;border-left:1px solid var(--sl-hair);max-height:none;transition:opacity .35s var(--sl-ease-soft) .12s,visibility 0s,max-height 0s}#sl-ap .sl-ap-rightinner{padding:20px 22px 24px;min-width:400px;overflow-y:auto;max-height:100%}#sl-ap .sl-ap-collabel{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--sl-gold);font-weight:600;margin:0 0 14px}#sl-ap .sl-ap-collabel.sl-ap-mt{margin-top:24px}#sl-ap .sl-ap-citygrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}#sl-ap .sl-ap-citygrid>*{min-width:0}#sl-ap .sl-ap-cityrow{display:block;height:118px;border-radius:14px;overflow:hidden;position:relative;outline:0;cursor:pointer;width:100%;box-shadow:var(--sl-bevel),0 1px 4px rgba(10,10,10,.1);transition:transform .18s var(--sl-ease-spring),box-shadow .18s var(--sl-ease-soft)}#sl-ap .sl-ap-cityrow:hover{transform:translateY(-2px);box-shadow:var(--sl-bevel),0 6px 18px rgba(10,10,10,.14)}#sl-ap .sl-ap-cityrow.sl-ap-active{box-shadow:inset 0 0 0 2px var(--sl-gold),0 4px 14px rgba(10,10,10,.12)}#sl-ap .sl-ap-cityrow:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-thumb{position:absolute;inset:0;width:100%;height:100%}#sl-ap .sl-ap-cityshade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,0) 42%,rgba(10,10,10,.64) 100%)}#sl-ap .sl-ap-cityall{display:flex;align-items:center;justify-content:center;gap:7px;border:1px dashed rgba(184,150,110,.45);border-radius:14px;font-size:13.5px;font-weight:500;color:var(--sl-muted-2);transition:color .14s ease,border-color .14s ease,background .14s ease}#sl-ap .sl-ap-cityall:hover{color:var(--sl-ink);border-color:var(--sl-gold);background:rgba(255,255,255,.4)}#sl-ap .sl-ap-cityall:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .t-london{background:radial-gradient(70% 80% at 30% 20%,#e7d3ad,transparent),linear-gradient(135deg,#c9ac80,#8f6f49)}#sl-ap .t-new-york{background:radial-gradient(70% 80% at 30% 20%,#dcc7a3,transparent),linear-gradient(135deg,#b89a6f,#7d6242)}#sl-ap .t-paris{background:radial-gradient(70% 80% at 30% 20%,#ecdcbb,transparent),linear-gradient(135deg,#cdb285,#9b7d54)}#sl-ap .t-madrid{background:radial-gradient(70% 80% at 30% 20%,#ead4ab,transparent),linear-gradient(135deg,#c6a574,#9c7445)}#sl-ap .t-cambridge{background:radial-gradient(70% 80% at 30% 20%,#e2d2ae,transparent),linear-gradient(135deg,#bfa67e,#88714c)}#sl-ap .t-milan{background:radial-gradient(70% 80% at 30% 20%,#e8d5ac,transparent),linear-gradient(135deg,#c9aa78,#a07a4d)}#sl-ap .t-edinburgh{background:radial-gradient(70% 80% at 30% 20%,#d4bf99,transparent),linear-gradient(135deg,#ac8f66,#6f5839)}#sl-ap .sl-ap-cityname{position:absolute;left:13px;right:12px;bottom:10px;font-size:14.5px;color:#fff;font-weight:600;letter-spacing:.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 8px rgba(10,10,10,.45);pointer-events:none}#sl-ap .sl-ap-citycell{position:relative;min-width:0;border-radius:14px;transition:opacity .25s var(--sl-ease-soft),filter .25s var(--sl-ease-soft)}#sl-ap .sl-ap-browsebtn{position:absolute;right:8px;bottom:8px;z-index:3;display:inline-flex;align-items:center;gap:6px;font-family:var(--sl-sans);font-size:10.5px;font-weight:600;letter-spacing:.03em;color:#fff;cursor:pointer;background:rgba(10,10,10,.46);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(249,235,191,.3);border-radius:100px;padding:6px 12px;transition:background .16s var(--sl-ease-soft),border-color .16s var(--sl-ease-soft),transform .16s var(--sl-ease-spring)}#sl-ap .sl-ap-browsebtn:hover{background:rgba(10,10,10,.66);border-color:rgba(249,235,191,.7);transform:translateY(-1px)}#sl-ap .sl-ap-browsebtn:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-browsebtn-arr{color:#ebc98e;font-size:13px;font-weight:700}#sl-ap .sl-ap-browsebtn svg{width:13px;height:13px;color:#ebc98e;flex:none}#sl-ap .sl-ap-cityall{transition:opacity .25s var(--sl-ease-soft),border-color .14s,color .14s,background .14s}#sl-ap .sl-ap-citygrid.sl-ap-has-active .sl-ap-cityall,#sl-ap .sl-ap-citygrid.sl-ap-has-active .sl-ap-citycell:not(.sl-ap-cell-active){opacity:.42}@media (hover:hover){#sl-ap .sl-ap-citygrid:has(a:hover,button:hover)>*{opacity:.42}#sl-ap .sl-ap-citygrid:has(a:hover,button:hover)>:has(:hover),#sl-ap .sl-ap-citygrid:has(a:hover,button:hover)>:hover{opacity:1}}#sl-ap .sl-ap-opentag{position:absolute;top:8px;right:8px;font-size:9.5px;letter-spacing:.04em;color:#fff;font-weight:600;background:rgba(10,10,10,.38);border-radius:100px;padding:2px 7px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;transform:translateX(-4px);transition:opacity .16s ease,transform .16s var(--sl-ease-spring)}#sl-ap .sl-ap-cityrow.sl-ap-active .sl-ap-opentag{opacity:1;transform:translateX(0)}#sl-ap .sl-ap-chiprow{display:flex;flex-wrap:wrap;gap:8px}#sl-ap .sl-ap-chip{font-size:12.5px;color:var(--sl-muted-2);border:1px solid var(--sl-hair);border-radius:9px;padding:8px 12px;background:rgba(255,255,255,.32);box-shadow:var(--sl-bevel);transition:all .14s var(--sl-ease-soft)}#sl-ap .sl-ap-chip:hover{border-color:rgba(184,150,110,.5);color:var(--sl-ink);background:rgba(255,255,255,.6)}#sl-ap .sl-ap-chip:focus-visible{outline:2px solid var(--sl-gold);outline-offset:1px;border-color:var(--sl-gold)}#sl-ap .sl-ap-dir-allcity{display:inline-flex;align-items:center;gap:6px;margin-top:18px;font-size:13px;color:var(--sl-ink);font-weight:500}#sl-ap .sl-ap-dir-allcity:hover{color:var(--sl-gold-hover)}#sl-ap .sl-ap-dir-head2{display:flex;align-items:flex-start;gap:26px;padding-right:52px;margin:0 0 14px}#sl-ap .sl-ap-dir-cityname{font-family:var(--sl-serif);font-weight:400;font-size:40px;line-height:.95;letter-spacing:-.02em;color:var(--sl-ink);flex:none;margin:0}#sl-ap .sl-ap-dir-quote{font-family:var(--sl-body-serif);font-style:italic;font-size:14px;line-height:1.5;color:var(--sl-muted-2);flex:1;min-width:0;margin:5px 0 0}#sl-ap .sl-ap-dir-quoteattr{color:var(--sl-muted)}#sl-ap .sl-ap-dir-blurb{font-family:var(--sl-body-serif);font-size:15.5px;line-height:1.5;color:#3a342c;margin:14px 0 2px;max-width:46ch}#sl-ap .sl-ap-dir-viewcity{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 20px;border-radius:10px;background:var(--sl-gold);border:1px solid var(--sl-gold);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#fff;transition:background .16s var(--sl-ease-soft)}#sl-ap .sl-ap-dir-viewcity:hover{background:var(--sl-gold-hover);border-color:var(--sl-gold-hover)}#sl-ap .sl-ap-dir-viewcity:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-dir-viewcity span{color:#fff}#sl-ap .sl-ap-dir-foot{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;border-top:1px solid var(--sl-hair);flex:none;background:rgba(251,248,241,.4)}#sl-ap .sl-ap-foot-hint{font-size:11px;letter-spacing:.02em;color:var(--sl-muted)}#sl-ap .sl-ap-foot-all{font-size:12.5px;color:var(--sl-ink);font-weight:500}#sl-ap .sl-ap-foot-all:hover{color:var(--sl-gold-hover)}#sl-ap .sl-ap-curtain:focus,#sl-ap .sl-ap-dir:focus{outline:0!important}#sl-ap{--sl-vh:100dvh}#sl-ap .sl-ap-trigger{display:none;width:44px;height:44px;flex:none;border-radius:12px;place-items:center;position:relative;background:rgba(255,255,255,.42);border:1px solid var(--sl-hair);box-shadow:var(--sl-bevel);transition:background .2s var(--sl-ease-soft),border-color .2s var(--sl-ease-soft);-webkit-tap-highlight-color:transparent}#sl-ap .sl-ap-trigger:hover{background:rgba(255,255,255,.66);border-color:rgba(184,150,110,.45)}#sl-ap .sl-ap-trigger:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-trigger:active{transform:scale(.96)}#sl-ap .sl-ap-trigger svg{width:24px;height:24px;display:block;overflow:visible}#sl-ap .sl-ap-bl{stroke:var(--sl-gold);stroke-width:1.7;stroke-linecap:round;transform-box:fill-box;transform-origin:center;transition:transform .3s var(--sl-ease-spring),opacity .18s var(--sl-ease-soft),stroke .2s ease}body.sl-ap-curtain-open #sl-ap .sl-ap-bl{stroke:var(--sl-ink)}body.sl-ap-curtain-open #sl-ap .sl-ap-bl-top{transform:translateY(4.5px) rotate(45deg)}body.sl-ap-curtain-open #sl-ap .sl-ap-bl-mid{opacity:0;transform:scaleX(.2)}body.sl-ap-curtain-open #sl-ap .sl-ap-bl-bot{transform:translateY(-4.5px) rotate(-45deg)}body.sl-ap-curtain-open #sl-ap .sl-ap-trigger{background:rgba(255,255,255,.7);border-color:rgba(184,150,110,.55)}#sl-ap .sl-ap-curtain{position:fixed;top:0;left:0;right:0;height:100dvh;height:var(--sl-vh);z-index:2147483645;font-family:var(--sl-sans);background:var(--sl-glass-strong);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border-bottom:1px solid rgba(255,255,255,.4);display:none;flex-direction:column;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-12px);transition:opacity .3s var(--sl-ease-soft),transform .42s var(--sl-ease-spring),visibility 0s linear .42s}@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#sl-ap .sl-ap-curtain{background:var(--sl-paper)}}@supports (clip-path:inset(0 0 100% 0)){#sl-ap .sl-ap-curtain{transform:none;clip-path:inset(0 0 100% 0);transition:clip-path .42s var(--sl-ease-spring),opacity .3s var(--sl-ease-soft),visibility 0s linear .42s}body.sl-ap-curtain-open #sl-ap .sl-ap-curtain{clip-path:inset(0 0 0 0)}}body.sl-ap-curtain-open #sl-ap .sl-ap-curtain{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:clip-path .42s var(--sl-ease-spring),opacity .3s var(--sl-ease-soft),transform .42s var(--sl-ease-spring),visibility 0s}body.sl-ap-closing #sl-ap .sl-ap-curtain{clip-path:none!important;transform:none!important;transition:opacity .22s var(--sl-ease-soft),visibility 0s linear .22s!important}body.sl-ap-closing #sl-ap .sl-ap-dev{transition:opacity .12s linear!important;transition-delay:0s!important}#sl-ap .sl-ap-curtain-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:calc(78px + env(safe-area-inset-top)) 22px 18px}#sl-ap .sl-ap-dev{opacity:0;transition:opacity .36s var(--sl-ease-soft)}body.sl-ap-developed #sl-ap .sl-ap-dev{opacity:1}body.sl-ap-developed #sl-ap .sl-ap-dev-1{transition-delay:.06s}body.sl-ap-developed #sl-ap .sl-ap-dev-2{transition-delay:.15s}body.sl-ap-developed #sl-ap .sl-ap-dev-3{transition-delay:.24s}#sl-ap .sl-ap-eyebrow{display:flex;align-items:center;gap:9px;font-family:var(--sl-serif);font-weight:400;font-size:18px;letter-spacing:-.005em;color:var(--sl-ink);margin:0 0 6px}#sl-ap .sl-ap-eyebrow .sl-ap-lens{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--sl-gold);flex:none;position:relative}#sl-ap .sl-ap-eyebrow .sl-ap-lens::after{content:"";position:absolute;top:50%;left:50%;width:3px;height:3px;background:var(--sl-gold);border-radius:50%;transform:translate(-50%,-50%)}#sl-ap .sl-ap-eyebrow-rule{height:1px;background:var(--sl-hair);margin:14px 0 4px}#sl-ap .sl-ap-prim{display:flex;flex-direction:column}#sl-ap .sl-ap-prow{border-bottom:1px solid var(--sl-hair-soft)}#sl-ap .sl-ap-prow>summary{font-family:var(--sl-serif);font-weight:400;font-size:27px;letter-spacing:-.01em;color:var(--sl-ink);display:block;list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}#sl-ap .sl-ap-prow>summary .sl-ap-sum{min-height:56px;padding:11px 2px;display:flex;align-items:center;justify-content:space-between;gap:12px}#sl-ap .sl-ap-prow>summary::-webkit-details-marker{display:none}#sl-ap .sl-ap-prow>summary .sl-ap-pm{font-family:var(--sl-sans);font-size:0;color:var(--sl-muted);font-weight:300;width:22px;text-align:center;flex:none;transition:color .15s ease}#sl-ap .sl-ap-prow>summary .sl-ap-pm::before{content:'+';font-size:20px}#sl-ap .sl-ap-prow[open]>summary .sl-ap-pm{color:var(--sl-gold-hover)}#sl-ap .sl-ap-prow[open]>summary .sl-ap-pm::before{content:'−'}#sl-ap .sl-ap-prow>summary:focus-visible{outline:2px solid var(--sl-gold);outline-offset:-2px;border-radius:8px}#sl-ap .sl-ap-prow>summary:active{color:var(--sl-gold-hover)}#sl-ap .sl-ap-prow-link{font-family:var(--sl-serif);font-weight:400;font-size:27px;letter-spacing:-.01em;color:var(--sl-ink);min-height:56px;padding:11px 2px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--sl-hair-soft);-webkit-tap-highlight-color:transparent}#sl-ap .sl-ap-prow-link .sl-ap-arr{font-family:var(--sl-sans);font-size:18px;color:var(--sl-muted);width:22px;text-align:center;flex:none}#sl-ap .sl-ap-prow-link:active{color:var(--sl-gold-hover)}#sl-ap .sl-ap-prow-link:focus-visible{outline:2px solid var(--sl-gold);outline-offset:-2px;border-radius:8px}#sl-ap .sl-ap-curtain-social{display:flex;align-items:center;gap:26px;padding:20px 2px calc(28px + env(safe-area-inset-bottom))}#sl-ap .sl-ap-curtain-social a{font-family:var(--sl-sans);font-size:13px;letter-spacing:.04em;color:var(--sl-muted-2);min-height:44px;display:inline-flex;align-items:center}#sl-ap .sl-ap-curtain-social a:active{color:var(--sl-gold-hover)}#sl-ap .sl-ap-curtain-social a:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px;border-radius:6px}#sl-ap .sl-ap-plinks{display:flex;flex-direction:column;padding:0 2px 12px}#sl-ap .sl-ap-plinks a{font-family:var(--sl-sans);font-size:15px;color:var(--sl-muted-2);padding:11px 4px;border-bottom:1px solid var(--sl-hair-soft);display:flex;align-items:center;justify-content:space-between;transition:color .14s var(--sl-ease-soft)}#sl-ap .sl-ap-plinks a:last-child{border-bottom:none}#sl-ap .sl-ap-plinks a:active,#sl-ap .sl-ap-plinks a:hover{color:var(--sl-gold-hover)}#sl-ap .sl-ap-plinks a:focus-visible{outline:2px solid var(--sl-gold);outline-offset:-2px;border-radius:7px}#sl-ap .sl-ap-plinks a .sl-ap-arr{color:var(--sl-gold);opacity:.6;font-size:13px}#sl-ap .sl-ap-citypanel{position:absolute;inset:0;z-index:3;background:var(--sl-paper);padding:calc(78px + var(--sl-topgap)) 20px calc(30px + env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;transform:translateX(100%);visibility:hidden;transition:transform .38s var(--sl-ease-spring),visibility 0s linear .38s}#sl-ap .sl-ap-citypanel.sl-ap-panel-open{transform:translateX(0);visibility:visible;transition:transform .38s var(--sl-ease-spring),visibility 0s}#sl-ap .sl-ap-panel-back{display:inline-flex;align-items:center;gap:8px;font-family:var(--sl-sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--sl-muted-2);min-height:44px;padding:0 4px;margin-bottom:4px;-webkit-tap-highlight-color:transparent}#sl-ap .sl-ap-panel-back:active{color:var(--sl-gold-hover)}#sl-ap .sl-ap-panel-back:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px;border-radius:8px}#sl-ap .sl-ap-panel-mesh{height:96px;border-radius:12px;box-shadow:var(--sl-bevel),0 2px 8px rgba(10,10,10,.08)}#sl-ap .sl-ap-panel-name{font-family:var(--sl-serif);font-weight:400;margin:16px 2px 0;font-size:clamp(30px,8vw,36px);letter-spacing:-.01em;line-height:1.05;color:var(--sl-ink)}#sl-ap .sl-ap-panel-desc{font-family:var(--sl-sans);font-size:12.5px;color:var(--sl-muted);margin:5px 2px 0}#sl-ap .sl-ap-panel-browse{display:inline-flex;align-items:center;gap:6px;margin:14px 2px 6px;font-family:var(--sl-sans);font-size:14px;font-weight:500;color:var(--sl-ink);text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(184,150,110,.55);min-height:44px}#sl-ap .sl-ap-panel-browse:active{color:var(--sl-gold-hover)}#sl-ap .sl-ap-panel-rows{display:flex;flex-direction:column}#sl-ap .sl-ap-panel-rows a{font-family:var(--sl-sans);font-size:15px;color:var(--sl-muted-2);padding:12px 4px;border-bottom:1px solid var(--sl-hair-soft);display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px}#sl-ap .sl-ap-panel-rows a:last-child{border-bottom:none}#sl-ap .sl-ap-panel-rows a:active{color:var(--sl-gold-hover)}#sl-ap .sl-ap-panel-rows a:focus-visible{outline:2px solid var(--sl-gold);outline-offset:-2px;border-radius:7px}#sl-ap .sl-ap-panel-rows a .sl-ap-arr{color:var(--sl-gold);opacity:.6;font-size:13px;flex:none}#sl-ap .sl-ap-panel-rows-2{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}#sl-ap .sl-ap-panel-rows-2 a{justify-content:flex-start}#sl-ap .sl-ap-deck{display:flex;flex-direction:column;gap:9px;padding:6px 0 4px}#sl-ap .sl-ap-card{position:relative}#sl-ap .sl-ap-card-row{display:flex;align-items:stretch;gap:0;border-radius:14px;overflow:hidden;border:1px solid var(--sl-hair);box-shadow:var(--sl-bevel),0 1px 3px rgba(10,10,10,.05);background:rgba(255,255,255,.3);transition:border-color .16s var(--sl-ease-soft),box-shadow .16s var(--sl-ease-soft)}#sl-ap .sl-ap-card-row:hover{border-color:rgba(184,150,110,.4);box-shadow:var(--sl-bevel),0 4px 14px rgba(10,10,10,.08)}#sl-ap .sl-ap-card.sl-ap-flagship .sl-ap-card-row{border-color:rgba(184,150,110,.34)}#sl-ap .sl-ap-card-body{flex:1;min-width:0;display:flex;align-items:center;gap:0;position:relative;min-height:76px;-webkit-tap-highlight-color:transparent}#sl-ap .sl-ap-card.sl-ap-flagship .sl-ap-card-body{min-height:96px}#sl-ap .sl-ap-card-body:focus-visible{outline:2px solid var(--sl-gold);outline-offset:-3px;border-radius:11px}#sl-ap .sl-ap-card-mesh{width:104px;flex:none;align-self:stretch;position:relative}#sl-ap .sl-ap-card.sl-ap-flagship .sl-ap-card-mesh{width:120px}#sl-ap .sl-ap-card-mesh::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(251,248,241,0) 55%,rgba(251,248,241,.55) 100%)}#sl-ap .sl-ap-card-meta{flex:1;min-width:0;padding:0 14px}#sl-ap .sl-ap-card-name{font-family:var(--sl-serif);font-weight:400;font-size:21px;letter-spacing:-.01em;line-height:1.05;color:var(--sl-ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}#sl-ap .sl-ap-card.sl-ap-flagship .sl-ap-card-name{font-size:23px}#sl-ap .sl-ap-card-pill{font-family:var(--sl-sans);font-size:8.5px;letter-spacing:.14em;font-weight:700;text-transform:uppercase;color:var(--sl-gold-hover);border:1px solid rgba(184,150,110,.5);border-radius:5px;padding:2px 5px;position:relative;top:-1px}#sl-ap .sl-ap-card-desc{font-family:var(--sl-sans);font-size:11.5px;line-height:1.35;color:var(--sl-muted);margin-top:5px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}#sl-ap .sl-ap-card-go{font-family:var(--sl-sans);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--sl-gold-hover);font-weight:600;margin-top:6px;display:inline-flex;align-items:center;gap:5px;opacity:.85;text-decoration:none;align-self:flex-start}#sl-ap a.sl-ap-card-go:active{opacity:1}#sl-ap .sl-ap-card-browse{position:absolute;left:10px;bottom:10px;z-index:3;display:inline-flex;align-items:center;gap:5px;font-family:var(--sl-sans);font-size:10.5px;font-weight:600;letter-spacing:.02em;color:#fff;cursor:pointer;background:rgba(10,10,10,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(249,235,191,.32);border-radius:100px;padding:6px 11px;-webkit-tap-highlight-color:transparent}#sl-ap .sl-ap-card-browse:active{background:rgba(10,10,10,.7)}#sl-ap .sl-ap-card-browse:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-card-imglink{width:104px;flex:none;align-self:stretch;position:relative;overflow:hidden;display:block;-webkit-tap-highlight-color:transparent}#sl-ap .sl-ap-card-imglink .sl-ap-card-mesh{position:absolute;inset:0;width:100%}#sl-ap .sl-ap-card-imglink:focus-visible{outline:2px solid var(--sl-gold);outline-offset:-3px}#sl-ap .sl-ap-card-meta-browse{display:flex;flex-direction:column;justify-content:center;padding:12px 14px}#sl-ap .sl-ap-card-act{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;font-family:var(--sl-sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;border-radius:100px;padding:7px 13px;cursor:pointer;-webkit-tap-highlight-color:transparent;border:1px solid transparent;line-height:1}#sl-ap .sl-ap-card-act-filter{margin-top:9px;background:0 0;color:var(--sl-ink);border-color:rgba(184,150,110,.5)}#sl-ap .sl-ap-card-act-filter:active{border-color:var(--sl-gold)}#sl-ap .sl-ap-card-act-filter svg{width:13px;height:13px;color:var(--sl-gold-hover)}#sl-ap .sl-ap-card-act:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-card-exp{width:52px;flex:none;align-self:stretch;display:grid;place-items:center;position:relative;border-left:1px solid var(--sl-hair);background:rgba(184,150,110,.06);-webkit-tap-highlight-color:transparent;transition:background .16s var(--sl-ease-soft);list-style:none;cursor:pointer}#sl-ap .sl-ap-card-exp::-webkit-details-marker{display:none}#sl-ap .sl-ap-card-exp:hover{background:rgba(184,150,110,.13)}#sl-ap .sl-ap-card-exp:focus-visible{outline:2px solid var(--sl-gold);outline-offset:-3px;border-radius:0 11px 11px 0}#sl-ap .sl-ap-card-exp svg{width:20px;height:20px;display:block;transition:transform .26s var(--sl-ease-spring)}#sl-ap .sl-ap-card-exp .sl-ap-exp-ring{fill:none;stroke:var(--sl-gold);stroke-width:1.5}#sl-ap .sl-ap-card-exp .sl-ap-exp-dot{fill:var(--sl-gold);transition:transform .2s var(--sl-ease-soft),opacity .2s ease;transform-box:fill-box;transform-origin:center}#sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp svg{transform:rotate(45deg)}#sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp .sl-ap-exp-dot{transform:scale(.01);opacity:0}#sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp{background:rgba(184,150,110,.16)}#sl-ap .sl-ap-facets{overflow:hidden;padding:0 2px}#sl-ap .sl-ap-facets-inner{padding:14px 4px 8px}#sl-ap .sl-ap-flabel{font-family:var(--sl-sans);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--sl-gold);font-weight:600;margin:0 0 9px}#sl-ap .sl-ap-flabel.sl-ap-mt{margin-top:18px}#sl-ap .sl-ap-facets .sl-ap-chiprow{display:flex;flex-wrap:wrap;gap:7px}#sl-ap .sl-ap-facets .sl-ap-chip{font-family:var(--sl-sans);font-size:12.5px;color:var(--sl-muted-2);border:1px solid var(--sl-gold);border-radius:9px;padding:7px 12px;background:rgba(255,255,255,.32);box-shadow:var(--sl-bevel);transition:color .14s var(--sl-ease-soft),background .14s var(--sl-ease-soft)}#sl-ap .sl-ap-facets .sl-ap-chip:active,#sl-ap .sl-ap-facets .sl-ap-chip:hover{color:var(--sl-gold-hover);background:var(--sl-gold-wash)}#sl-ap .sl-ap-facets .sl-ap-chip:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-flinks{display:flex;flex-wrap:wrap;gap:2px 18px}#sl-ap .sl-ap-flinks a{font-family:var(--sl-sans);font-size:14px;color:var(--sl-muted-2);padding:7px 0;line-height:1.2;transition:color .14s var(--sl-ease-soft)}#sl-ap .sl-ap-flinks a:active,#sl-ap .sl-ap-flinks a:hover{color:var(--sl-gold-hover)}#sl-ap .sl-ap-flinks a:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px;border-radius:5px}#sl-ap .sl-ap-browseall{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-family:var(--sl-sans);font-size:13.5px;color:var(--sl-ink);font-weight:500}#sl-ap .sl-ap-browseall:active,#sl-ap .sl-ap-browseall:hover{color:var(--sl-gold-hover)}#sl-ap .sl-ap-browseall:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px;border-radius:6px}#sl-ap .sl-ap-viewall{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:14px;font-family:var(--sl-sans);font-size:13.5px;color:var(--sl-ink);font-weight:500;border:1px solid var(--sl-hair);border-radius:12px;background:rgba(255,255,255,.28);box-shadow:var(--sl-bevel)}#sl-ap .sl-ap-viewall:active,#sl-ap .sl-ap-viewall:hover{color:var(--sl-gold-hover);border-color:rgba(184,150,110,.4)}#sl-ap .sl-ap-viewall:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px}#sl-ap .sl-ap-foot{flex:none;padding:13px 22px calc(13px + env(safe-area-inset-bottom));border-top:1px solid var(--sl-hair);background:rgba(251,248,241,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}#sl-ap .sl-ap-foot .sl-ap-cta{width:100%;height:52px;border-radius:13px;background:var(--sl-ink);color:#f6f2e8;font-family:var(--sl-sans);font-size:14px;letter-spacing:.02em;font-weight:500;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(10,10,10,.24);transition:background .2s,box-shadow .2s,transform .15s var(--sl-ease-spring)}#sl-ap .sl-ap-foot .sl-ap-cta:hover{background:#181818;box-shadow:0 8px 22px rgba(10,10,10,.3)}#sl-ap .sl-ap-foot .sl-ap-cta:active{transform:translateY(1px)}#sl-ap .sl-ap-foot .sl-ap-cta:focus-visible{outline:2px solid var(--sl-gold);outline-offset:3px}#sl-ap .sl-ap-foot-contact{display:block;text-align:center;margin-top:9px;font-family:var(--sl-sans);font-size:13px;color:var(--sl-muted-2);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(184,150,110,.5)}#sl-ap .sl-ap-foot-contact:active{color:var(--sl-gold-hover)}#sl-ap .sl-ap-foot-second{display:flex;align-items:center;justify-content:space-between;margin-top:12px}#sl-ap .sl-ap-foot-wa{display:flex;align-items:center;gap:8px;font-family:var(--sl-sans);font-size:13px;color:var(--sl-muted-2)}#sl-ap .sl-ap-foot-wa svg{width:18px;height:18px;color:var(--sl-gold)}#sl-ap .sl-ap-foot-wa:active,#sl-ap .sl-ap-foot-wa:hover{color:var(--sl-gold-hover)}#sl-ap .sl-ap-foot-wa:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px;border-radius:7px}#sl-ap .sl-ap-foot-social{display:flex;gap:13px}#sl-ap .sl-ap-foot-social a{font-family:var(--sl-sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sl-muted-2);font-weight:500}#sl-ap .sl-ap-foot-social a:active,#sl-ap .sl-ap-foot-social a:hover{color:var(--sl-gold-hover)}#sl-ap .sl-ap-foot-social a:focus-visible{outline:2px solid var(--sl-gold);outline-offset:2px;border-radius:5px}@media (max-width:1180px){#sl-ap .sl-ap-navlink{padding:9px 9px;font-size:12px}#sl-ap .sl-ap-nav{gap:0}#sl-ap .sl-ap-wordmark{padding-right:8px}}@media (max-width:880px){#sl-ap .sl-ap-cta,#sl-ap .sl-ap-icon,#sl-ap .sl-ap-nav,#sl-ap .sl-ap-socialtext{display:none}#sl-ap .sl-ap-dir{display:none!important}#sl-ap .sl-ap-trigger{display:grid;margin-left:auto}#sl-ap .sl-ap-curtain{display:flex}#sl-ap .sl-ap-cap{height:56px;width:100%;border-radius:0;padding:7px 16px;gap:8px}#sl-ap .sl-ap-cap.sl-ap-tight{transform:none}#sl-ap .sl-ap-wordmark{font-size:16px;padding-left:8px;flex:none}#sl-ap .sl-ap-wordmark-logo{padding-left:8px}#sl-ap .sl-ap-logo-img{height:var(--sl-logo-h-m,20px)}#sl-ap .sl-ap-spacer{display:none}#sl-ap .sl-ap-cap{-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3)}}@media (min-width:881px){#sl-ap .sl-ap-curtain,#sl-ap .sl-ap-trigger{display:none!important}}@media (prefers-reduced-motion:reduce){#sl-ap .sl-ap-dir{transition:opacity .18s linear,visibility 0s!important;transform:translateX(-50%)!important}body.sl-ap-dir-open #sl-ap .sl-ap-dir{transform:translateX(-50%)!important}body.sl-ap-open.sl-ap-rack #page,body.sl-ap-open.sl-ap-rack #siteWrapper{filter:none!important}#sl-ap .sl-ap-cap,#sl-ap .sl-ap-chip,#sl-ap .sl-ap-cityrow,#sl-ap .sl-ap-drop,#sl-ap .sl-ap-opentag{transition:opacity .15s linear!important;animation:none!important}#sl-ap .sl-ap-cap.sl-ap-tight{transform:none!important}#sl-ap .sl-ap-curtain{clip-path:none!important;transform:none!important;transition:opacity .18s linear,visibility 0s!important}body.sl-ap-curtain-open #sl-ap .sl-ap-curtain{clip-path:none!important}#sl-ap .sl-ap-dev{transition:opacity .18s linear!important;transform:none!important}body.sl-ap-developed #sl-ap .sl-ap-dev{transform:none!important}body.sl-ap-developed #sl-ap .sl-ap-dev-1,body.sl-ap-developed #sl-ap .sl-ap-dev-2,body.sl-ap-developed #sl-ap .sl-ap-dev-3{transition-delay:0s!important}#sl-ap .sl-ap-bl{transition:opacity .15s linear,stroke .15s linear!important}body.sl-ap-curtain-open #sl-ap .sl-ap-bl-top{transform:translateY(4.5px) rotate(45deg)}body.sl-ap-curtain-open #sl-ap .sl-ap-bl-bot{transform:translateY(-4.5px) rotate(-45deg)}#sl-ap .sl-ap-citypanel{transform:none!important;opacity:0;transition:opacity .15s linear,visibility 0s linear .15s!important}#sl-ap .sl-ap-citypanel.sl-ap-panel-open{opacity:1;transition:opacity .15s linear,visibility 0s!important}#sl-ap .sl-ap-dir-body{transition:none!important}#sl-ap .sl-ap-col-right{transition:opacity .15s linear,visibility 0s!important}#sl-ap .sl-ap-card-exp svg{transition:none!important}#sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp svg{transform:none!important}#sl-ap .sl-ap-card.sl-ap-open-card .sl-ap-card-exp .sl-ap-exp-dot{transform:none!important}}#sl-ap-noscript{position:relative;z-index:2147483646;font-family:var(--sl-serif,'baskerville-display-pt',Georgia,serif);background:#fbf8f1;border-bottom:1px solid rgba(10,10,10,.1);padding:14px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px}#sl-ap-noscript .sl-ap-ns-brand{font-size:18px;color:#0a0a0a;margin-right:auto}#sl-ap-noscript a{color:#0a0a0a;text-decoration:none;font-size:13px}#sl-ap-noscript a:hover{color:#a07d5a}#sl-ap-noscript .sl-ap-ns-row{width:100%;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:rgba(10,10,10,.62)}</style>
+/* ── THE BAR ── */
+#slh .slh-bar { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; padding: 18px clamp(20px, 3.4vw, 48px); background: var(--ink); border-bottom: 0.5px solid rgba(184,150,110,0.28); }
+#slh .slh-lock { justify-self: start; display: inline-flex; flex-direction: column; gap: 8px; }
+#slh .slh-lock img { display: block; width: auto; height: 24px; max-width: none; }
+/* The line under the logo runs exactly its width */
+#slh .slh-tag { display: block; width: 0; min-width: 100%; font-size: 7.7px; line-height: 1; letter-spacing: 0.2em; text-transform: uppercase; white-space: nowrap; text-align: justify; text-align-last: justify; color: rgba(251,248,242,0.8); }
+#slh .slh-nav { display: flex; align-items: center; gap: clamp(18px, 2vw, 28px); justify-self: center; }
+#slh .slh-nb { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #fff; white-space: nowrap; transition: color 0.15s; }
+#slh .slh-nb[aria-expanded="true"], #slh .slh-nb[aria-current="page"] { color: var(--gold-l); }
+#slh .slh-cv { display: inline-block; flex: none; width: 6px; height: 6px; border-right: 1px solid var(--gold-l); border-bottom: 1px solid var(--gold-l); transform: rotate(45deg) translateY(-2px); transition: transform 0.3s var(--ease); }
+#slh [aria-expanded="true"] > .slh-cv { transform: rotate(-135deg) translateY(-2px); }
+#slh .slh-cta { justify-self: end; display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 8px; background: var(--gold); color: var(--ink); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; transition: background 0.2s, transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
 
-<script>(function(){"use strict";function __slApBoot(){var CONFIG={brand:{name:"Student Luxe",wordmark:["Student","Luxe"],logo:{src:"https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/b4112f3c-4153-4544-b7bd-2c93282a68a2/Logo+White+website.png?format=1500w",invertToBlack:true,height:24,heightMobile:20},home:"/",allCities:"/find-an-apartment",cta:{label:"Apartment Enquiries",href:"/reservations"},contact:{label:"General contact",href:"/reservations#speak-to-us"},residencesLabel:"Our Apartments",whatsapp:"https://wa.me/442030070017",socials:{instagram:"https://www.instagram.com/student_luxe",tiktok:"https://www.tiktok.com/@studentluxe",youtube:"https://www.youtube.com/@studentluxe"}},primaryNav:[{label:"About",links:[["Meet our Team","/meet-the-team"],["Our Story","/about-us"],["FAQs","/faqs"],["Partnerships","/partnerships"],["Careers","/careers-at-luxe"]]},{label:"Why Luxe",links:[["All-Inclusive Living","/services"],["Guest Experience","/guest-experience-team"],["Us vs. Other Rentals","/luxe-vs-renting"]]},{label:"Our Reviews",href:"/our-reviews"},{label:"Life at Luxe",href:"/journal"},{label:"Reservations",links:[["Apartment Enquiries","/reservations"],["General Contact","/reservations#speak-to-us"],["Group Bookings","/group-bookings"],["How it Works","/booking-process"]]}],amenities:[["With Reception","reception"],["Allows Pets","pets"],["Outdoor Space","outdoor"],["Air Conditioned","aircon"],["Gym","gym"]],cities:[{slug:"london",name:"London",browse:true,quote:"'When a man is tired of London, he is tired of life'",quoteAttr:"Dr. Samuel Johnson, 1777",blurb:"Filter your search for luxury student accommodation in London — the world’s best student city.",descriptor:"From Mayfair to Fitzrovia",sub:"Studios→4-bed",count:"",image:"https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/f810a164-d25b-4d2d-8a25-3c19e7ca1e8f/belgravia-heights-2bed-deluxe-12.jpeg?format=1000w",page:"/luxury-student-apartments-london",types:[["Studios","/luxury-student-apartments-london?type=studio"],["1 Bedroom","/luxury-student-apartments-london?type=1bed"],["2 Bedrooms","/luxury-student-apartments-london?type=2bed"],["3 Bedrooms","/luxury-student-apartments-london?type=3bed"],["4 Bedrooms","/luxury-student-apartments-london?type=4bed"]],amenityBase:"/luxury-student-apartments-london?amenity=",universities:[["UCL","/apartments-near-ucl"],["King's College London","/kings-college-london-accommodation"],["LSE","/lse-accommodation"],["Imperial College","/imperial-college-london-accommodation"],["Queen Mary","/queen-mary-university-of-london-accommodation"],["City University","/city-university-of-london-accommodation"],["SOAS","/soas-accommodation"],["Regent's University","/regents-university-london-accommodation"]],neighbourhoods:[["Mayfair","/mayfair-student-accommodation"],["Covent Garden","/covent-garden-student-accommodation"],["Fitzrovia","/student-accommodation-fitzrovia"],["Holborn","/holborn-student-accommodation"],["Kensington","/kensington-student-accommodation"],["Knightsbridge","/knightsbridge-student-accommodation"],["Notting Hill","/student-accommodation-notting-hill"],["Marylebone","/marylebone-student-accommodation"],["Soho","/student-accommodation-soho"],["King's Cross","/student-apartments-kings-cross"]]},{slug:"new-york",name:"New York",quote:"'New York is not a city. It's a world.'",quoteAttr:"Ric Burns",descriptor:"Greenwich Village to Brooklyn",sub:"Studios→3-bed",count:"",image:"https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/102919c5-c50a-4c61-9909-caab93e80bcc/manhattanville-heights-facilities-17.jpg?format=1000w",page:"/student-apartments-new-york",types:[["Studios","/new-york-student-apartments/studios"],["1 Bedroom","/new-york-student-apartments/1-bedroom"],["2 Bedrooms","/new-york-student-apartments/2-bedroom"],["3 Bedrooms","/new-york-student-apartments/3-bedroom"]],amenityBase:"/new-york-student-apartments?amenity=",universities:[["NYU","#"],["Columbia","#"],["The New School","#"],["Fordham","#"]],neighbourhoods:[["Greenwich Village","#"],["Midtown","#"],["Brooklyn","#"],["Upper East Side","#"]]},{slug:"paris",name:"Paris",quote:"'Paris is always a good idea'",quoteAttr:"Audrey Hepburn",descriptor:"Le Marais to Saint-Germain",sub:"Studios→3-bed",count:"",image:"https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1738171720459-UTH6USS5XI83OWWD3PN5/paris-amphitheatre-residences-1.jpeg?format=1000w",page:"/student-apartments-paris",types:[["Studios","/paris-student-apartments/studios"],["1 Bedroom","/paris-student-apartments/1-bedroom"],["2 Bedrooms","/paris-student-apartments/2-bedroom"],["3 Bedrooms","/paris-student-apartments/3-bedroom"]],amenityBase:"/paris-student-apartments?amenity=",universities:[["Sciences Po","#"],["Sorbonne","#"],["HEC Paris","#"],["Paris-Dauphine","#"]],neighbourhoods:[["Le Marais","#"],["Latin Quarter","#"],["Saint-Germain","#"],["Champs-Élysées","#"]]},{slug:"madrid",name:"Madrid",quote:"'The city that never sleeps, and never wants to.'",quoteAttr:"Ernest Hemingway",descriptor:"Salamanca to Chamberí",sub:"Studios→3-bed",count:"",image:"https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/1729173561841-W4526O6HPWODQ5XH10WG/sol-ana-suites-studio-1.jpeg?format=1000w",page:"/luxury-student-apartments-madrid",types:[["Studios","/madrid-student-apartments/studios"],["1 Bedroom","/madrid-student-apartments/1-bedroom"],["2 Bedrooms","/madrid-student-apartments/2-bedroom"],["3 Bedrooms","/madrid-student-apartments/3-bedroom"]],amenityBase:"/madrid-student-apartments?amenity=",universities:[["IE University","#"],["Complutense","#"],["Universidad Autónoma","#"],["Comillas ICAI","#"]],neighbourhoods:[["Salamanca","#"],["Chamberí","#"],["Chueca","#"],["Retiro","#"]]},{slug:"cambridge",name:"Cambridge",quote:"'The pursuit of knowledge, in surroundings worthy of it'",quoteAttr:"Student Luxe",descriptor:"Moments from the colleges",sub:"Studios→3-bed",count:"",image:"https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/898f3e70-31e6-4726-87f0-3adf5112de81/the-five-acres-1bed-3.jpg?format=1000w",page:"/cambridge-student-apartments",types:[["Studios","/cambridge-student-apartments/studios"],["1 Bedroom","/cambridge-student-apartments/1-bedroom"],["2 Bedrooms","/cambridge-student-apartments/2-bedroom"],["3 Bedrooms","/cambridge-student-apartments/3-bedroom"]],amenityBase:"/cambridge-student-apartments?amenity=",universities:[["University of Cambridge","#"],["Judge Business School","#"],["Anglia Ruskin","#"],["Homerton College","#"]],neighbourhoods:[["City Centre","#"],["Newnham","#"],["Trumpington","#"],["Mill Road","#"]]},{slug:"milan",name:"Milan",quote:"'The most glamorous city in Europe'",quoteAttr:"Giorgio Armani",descriptor:"Brera to Porta Nuova",sub:"Studios→3-bed",count:"",image:"https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/54d0d138-86ba-4f56-8f38-54e0b743c4a3/Sempione-Residences-studio-1.JPG?format=1000w",page:"/luxury-student-apartments-milan",types:[["Studios","/milan-student-apartments/studios"],["1 Bedroom","/milan-student-apartments/1-bedroom"],["2 Bedrooms","/milan-student-apartments/2-bedroom"],["3 Bedrooms","/milan-student-apartments/3-bedroom"]],amenityBase:"/milan-student-apartments?amenity=",universities:[["Bocconi","#"],["Politecnico di Milano","#"],["NABA","#"],["Istituto Marangoni","#"]],neighbourhoods:[["Brera","#"],["Navigli","#"],["Porta Nuova","#"],["Città Studi","#"]]},{slug:"edinburgh",name:"Edinburgh",quote:"'A city of extraordinary beauty and intellectual distinction'",quoteAttr:"Robert Louis Stevenson",descriptor:"Old Town to Stockbridge",sub:"Studios→3-bed",count:"",image:"https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/47efb97f-27b1-4e0c-919e-e0c970d701e2/queen-street-gardens-2bed-7.jpeg?format=1000w",page:"/private-student-accommodation-edinburgh",types:[["Studios","/edinburgh-student-apartments/studios"],["1 Bedroom","/edinburgh-student-apartments/1-bedroom"],["2 Bedrooms","/edinburgh-student-apartments/2-bedroom"],["3 Bedrooms","/edinburgh-student-apartments/3-bedroom"]],amenityBase:"/edinburgh-student-apartments?amenity=",universities:[["University of Edinburgh","#"],["Edinburgh Napier","#"],["Heriot-Watt","#"],["Queen Margaret","#"]],neighbourhoods:[["Old Town","#"],["New Town","#"],["Stockbridge","#"],["Marchmont","#"]]}]};var SVG_NS="http://www.w3.org/2000/svg";function el(tag,attrs,kids){var n=document.createElement(tag);if(attrs){for(var k in attrs){if(attrs.hasOwnProperty(k)){if(k==="class")n.className=attrs[k];else if(k==="html")n.innerHTML=attrs[k];else if(k==="text")n.textContent=attrs[k];else n.setAttribute(k,attrs[k])}}}if(kids){(Array.isArray(kids)?kids:[kids]).forEach(function(c){if(c==null)return;n.appendChild(typeof c==="string"?document.createTextNode(c):c)})}return n}function a(href,cls,kids,attrs){attrs=attrs||{};attrs["class"]=cls;attrs.href=href;return el("a",attrs,kids)}function cityBg(elm,city){if(city.image){elm.style.backgroundImage='url("'+city.image+'"), linear-gradient(135deg,#c9ac80,#8f6f49)';elm.style.backgroundSize="cover";elm.style.backgroundPosition="center"}return elm}function amenityLinks(city){return CONFIG.amenities.map(function(am){return[am[0],city.amenityBase+am[1]]})}function socialSvg(kind){var s=document.createElementNS(SVG_NS,"svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","currentColor");s.setAttribute("aria-hidden","true");if(kind==="instagram"){s.innerHTML='<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>'}else if(kind==="tiktok"){s.innerHTML='<path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>'}else{s.innerHTML='<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>'}return s}function waSvg(){var s=document.createElementNS(SVG_NS,"svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("aria-hidden","true");s.innerHTML='<path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.4A10 10 0 1 0 12 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.5 7.8c.3-.2.6-.1.8.3l.7 1.5c.1.3.1.5-.1.7l-.5.6c-.1.2-.1.3 0 .5.5 1 1.3 1.8 2.3 2.3.2.1.3.1.5 0l.6-.5c.2-.2.4-.2.7-.1l1.5.7c.4.2.5.5.3.8-.5 1-1.5 1.6-2.6 1.4-2.6-.4-4.7-2.5-5.1-5.1-.2-1.1.4-2.1 1.4-2.6Z" fill="currentColor"/>';return s}function lensGlyph(){var s=document.createElementNS(SVG_NS,"svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("aria-hidden","true");s.setAttribute("focusable","false");s.innerHTML='<g class="sl-ap-burger">'+'<line class="sl-ap-bl sl-ap-bl-top" x1="3.5" y1="7.5" x2="20.5" y2="7.5"/>'+'<line class="sl-ap-bl sl-ap-bl-mid" x1="3.5" y1="12"  x2="20.5" y2="12"/>'+'<line class="sl-ap-bl sl-ap-bl-bot" x1="3.5" y1="16.5" x2="20.5" y2="16.5"/>'+"</g>";return s}function searchGlyph(){var s=document.createElementNS(SVG_NS,"svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("fill","none");s.setAttribute("aria-hidden","true");s.setAttribute("focusable","false");s.innerHTML='<circle cx="11" cy="11" r="6.4" stroke="currentColor" stroke-width="1.7"/><line x1="16.2" y1="16.2" x2="20.5" y2="20.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>';return s}function expGlyph(){var s=document.createElementNS(SVG_NS,"svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("aria-hidden","true");s.setAttribute("focusable","false");s.innerHTML='<circle class="sl-ap-exp-ring" cx="12" cy="12" r="8.5"/>'+'<circle class="sl-ap-exp-dot" cx="12" cy="12" r="2.1"/>';return s}function buildWordmark(){var L=CONFIG.brand.logo;if(L&&L.src){var img=el("img",{class:"sl-ap-logo-img"+(L.invertToBlack?" sl-ap-logo-invert":""),src:L.src,alt:CONFIG.brand.name,decoding:"async",loading:"eager"});if(L.height)img.style.setProperty("--sl-logo-h",L.height+"px");if(L.heightMobile)img.style.setProperty("--sl-logo-h-m",L.heightMobile+"px");var link=a(CONFIG.brand.home,"sl-ap-wordmark sl-ap-wordmark-logo",[img],{"aria-label":CONFIG.brand.name+" home"});img.addEventListener("error",function(){link.className="sl-ap-wordmark";link.innerHTML="";link.appendChild(document.createTextNode(CONFIG.brand.wordmark[0]));link.appendChild(el("span",{class:"sl-ap-dot","aria-hidden":"true"}));link.appendChild(document.createTextNode(CONFIG.brand.wordmark[1]))});return link}return a(CONFIG.brand.home,"sl-ap-wordmark",[CONFIG.brand.wordmark[0],el("span",{class:"sl-ap-dot","aria-hidden":"true"}),CONFIG.brand.wordmark[1]],{"aria-label":CONFIG.brand.name+" home"})}var rightCol;function renderRight(city){rightCol.innerHTML="";rightCol.appendChild(el("div",{class:"sl-ap-dir-head2"},[el("h3",{class:"sl-ap-dir-cityname"},city.name),city.quote?el("p",{class:"sl-ap-dir-quote"},[city.quote,city.quoteAttr?el("span",{class:"sl-ap-dir-quoteattr"}," — "+city.quoteAttr):null]):null]));rightCol.appendChild(a(city.page,"sl-ap-dir-viewcity",["View all "+city.name+" apartments ",el("span",{"aria-hidden":"true"},"→")]));rightCol.appendChild(el("p",{class:"sl-ap-dir-blurb"},city.blurb||"Filter your search for luxury student apartments in "+city.name+"."));rightCol.appendChild(el("p",{class:"sl-ap-collabel sl-ap-mt"},"Apartment types"));var typeRow=el("div",{class:"sl-ap-chiprow"});city.types.forEach(function(t){typeRow.appendChild(a(t[1],"sl-ap-chip",[t[0]]))});rightCol.appendChild(typeRow);rightCol.appendChild(el("p",{class:"sl-ap-collabel sl-ap-mt"},"Near a university"));var uniRow=el("div",{class:"sl-ap-chiprow"});city.universities.forEach(function(u){uniRow.appendChild(a(u[1],"sl-ap-chip",[u[0]]))});rightCol.appendChild(uniRow);rightCol.appendChild(el("p",{class:"sl-ap-collabel sl-ap-mt"},"Neighbourhoods"));var nbRow=el("div",{class:"sl-ap-chiprow"});city.neighbourhoods.forEach(function(n){nbRow.appendChild(a(n[1],"sl-ap-chip",[n[0]]))});rightCol.appendChild(nbRow)}var cityRowEls=[],browseBtnEls=[];var gridReturnArmed=false;function setActiveCity(idx){cityRowEls.forEach(function(r,i){r.classList.toggle("sl-ap-active",i===idx)});browseBtnEls.forEach(function(bb,i){if(bb)bb.setAttribute("aria-expanded",i===idx?"true":"false")});var grid=document.querySelector("#sl-ap .sl-ap-citygrid");if(grid)grid.classList.add("sl-ap-has-active");cityListMarkActive(idx);renderRight(CONFIG.cities[idx]);var d=document.getElementById("sl-ap-dir");if(d)d.classList.add("sl-ap-city-open");gridReturnArmed=false}function cityListMarkActive(idx){cityRowEls.forEach(function(r,i){var cell=r.parentElement;if(cell)cell.classList.toggle("sl-ap-cell-active",i===idx)})}function clearActiveCity(){cityRowEls.forEach(function(r){r.classList.remove("sl-ap-active");if(r.parentElement)r.parentElement.classList.remove("sl-ap-cell-active")});browseBtnEls.forEach(function(bb){if(bb)bb.setAttribute("aria-expanded","false")});var grid=document.querySelector("#sl-ap .sl-ap-citygrid");if(grid)grid.classList.remove("sl-ap-has-active");var d=document.getElementById("sl-ap-dir");if(d)d.classList.remove("sl-ap-city-open");gridReturnArmed=false}function buildDirectory(){var dir=el("section",{class:"sl-ap-dir",id:"sl-ap-dir",role:"dialog","aria-modal":"true","aria-label":"Our Apartments — browse homes by city",tabindex:"-1"});var esc=el("button",{class:"sl-ap-esc sl-ap-esc-float",type:"button","aria-label":"Close directory"},"esc");esc.addEventListener("click",closeDirectory);dir.appendChild(esc);var leftCol=el("div",{class:"sl-ap-col sl-ap-col-left"});leftCol.addEventListener("mouseleave",function(){var d=document.getElementById("sl-ap-dir");if(d&&d.classList.contains("sl-ap-city-open"))gridReturnArmed=true});leftCol.addEventListener("mouseenter",function(){if(gridReturnArmed&&hoverCapable&&!isMobile())clearActiveCity()});leftCol.appendChild(el("p",{class:"sl-ap-collabel"},"Browse by city"));var cityList=el("div",{class:"sl-ap-citygrid"});cityRowEls=[];browseBtnEls=[];CONFIG.cities.forEach(function(city,i){var cell=el("div",{class:"sl-ap-citycell"});var thumb=cityBg(el("span",{class:"sl-ap-thumb t-"+city.slug,"aria-hidden":"true"}),city);var row=a(city.page,"sl-ap-cityrow",[thumb,el("span",{class:"sl-ap-cityshade","aria-hidden":"true"}),el("span",{class:"sl-ap-cityname"},[city.name])]);cell.appendChild(row);if(city.browse){var bb=el("button",{type:"button",class:"sl-ap-browsebtn","aria-haspopup":"true","aria-expanded":"false","aria-label":"Filter "+city.name+" apartments"},[searchGlyph(),"Filter search"]);bb.addEventListener("click",function(e){e.stopPropagation();setActiveCity(i)});cell.appendChild(bb);browseBtnEls[i]=bb}else{browseBtnEls[i]=null}cityRowEls.push(row);cityList.appendChild(cell)});cityList.appendChild(a(CONFIG.brand.allCities,"sl-ap-cityall",["View all cities ",el("span",{"aria-hidden":"true"},"→")]));leftCol.appendChild(cityList);var rightOuter=el("div",{class:"sl-ap-col sl-ap-col-right"});rightCol=el("div",{class:"sl-ap-rightinner"});rightOuter.appendChild(rightCol);dir.appendChild(el("div",{class:"sl-ap-dir-body"},[leftCol,rightOuter]));dir.appendChild(el("div",{class:"sl-ap-dir-foot"},[el("span",{class:"sl-ap-foot-hint"},"Esc to close")]));return dir}function buildNav(){var nav=el("nav",{class:"sl-ap-nav","aria-label":"Primary"});var homeWrap=el("span",{class:"sl-ap-navwrap"});homeWrap.addEventListener("mouseenter",function(){closeDirectory();var ae=document.activeElement;if(ae&&ae.classList&&ae.classList.contains("sl-ap-navlink"))ae.blur()});homeWrap.appendChild(a(CONFIG.brand.home,"sl-ap-navlink",["Home"]));nav.appendChild(homeWrap);var resWrap=el("span",{class:"sl-ap-navwrap"});var resLink=a("#","sl-ap-navlink sl-ap-has-panel",[CONFIG.brand.residencesLabel],{role:"button","aria-haspopup":"dialog","aria-expanded":"false","aria-controls":"sl-ap-dir"});resLink.addEventListener("click",function(e){e.preventDefault();if(body.classList.contains("sl-ap-dir-open")){dirEl.focus()}else openDirectory()});resLink.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();openDirectory()}});resWrap.addEventListener("mouseenter",function(){var ae=document.activeElement;if(ae&&ae.classList&&ae.classList.contains("sl-ap-navlink")&&ae!==resLink)ae.blur();if(hoverCapable&&!isMobile()){cancelDirClose();openDirectory(true)}});resWrap.addEventListener("mouseleave",function(){if(hoverCapable&&!isMobile())armDirClose()});resWrap.appendChild(resLink);nav.appendChild(resWrap);residencesTrigger=resLink;CONFIG.primaryNav.forEach(function(item){var wrap=el("span",{class:"sl-ap-navwrap"});wrap.addEventListener("mouseenter",function(){closeDirectory();var ae=document.activeElement;if(ae&&ae.classList&&ae.classList.contains("sl-ap-navlink")&&!wrap.contains(ae))ae.blur()});wrap.addEventListener("focusin",function(){closeDirectory()});if(item.href){wrap.appendChild(a(item.href,"sl-ap-navlink",[item.label]));nav.appendChild(wrap);return}var link=a("#","sl-ap-navlink sl-ap-has-panel",[item.label],{"aria-haspopup":"true","aria-expanded":"false"});link.addEventListener("click",function(e){e.preventDefault();link.blur()});var drop=el("div",{class:"sl-ap-drop",role:"menu","aria-label":item.label});drop.appendChild(el("p",{class:"sl-ap-drop-label"},item.label));item.links.forEach(function(l){drop.appendChild(a(l[1],"",[l[0],el("span",{"aria-hidden":"true"},"→")],{role:"menuitem"}))});wrap.appendChild(link);wrap.appendChild(drop);nav.appendChild(wrap)});return nav}var cardEls=[];var curtainResidences;var cityPanelEls=[];var activeCityPanel=-1;function buildCityPanel(city,i){var panel=el("div",{class:"sl-ap-citypanel",id:"sl-ap-citypanel-"+city.slug,role:"group","aria-label":city.name});var back=el("button",{type:"button",class:"sl-ap-panel-back"},[el("span",{"aria-hidden":"true"},"←")," All cities"]);back.addEventListener("click",function(){closeCityPanel()});panel.appendChild(back);panel.appendChild(cityBg(el("div",{class:"sl-ap-panel-mesh t-"+city.slug,"aria-hidden":"true"}),city));panel.appendChild(el("h3",{class:"sl-ap-panel-name"},city.name));if(city.quote){panel.appendChild(el("p",{class:"sl-ap-panel-quote"},[city.quote,city.quoteAttr?el("span",{class:"sl-ap-dir-quoteattr"}," — "+city.quoteAttr):null]))}panel.appendChild(el("p",{class:"sl-ap-panel-desc"},city.blurb||city.descriptor||city.sub));panel.appendChild(a(city.page,"sl-ap-panel-browse",["View all "+city.name+" apartments ",el("span",{"aria-hidden":"true"},"→")]));panel.appendChild(el("p",{class:"sl-ap-flabel sl-ap-mt"},"Apartment types"));var chips=el("div",{class:"sl-ap-chiprow"});city.types.forEach(function(t){chips.appendChild(a(t[1],"sl-ap-chip",[t[0]]))});panel.appendChild(chips);panel.appendChild(el("p",{class:"sl-ap-flabel sl-ap-mt"},"Universities"));var uni=el("div",{class:"sl-ap-panel-rows"});city.universities.forEach(function(u){uni.appendChild(a(u[1],"",[u[0],el("span",{class:"sl-ap-arr","aria-hidden":"true"},"→")]))});panel.appendChild(uni);panel.appendChild(el("p",{class:"sl-ap-flabel sl-ap-mt"},"Neighbourhoods"));var nb=el("div",{class:"sl-ap-panel-rows sl-ap-panel-rows-2"});city.neighbourhoods.forEach(function(n){nb.appendChild(a(n[1],"",[n[0]]))});panel.appendChild(nb);return panel}function openCityPanel(i){var p=cityPanelEls[i];if(!p)return;activeCityPanel=i;p.scrollTop=0;p.classList.add("sl-ap-panel-open");if(cardEls[i])cardEls[i].trigger.setAttribute("aria-expanded","true");var back=p.querySelector(".sl-ap-panel-back");if(back)requestAnimationFrame(function(){try{back.focus({preventScroll:true})}catch(_){back.focus()}curtainEl.scrollLeft=0;var sc=document.getElementById("sl-ap-curtain-scroll");if(sc)sc.scrollLeft=0})}function closeCityPanel(){if(activeCityPanel<0)return;var i=activeCityPanel;var p=cityPanelEls[i];activeCityPanel=-1;if(p)p.classList.remove("sl-ap-panel-open");if(cardEls[i]){cardEls[i].trigger.setAttribute("aria-expanded","false");cardEls[i].trigger.focus()}}function resetCityPanels(){activeCityPanel=-1;cityPanelEls.forEach(function(p){if(p)p.classList.remove("sl-ap-panel-open")});cardEls.forEach(function(c){if(c.trigger&&c.trigger.tagName==="BUTTON")c.trigger.setAttribute("aria-expanded","false")})}function buildDeck(){var deck=el("div",{class:"sl-ap-deck sl-ap-dev sl-ap-dev-2",id:"sl-ap-deck"});cardEls=[];CONFIG.cities.forEach(function(city,i){var card=el("div",{class:"sl-ap-card","data-slug":city.slug});var mesh=cityBg(el("span",{class:"sl-ap-card-mesh t-"+city.slug,"aria-hidden":"true"}),city);if(city.browse){var imglink=a(city.page,"sl-ap-card-imglink",[mesh],{"aria-label":"View all "+city.name+" apartments",tabindex:"-1"});var viewAll=a(city.page,"sl-ap-card-go",["View apartments ",el("span",{"aria-hidden":"true"},"→")]);var filterBtn=el("button",{type:"button",class:"sl-ap-card-act sl-ap-card-act-filter","aria-haspopup":"true","aria-expanded":"false","aria-label":"Filter "+city.name+" by area, university & type"},[searchGlyph(),"Filter search"]);filterBtn.addEventListener("click",function(){openCityPanel(i)});var metaB=el("div",{class:"sl-ap-card-meta sl-ap-card-meta-browse"},[el("div",{class:"sl-ap-card-name"},[city.name]),el("div",{class:"sl-ap-card-desc"},city.descriptor||city.sub),viewAll,filterBtn]);card.appendChild(el("div",{class:"sl-ap-card-row"},[imglink,metaB]));cardEls.push({card:card,trigger:filterBtn})}else{var meta=el("div",{class:"sl-ap-card-meta"},[el("div",{class:"sl-ap-card-name"},[city.name]),el("div",{class:"sl-ap-card-desc"},city.descriptor||city.sub),el("span",{class:"sl-ap-card-go"},["View apartments ",el("span",{"aria-hidden":"true"},"→")])]);var body=a(city.page,"sl-ap-card-body",[mesh,meta],{"aria-label":"View all "+city.name+" apartments"});card.appendChild(el("div",{class:"sl-ap-card-row"},[body]));cardEls.push({card:card,trigger:body})}deck.appendChild(card)});deck.appendChild(a(CONFIG.brand.allCities,"sl-ap-viewall",["View all cities ",el("span",{"aria-hidden":"true"},"→")]));return deck}function buildCurtain(){var curtain=el("section",{class:"sl-ap-curtain",id:"sl-ap-curtain",role:"dialog","aria-modal":"true","aria-label":"Menu",tabindex:"-1"});var scroll=el("div",{class:"sl-ap-curtain-scroll",id:"sl-ap-curtain-scroll"});var dev1=el("div",{class:"sl-ap-dev sl-ap-dev-1"});var prim=el("nav",{class:"sl-ap-prim","aria-label":"Primary"});prim.appendChild(a(CONFIG.brand.home,"sl-ap-prow-link",[el("span",{},"Home"),el("span",{class:"sl-ap-arr","aria-hidden":"true"},"→")]));var resDetails=el("details",{class:"sl-ap-prow",id:"sl-ap-residences"});resDetails.appendChild(el("summary",{},[el("span",{class:"sl-ap-sum"},[el("span",{},CONFIG.brand.residencesLabel),el("span",{class:"sl-ap-pm","aria-hidden":"true"},"+")])]));resDetails.appendChild(buildDeck());prim.appendChild(resDetails);curtainResidences=resDetails;CONFIG.primaryNav.forEach(function(item){if(item.href){prim.appendChild(a(item.href,"sl-ap-prow-link",[el("span",{},item.label),el("span",{class:"sl-ap-arr","aria-hidden":"true"},"→")]));return}var d=el("details",{class:"sl-ap-prow"});d.appendChild(el("summary",{},[el("span",{class:"sl-ap-sum"},[el("span",{},item.label),el("span",{class:"sl-ap-pm","aria-hidden":"true"},"+")])]));var links=el("div",{class:"sl-ap-plinks"});item.links.forEach(function(l){links.appendChild(a(l[1],"",[l[0],el("span",{class:"sl-ap-arr","aria-hidden":"true"},"→")]))});d.appendChild(links);prim.appendChild(d)});prim.appendChild(el("div",{class:"sl-ap-curtain-social"},[a(CONFIG.brand.socials.instagram,"",["IG"],{"aria-label":"Instagram",target:"_blank",rel:"noopener"}),a(CONFIG.brand.socials.tiktok,"",["TikTok"],{"aria-label":"TikTok",target:"_blank",rel:"noopener"}),a(CONFIG.brand.socials.youtube,"",["YouTube"],{"aria-label":"YouTube",target:"_blank",rel:"noopener"})]));dev1.appendChild(prim);scroll.appendChild(dev1);curtain.appendChild(scroll);cityPanelEls=[];CONFIG.cities.forEach(function(city,i){if(city.browse){var p=buildCityPanel(city,i);cityPanelEls[i]=p;curtain.appendChild(p)}else{cityPanelEls[i]=null}});curtain.querySelectorAll(".sl-ap-prow > summary").forEach(function(s){s.addEventListener("click",function(e){e.preventDefault();var d=s.parentNode;d.open=!d.open})});return curtain}function buildNoscript(){var ns=el("div",{id:"sl-ap-noscript"});ns.appendChild(a(CONFIG.brand.home,"sl-ap-ns-brand",[CONFIG.brand.wordmark.join("·")]));ns.appendChild(a(CONFIG.brand.home,"",["Home"]));ns.appendChild(a(CONFIG.brand.allCities,"",[CONFIG.brand.residencesLabel]));CONFIG.primaryNav.forEach(function(item){ns.appendChild(a(item.href||item.links[0][1],"",[item.label]))});ns.appendChild(a(CONFIG.brand.cta.href,"",[CONFIG.brand.cta.label]));ns.appendChild(a(CONFIG.brand.contact.href,"",[CONFIG.brand.contact.label]));ns.appendChild(a(CONFIG.brand.whatsapp,"",["WhatsApp concierge"]));var row=el("div",{class:"sl-ap-ns-row"});CONFIG.cities.forEach(function(city){row.appendChild(a(city.page,"",[city.name]))});row.appendChild(a(CONFIG.brand.allCities,"",["View all cities →"]));ns.appendChild(row);var nstag=document.createElement("noscript");nstag.appendChild(ns);return nstag}var residencesTrigger,lensTriggerEl;var root=el("div",{id:"sl-ap"});root.appendChild(el("div",{class:"sl-ap-veil",id:"sl-ap-veil","aria-hidden":"true"}));var cap=el("header",{class:"sl-ap-cap",id:"sl-ap-cap"});cap.appendChild(buildWordmark());cap.appendChild(el("span",{class:"sl-ap-spacer"}));cap.appendChild(buildNav());cap.appendChild(el("span",{class:"sl-ap-spacer"}));var socialWrap=el("div",{class:"sl-ap-socialtext"},[a(CONFIG.brand.socials.instagram,"",["IG"],{"aria-label":"Instagram",target:"_blank",rel:"noopener"}),a(CONFIG.brand.socials.tiktok,"",["TikTok"],{"aria-label":"TikTok",target:"_blank",rel:"noopener"}),a(CONFIG.brand.socials.youtube,"",["YouTube"],{"aria-label":"YouTube",target:"_blank",rel:"noopener"})]);cap.appendChild(socialWrap);var lensTrigger=el("button",{class:"sl-ap-trigger",id:"sl-ap-trigger",type:"button","aria-haspopup":"dialog","aria-expanded":"false","aria-controls":"sl-ap-curtain","aria-label":"Open menu",title:"Open menu"},[lensGlyph()]);cap.appendChild(lensTrigger);lensTriggerEl=lensTrigger;root.appendChild(cap);root.appendChild(buildDirectory());root.appendChild(buildCurtain());document.body.insertBefore(buildNoscript(),document.body.firstChild);document.body.insertBefore(root,document.body.firstChild);var body=document.body;var dirEl=document.getElementById("sl-ap-dir");var curtainEl=document.getElementById("sl-ap-curtain");var curtainScroll=document.getElementById("sl-ap-curtain-scroll");var veil=document.getElementById("sl-ap-veil");var capEl=document.getElementById("sl-ap-cap");var pillEl=document.getElementById("sl-ap-pill");var triggerEl=document.getElementById("sl-ap-trigger");var prefersReduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;function isMobile(){return window.matchMedia("(max-width: 880px)").matches}var lastFocused=null;var developTimer=null;var scrollLockY=0;function setVH(){root.style.setProperty("--sl-vh",window.innerHeight+"px")}setVH();window.addEventListener("resize",setVH);window.addEventListener("orientationchange",setVH);function focusables(c){return Array.prototype.slice.call(c.querySelectorAll('a[href], button:not([disabled]), summary, input, [tabindex]:not([tabindex="-1"])')).filter(function(elm){if(elm.offsetParent===null)return false;var panel=elm.closest?elm.closest(".sl-ap-citypanel"):null;if(panel&&!panel.classList.contains("sl-ap-panel-open"))return false;var right=elm.closest?elm.closest(".sl-ap-col-right"):null;if(right){var d=document.getElementById("sl-ap-dir");if(d&&!d.classList.contains("sl-ap-city-open"))return false}return true})}function lockScroll(){scrollLockY=window.scrollY||window.pageYOffset||0;body.style.position="fixed";body.style.top=-scrollLockY+"px";body.style.left="0";body.style.right="0";body.style.width="100%"}function unlockScroll(){body.style.position="";body.style.top="";body.style.left="";body.style.right="";body.style.width="";window.scrollTo(0,scrollLockY)}function openDirectory(fromHover){if(body.classList.contains("sl-ap-dir-open"))return;lastFocused=document.activeElement;body.classList.add("sl-ap-open","sl-ap-dir-open");if(!prefersReduced)body.classList.add("sl-ap-rack");if(pillEl)pillEl.setAttribute("aria-expanded","true");if(residencesTrigger)residencesTrigger.setAttribute("aria-expanded","true");if(!fromHover){requestAnimationFrame(function(){requestAnimationFrame(function(){dirEl.focus()})})}}var dirHoverTimer=null;var hoverCapable=window.matchMedia("(hover:hover) and (pointer:fine)").matches;function cancelDirClose(){if(dirHoverTimer){clearTimeout(dirHoverTimer);dirHoverTimer=null}}function armDirClose(){cancelDirClose();dirHoverTimer=setTimeout(function(){closeDirectory()},220)}dirEl.addEventListener("mouseenter",cancelDirClose);dirEl.addEventListener("mouseleave",function(){if(hoverCapable&&!isMobile()&&!dirEl.contains(document.activeElement))armDirClose()});function closeDirectory(){if(!body.classList.contains("sl-ap-dir-open"))return;var focusInside=dirEl.contains(document.activeElement);body.classList.remove("sl-ap-open","sl-ap-dir-open","sl-ap-rack");if(pillEl)pillEl.setAttribute("aria-expanded","false");if(residencesTrigger)residencesTrigger.setAttribute("aria-expanded","false");if(focusInside){if(lastFocused&&lastFocused.focus){lastFocused.focus()}else if(residencesTrigger){residencesTrigger.focus()}}}function openCurtain(){if(body.classList.contains("sl-ap-curtain-open"))return;lastFocused=document.activeElement;lockScroll();body.classList.add("sl-ap-open","sl-ap-curtain-open");if(!prefersReduced)body.classList.add("sl-ap-rack");triggerEl.setAttribute("aria-expanded","true");triggerEl.setAttribute("aria-label","Close menu");triggerEl.setAttribute("title","Close menu");if(developTimer)clearTimeout(developTimer);if(prefersReduced){body.classList.add("sl-ap-developed")}else{developTimer=setTimeout(function(){body.classList.add("sl-ap-developed")},210)}requestAnimationFrame(function(){requestAnimationFrame(function(){curtainEl.focus()})})}function closeCurtain(){if(!body.classList.contains("sl-ap-curtain-open"))return;if(developTimer)clearTimeout(developTimer);body.classList.add("sl-ap-closing");body.classList.remove("sl-ap-curtain-open","sl-ap-developed","sl-ap-rack","sl-ap-open");triggerEl.setAttribute("aria-expanded","false");triggerEl.setAttribute("aria-label","Open menu");triggerEl.setAttribute("title","Open menu");unlockScroll();var delay=prefersReduced?150:240;setTimeout(function(){if(!body.classList.contains("sl-ap-curtain-open")){body.classList.remove("sl-ap-closing");resetCityPanels()}},delay);if(lastFocused&&lastFocused.focus){lastFocused.focus()}else{triggerEl.focus()}}function toggleCurtain(){if(body.classList.contains("sl-ap-curtain-open"))closeCurtain();else openCurtain()}function closeAny(){closeDirectory();closeCurtain()}triggerEl.addEventListener("click",function(e){e.preventDefault();toggleCurtain()});veil.addEventListener("click",closeDirectory);document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(activeCityPanel>=0){e.preventDefault();closeCityPanel();return}if(body.classList.contains("sl-ap-dir-open")||body.classList.contains("sl-ap-curtain-open")){e.preventDefault();closeAny()}}});function trap(container,isOpen){container.addEventListener("keydown",function(e){if(!isOpen())return;if(e.key!=="Tab")return;var f=focusables(container);if(!f.length)return;var first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}})}trap(dirEl,function(){return body.classList.contains("sl-ap-dir-open")});trap(curtainEl,function(){return body.classList.contains("sl-ap-curtain-open")});dirEl.addEventListener("keydown",function(e){if(!body.classList.contains("sl-ap-dir-open"))return;var idx=cityRowEls.indexOf(document.activeElement);if(e.key==="ArrowDown"){e.preventDefault();var n=idx<0?0:Math.min(idx+1,cityRowEls.length-1);cityRowEls[n].focus()}else if(e.key==="ArrowUp"){e.preventDefault();var p=idx<0?0:Math.max(idx-1,0);cityRowEls[p].focus()}});var ticking=false;function onScroll(){if(ticking)return;ticking=true;requestAnimationFrame(function(){capEl.classList.toggle("sl-ap-tight",(window.scrollY||window.pageYOffset||0)>40);ticking=false})}window.addEventListener("scroll",onScroll,{passive:true});onScroll();var mq=window.matchMedia("(max-width: 880px)");(mq.addEventListener?mq.addEventListener.bind(mq,"change"):mq.addListener.bind(mq))(function(){if(body.classList.contains("sl-ap-dir-open")&&isMobile()){closeDirectory()}if(body.classList.contains("sl-ap-curtain-open")&&!isMobile()){closeCurtain()}});function citySlugFromHash(h){var bare=h.replace(/-/g,"");for(var i=0;i<CONFIG.cities.length;i++){var slug=CONFIG.cities[i].slug;if(h.indexOf("open-"+slug)!==-1||bare.indexOf("open"+slug.replace(/-/g,""))!==-1)return i}return-1}function applyHashHook(){var h=(location.hash||"").toLowerCase();if(h.indexOf("open")===-1)return;var cityIdx=citySlugFromHash(h);var idx=cityIdx>=0?cityIdx:0;requestAnimationFrame(function(){var browsable=cityIdx>=0&&CONFIG.cities[cityIdx].browse;if(isMobile()){openCurtain();if(browsable){if(curtainResidences&&!curtainResidences.open)curtainResidences.setAttribute("open","");openCityPanel(idx)}}else{openDirectory();if(browsable)setActiveCity(idx)}})}applyHashHook();window.addEventListener("hashchange",applyHashHook)}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",__slApBoot)}else{__slApBoot()}})();</script>
+/* Why Luxe and About: a short list under the item */
+#slh .slh-dd { position: relative; }
+#slh .slh-drop { position: absolute; top: calc(100% + 18px); left: 50%; min-width: 230px; padding: 10px 0; background: var(--ink); border: 1px solid rgba(184,150,110,0.35); border-top: 0; box-shadow: 0 26px 60px rgba(2,4,10,0.4); opacity: 0; visibility: hidden; transform: translate(-50%, -6px); transition: opacity 0.25s, transform 0.3s var(--ease), visibility 0s linear 0.3s; }
+#slh .slh-dd.is-open .slh-drop { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+#slh .slh-drop a { display: block; padding: 10px 22px; font-size: 13px; line-height: 1.35; color: rgba(251,248,242,0.82); white-space: nowrap; transition: color 0.15s; }
 
+/* Our apartments: the panel the width of the bar */
+#slh .slh-panel { position: absolute; left: 0; right: 0; top: 100%; padding: 28px clamp(20px, 3.4vw, 48px) 22px; background: #03050c; border-bottom: 1px solid rgba(184,150,110,0.35); box-shadow: 0 26px 60px rgba(2,4,10,0.45); opacity: 0; visibility: hidden; transition: opacity 0.28s, visibility 0s linear 0.28s; }
+#slh .slh-bar.is-apts .slh-panel { opacity: 1; visibility: visible; transition-delay: 0s; }
+#slh .slh-pgrid { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; }
+#slh .slh-lab { font-size: 9.5px; line-height: 1.4; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-l); margin-bottom: 12px; }
+#slh .slh-city { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(251,248,242,0.12); font-family: var(--serif); font-size: 18px; line-height: 1.3; letter-spacing: -0.03em; color: rgba(251,248,242,0.72); transition: color 0.15s; }
+#slh .slh-city span { font-family: var(--sans); font-size: 13px; color: var(--gold-l); opacity: 0; transition: opacity 0.15s; }
+#slh .slh-city.is-on { color: var(--paper); }
+#slh .slh-city.is-on span { opacity: 1; }
+#slh .slh-pbody { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) 270px; gap: 40px; }
+#slh .slh-pbody[hidden] { display: none; }
+#slh .slh-plist a { display: block; padding: 6px 0; font-size: 13px; line-height: 1.35; color: rgba(251,248,242,0.8); transition: color 0.15s; }
+#slh .slh-plist a[aria-current="page"] { color: var(--gold-l); }
+#slh .slh-pimg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 3px; background: linear-gradient(150deg, #6b6157, #343640 60%, #14181f); }
+#slh .slh-pn { display: block; margin-top: 12px; font-family: var(--serif); font-size: 20px; line-height: 1.2; letter-spacing: -0.035em; }
+#slh .slh-pa { display: block; margin-top: 6px; font-size: 9.5px; line-height: 1.5; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(251,248,242,0.6); }
+#slh .slh-ul { display: inline-block; margin-top: 14px; padding-bottom: 4px; border-bottom: 1px solid var(--gold); font-size: 10px; line-height: 1.4; letter-spacing: 0.18em; text-transform: uppercase; color: var(--paper); white-space: nowrap; transition: border-color 0.15s; }
+/* Every other city: its photograph wide, the city beside it */
+#slh .slh-pfeat { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+#slh .slh-pfeat .slh-pimg { aspect-ratio: 16 / 9; }
+#slh .slh-pftxt { align-self: center; }
+#slh .slh-pfn { font-family: var(--serif); font-size: 32px; line-height: 1.15; letter-spacing: -0.04em; color: var(--paper); }
+#slh .slh-pfoot { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(251,248,242,0.14); font-size: 11px; line-height: 1.4; color: rgba(251,248,242,0.62); }
+#slh .slh-pfoot .slh-ul { margin: 0 0 0 28px; }
+
+/* ── THE MENU BUTTON (phones and tablets) ── */
+#slh .slh-mbtn { display: none; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; margin-right: -11px; }
+#slh .slh-burger { position: relative; display: block; width: 22px; height: 13px; }
+#slh .slh-burger i { position: absolute; left: 0; right: 0; height: 1px; background: var(--paper); transition: transform 0.35s var(--ease), background 0.25s; }
+#slh .slh-burger i:first-child { top: 2px; }
+#slh .slh-burger i:last-child { bottom: 2px; }
+/* The close is the same two hairlines folded into a cross */
+#slh .slh-burger.is-x i, #slh .slh-cap.is-open .slh-burger i { background: var(--gold-l); }
+#slh .slh-burger.is-x i:first-child, #slh .slh-cap.is-open .slh-burger i:first-child { transform: translateY(4px) rotate(45deg); }
+#slh .slh-burger.is-x i:last-child, #slh .slh-cap.is-open .slh-burger i:last-child { transform: translateY(-4px) rotate(-45deg); }
+
+/* ── THE WHOLE-SCREEN MENU ── */
+#slh .slh-menu { position: fixed; inset: 0; z-index: 9997; display: flex; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; background: var(--ink); opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0s linear 0.3s; }
+#slh.is-menu .slh-menu { opacity: 1; visibility: visible; transition-delay: 0s; }
+#slh .slh-menu.slh-dm::before { position: fixed; opacity: 0.06; }
+#slh .slh-mhead { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(251,248,242,0.12); }
+#slh .slh-mhead .slh-mbtn { display: flex; }
+#slh .slh-mbody { padding: 22px 16px 28px; }
+#slh .slh-lab2 { margin-top: 26px; }
+#slh .slh-mcity { display: block; padding: 10px 0; border-bottom: 1px solid rgba(251,248,242,0.14); }
+#slh .slh-mcity b { display: block; font-family: var(--serif); font-weight: 400; font-size: 20px; line-height: 1.15; letter-spacing: -0.035em; }
+#slh .slh-mcity span { display: block; margin-top: 4px; font-size: 9.5px; line-height: 1.4; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(251,248,242,0.6); }
+#slh .slh-msite > a, #slh .slh-msite summary { display: flex; align-items: center; justify-content: space-between; min-height: 44px; font-size: 12px; line-height: 1.3; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(251,248,242,0.85); list-style: none; cursor: pointer; }
+#slh .slh-msite summary::-webkit-details-marker { display: none; }
+#slh .slh-msite details[open] > summary { color: var(--gold-l); }
+#slh .slh-msite details[open] > summary .slh-cv { transform: rotate(-135deg) translateY(-2px); }
+#slh .slh-msite details > div { margin: 0 0 8px 2px; padding: 0 0 4px 14px; border-left: 1px solid rgba(184,150,110,0.35); }
+#slh .slh-msite details a { display: flex; align-items: center; min-height: 40px; font-size: 14px; line-height: 1.3; color: rgba(251,248,242,0.78); }
+#slh .slh-msoc { display: flex; flex-wrap: wrap; gap: 0 22px; margin-top: auto; padding: 8px 16px 14px; border-top: 1px solid rgba(251,248,242,0.12); }
+#slh .slh-msoc a { display: inline-flex; align-items: center; min-height: 44px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(251,248,242,0.62); }
+
+/* ── THE CAPSULE ── Not tappable while it moves (iOS cancels taps on a
+   moving target); inert, so off-screen links take no focus */
+#slh .slh-cap { position: fixed; top: 14px; left: 0; right: 0; z-index: 9990; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+#slh.is-menu .slh-cap { display: none; }
+#slh .slh-pill { position: relative; display: flex; align-items: center; gap: 22px; padding: 6px 6px 6px 22px; background: rgba(2,4,10,0.94); border: 1px solid rgba(212,184,150,0.35); border-radius: 999px; box-shadow: 0 18px 44px rgba(2,4,10,0.4); white-space: nowrap; opacity: 0; transform: translateY(-140%); transition: transform 0.45s var(--ease), opacity 0.3s; pointer-events: none; }
+#slh .slh-cap.is-on .slh-pill { opacity: 1; transform: none; }
+#slh .slh-cap.is-ready .slh-pill { pointer-events: auto; }
+#slh .slh-pill.is-res { padding-right: 22px; }
+/* STUDENT set in the nav capitals beside the luxe script, cut from the
+   logo itself: at pill size the logo's own STUDENT is too small to read */
+#slh .slh-mk { display: inline-flex; align-items: flex-end; gap: 7px; line-height: 1; }
+#slh .slh-mk-s { font-size: 9.5px; font-weight: 500; letter-spacing: 0.38em; text-transform: uppercase; padding-bottom: 3px; }
+#slh .slh-mk-l { display: block; width: 43px; height: 20px; background: url("https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/b4112f3c-4153-4544-b7bd-2c93282a68a2/Logo+White+website.png?format=500w") no-repeat right center / auto 100%; }
+#slh .slh-lk { display: inline-flex; align-items: center; min-height: 40px; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--paper); white-space: nowrap; transition: color 0.15s; }
+#slh .slh-lk.is-here { color: var(--gold-l); }
+#slh .slh-ar { margin-left: 5px; color: var(--gold-l); }
+#slh .slh-sep { flex: none; width: 1px; height: 22px; background: rgba(251,248,242,0.18); }
+#slh .slh-go { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px; background: var(--gold); color: var(--ink); font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; transition: background 0.2s; }
+#slh .slh-cmenu { display: none; }
+#slh .slh-p { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  #slh .slh-nb:hover, #slh .slh-drop a:hover, #slh .slh-plist a:hover, #slh .slh-lk:hover, #slh .slh-pcard:hover .slh-pn { color: var(--gold-l); }
+  #slh .slh-ul:hover { border-bottom-color: var(--gold-l); }
+  #slh .slh-cta:hover { background: var(--gold-l); transform: scale(1.04); box-shadow: 0 0 30px rgba(212,184,150,0.4); }
+  #slh .slh-go:hover { background: var(--gold-l); }
+}
+
+/* ── PHONES AND TABLETS ── */
+@media (max-width: 1023px) {
+  #slh .slh-bar { display: flex; justify-content: space-between; padding: 14px 16px; }
+  #slh .slh-nav, #slh .slh-cta, #slh .slh-panel { display: none; }
+  #slh .slh-lock img { height: 20px; }
+  #slh .slh-tag { font-size: 6.4px; }
+  #slh .slh-bar .slh-mbtn { display: flex; }
+  /* The capsule spans the screen: the luxe mark, the pair, the menu */
+  #slh .slh-cap { top: 12px; left: 14px; right: 14px; }
+  #slh .slh-pill, #slh .slh-pill.is-res { width: 100%; gap: 2px; padding: 4px 6px 4px 18px; }
+  #slh .slh-d { display: none; }
+  #slh .slh-p { display: inline-flex; }
+  #slh .slh-mk-s { display: none; }
+  #slh .slh-mk-l { width: 47px; height: 22px; }
+  #slh .slh-pill .slh-lk { min-height: 44px; padding: 0 8px; font-size: 10px; }
+  #slh .slh-first { margin-left: auto; }
+  #slh .slh-pill .slh-mbtn { display: flex; margin: 0 0 0 auto; }
+  #slh .slh-cmenu { display: flex; flex-direction: column; width: 100%; margin-top: 8px; padding: 6px 0 8px; background: #03050c; border: 1px solid rgba(212,184,150,0.35); border-radius: 18px; box-shadow: 0 18px 44px rgba(2,4,10,0.45); opacity: 0; transform: translateY(-8px); transition: opacity 0.25s, transform 0.3s var(--ease); pointer-events: none; }
+  #slh .slh-cap.is-open .slh-cmenu { opacity: 1; transform: none; pointer-events: auto; }
+  #slh .slh-cl { padding: 14px 20px 6px; font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-l); }
+  #slh .slh-cmenu a { display: flex; align-items: center; min-height: 44px; padding: 0 20px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; border-top: 1px solid rgba(251,248,242,0.1); }
+  #slh .slh-cmenu .slh-cl + a { border-top: 0; }
+  #slh .slh-cmenu a.is-here { color: var(--gold-l); }
+}
+
+/* The smallest phones: Back to top steps out of the pill so it fits */
+@media (max-width: 359px) {
+  #slh .slh-pill .slh-top { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #slh *, #slh *::before { transition: none !important; }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     CONFIG · links and labels; everything below reads these
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  var LOGO = 'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/b4112f3c-4153-4544-b7bd-2c93282a68a2/Logo+White+website.png';
+  var CDN = 'https://images.squarespace-cdn.com/content/v1/5de66dfc5511bf790e4476bd/';
+  var ENQUIRE = '/reservations';
+  var FIND = '/find-an-apartment';
+  var HOW = '/booking-process';
+  var WHY_HREF = '/services';
+  var REVIEWS = '/our-reviews';
+  var JOURNAL = '/journal';
+  var WHY = [
+    ['All-inclusive living', '/services'],
+    ['Guest experience', '/guest-experience-team'],
+    ['Us vs. other rentals', '/luxe-vs-renting']
+  ];
+  var ABOUT = [
+    ['Our story', '/about-us'],
+    ['Meet our team', '/meet-the-team'],
+    ['How it works', HOW],
+    ['FAQs', '/faqs'],
+    ['Group bookings', '/group-bookings'],
+    ['Partnerships', '/partnerships'],
+    ['Careers', '/careers-at-luxe'],
+    ['Contact us', '/reservations#speak-to-us']
+  ];
+  var SOCIAL = [
+    ['Instagram', 'https://www.instagram.com/student_luxe'],
+    ['TikTok', 'https://www.tiktok.com/@studentluxe'],
+    ['YouTube', 'https://www.youtube.com/@studentluxe'],
+    ['WhatsApp', 'https://wa.me/442030070017']
+  ];
+  var LONDON = '/luxury-student-apartments-london';
+  /* A city with unis, areas and types gets the three columns; the rest
+     show their photograph. The capsule names a page from these lists. */
+  var CITIES = [
+    { name: 'London', page: LONDON, line: 'From Mayfair to Fitzrovia', sizes: 'Studios to 4 bed',
+      img: 'f810a164-d25b-4d2d-8a25-3c19e7ca1e8f/belgravia-heights-2bed-deluxe-12.jpeg',
+      unis: [
+        ['UCL', '/apartments-near-ucl'],
+        ['King’s College London', '/kings-college-london-accommodation'],
+        ['LSE', '/lse-accommodation'],
+        ['Imperial College', '/imperial-college-london-accommodation'],
+        ['Queen Mary', '/queen-mary-university-of-london-accommodation'],
+        ['City University', '/city-university-of-london-accommodation'],
+        ['SOAS', '/soas-accommodation'],
+        ['Regent’s University', '/regents-university-london-accommodation']
+      ],
+      areas: [
+        ['Mayfair', '/mayfair-student-accommodation'],
+        ['Covent Garden', '/covent-garden-student-accommodation'],
+        ['Fitzrovia', '/student-accommodation-fitzrovia'],
+        ['Holborn', '/holborn-student-accommodation'],
+        ['Kensington', '/kensington-student-accommodation'],
+        ['Knightsbridge', '/knightsbridge-student-accommodation'],
+        ['Notting Hill', '/student-accommodation-notting-hill'],
+        ['Marylebone', '/marylebone-student-accommodation'],
+        ['Soho', '/student-accommodation-soho'],
+        ['King’s Cross', '/student-apartments-kings-cross']
+      ],
+      types: [
+        ['Studios', LONDON + '?type=studio'],
+        ['1 bedroom', LONDON + '?type=1bed'],
+        ['2 bedrooms', LONDON + '?type=2bed'],
+        ['3 bedrooms', LONDON + '?type=3bed'],
+        ['4 bedrooms', LONDON + '?type=4bed'],
+        ['With reception', LONDON + '?amenity=reception'],
+        ['Allows pets', LONDON + '?amenity=pets'],
+        ['Outdoor space', LONDON + '?amenity=outdoor'],
+        ['Air conditioned', LONDON + '?amenity=aircon'],
+        ['Gym', LONDON + '?amenity=gym']
+      ] },
+    { name: 'New York', page: '/student-apartments-new-york', line: 'Greenwich Village to Brooklyn', sizes: 'Studios to 3 bed',
+      img: '102919c5-c50a-4c61-9909-caab93e80bcc/manhattanville-heights-facilities-17.jpg' },
+    { name: 'Paris', page: '/student-apartments-paris', line: 'Le Marais to Saint-Germain', sizes: 'Studios to 3 bed',
+      img: '1738171720459-UTH6USS5XI83OWWD3PN5/paris-amphitheatre-residences-1.jpeg' },
+    { name: 'Madrid', page: '/luxury-student-apartments-madrid', line: 'Salamanca to Chamberí', sizes: 'Studios to 3 bed',
+      img: '1729173561841-W4526O6HPWODQ5XH10WG/sol-ana-suites-studio-1.jpeg' },
+    { name: 'Cambridge', page: '/cambridge-student-apartments', line: 'Moments from the colleges', sizes: 'Studios to 3 bed',
+      img: '898f3e70-31e6-4726-87f0-3adf5112de81/the-five-acres-1bed-3.jpg' },
+    { name: 'Milan', page: '/luxury-student-apartments-milan', line: 'Brera to Porta Nuova', sizes: 'Studios to 3 bed',
+      img: '54d0d138-86ba-4f56-8f38-54e0b743c4a3/Sempione-Residences-studio-1.JPG' },
+    { name: 'Edinburgh', page: '/private-student-accommodation-edinburgh', line: 'Old Town to Stockbridge', sizes: 'Studios to 3 bed',
+      img: '47efb97f-27b1-4e0c-919e-e0c970d701e2/queen-street-gardens-2bed-7.jpeg' }
+  ];
+  /* The page sections the capsule looks for, by Squarespace section ID:
+     [id, in the pill, in the phone list] */
+  var SECTIONS = [
+    ['apartments', 'Apartments', 'Apartments'],
+    ['compare', 'Compare', 'Compare your options'],
+    ['reviews', 'Reviews', 'Reviews'],
+    ['faqs', 'FAQs', 'FAQs']
+  ];
+  var SHOW_AFTER = 320;
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  function link(href, text, cls, extra) {
+    return '<a href="' + href + '"' + (cls ? ' class="' + cls + '"' : '') + (extra || '') + '>' + text + '</a>';
+  }
+  function links(items, cls) {
+    return items.map(function (x) { return link(x[1], x[0], cls); }).join('');
+  }
+
+  /* What this page is: a university, a neighbourhood or a city page */
+  function here(path) {
+    for (var i = 0; i < CITIES.length; i++) {
+      var c = CITIES[i];
+      if (c.page === path) return { i: i, city: c, label: c.name + ' apartments', near: '' };
+      var kinds = [['near ', c.unis || []], ['in ', c.areas || []]];
+      for (var k = 0; k < kinds.length; k++) {
+        for (var j = 0; j < kinds[k][1].length; j++) {
+          var p = kinds[k][1][j];
+          if (p[1] === path) return { i: i, city: c, label: p[0] + ' apartments', near: 'Apartments ' + kinds[k][0] + p[0] };
+        }
+      }
+    }
+    return { i: 0, city: null, label: 'Apartments', near: '' };
+  }
+
+  var LOCKUP = '<a class="slh-lock" href="/" aria-label="Student Luxe home">' +
+    '<img src="' + LOGO + '?format=500w" srcset="' + LOGO + '?format=300w 300w, ' + LOGO + '?format=500w 500w" sizes="(max-width: 1023px) 131px, 157px" width="1500" height="230" alt="">' +
+    '<span class="slh-tag" aria-hidden="true">Luxury student apartments</span></a>';
+  var BURGER = '<span class="slh-burger" aria-hidden="true"><i></i><i></i></span>';
+
+  function dropdown(key, label, items) {
+    return '<div class="slh-dd"><button type="button" class="slh-nb" data-open="' + key + '" aria-expanded="false" aria-controls="slh-' + key + '">' + label + '<span class="slh-cv"></span></button>' +
+      '<div class="slh-drop slh-dm" id="slh-' + key + '">' + links(items) + '</div></div>';
+  }
+
+  /* Photographs wait for the panel: data-src until a city is shown */
+  function photo(c, sizes) {
+    var u = CDN + c.img;
+    return '<img class="slh-pimg" alt="Student apartment in ' + c.name + '" data-src="' + u + '?format=750w" data-srcset="' + u + '?format=750w 750w, ' + u + '?format=1000w 1000w" sizes="' + sizes + '" width="1500" height="1000" decoding="async">';
+  }
+
+  function cityBody(c, i, on) {
+    var all = 'View all ' + c.name + ' apartments';
+    if (c.unis) {
+      return '<div class="slh-pbody" data-i="' + i + '"' + (on ? '' : ' hidden') + '>' +
+        '<div><p class="slh-lab">' + c.name + ' by university</p><div class="slh-plist">' + links(c.unis) + '</div></div>' +
+        '<div><p class="slh-lab">' + c.name + ' by neighbourhood</p><div class="slh-plist">' + links(c.areas) + '</div></div>' +
+        '<div><p class="slh-lab">By size and amenity</p><div class="slh-plist">' + links(c.types) + '</div></div>' +
+        '<a class="slh-pcard" href="' + c.page + '">' + photo(c, '270px') +
+        '<span class="slh-pn">' + c.name + '</span><span class="slh-pa">' + c.sizes + ' · ' + c.line + '</span><span class="slh-ul">' + all + '</span></a></div>';
+    }
+    return '<div class="slh-pbody slh-pfeat" data-i="' + i + '"' + (on ? '' : ' hidden') + '>' +
+      '<a href="' + c.page + '" tabindex="-1" aria-hidden="true">' + photo(c, '(max-width: 1440px) 50vw, 660px') + '</a>' +
+      '<div class="slh-pftxt"><p class="slh-lab">' + c.name + '</p><p class="slh-pfn">' + c.line + '</p><span class="slh-pa">' + c.sizes + '</span>' +
+      link(c.page, all, 'slh-ul') + '</div></div>';
+  }
+
+  function boot() {
+    if (document.getElementById('slh') || !document.body) return;
+    var path = location.pathname.replace(/\/+$/, '') || '/';
+    var h = here(path);
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* The sections this page has (FAQs may be "faq") */
+    var secs = [];
+    SECTIONS.forEach(function (s) {
+      var el = document.getElementById(s[0]) || (s[0] === 'faqs' ? document.getElementById('faq') : null);
+      if (el) secs.push({ id: el.id, key: s[0], short: s[1], long: s[2] });
+    });
+    var apts = secs.length && secs[0].key === 'apartments';
+    var hasReviews = secs.some(function (s) { return s.key === 'reviews'; });
+
+    /* ── the bar and its panel ── */
+    var bar = '<header class="slh-bar slh-dm">' + LOCKUP +
+      '<nav class="slh-nav" aria-label="Main">' +
+        '<button type="button" class="slh-nb" data-open="apts" aria-expanded="false" aria-controls="slh-panel">Our apartments<span class="slh-cv"></span></button>' +
+        dropdown('why', 'Why Luxe', WHY) + dropdown('about', 'About', ABOUT) +
+        link(REVIEWS, 'Reviews', 'slh-nb') + link(JOURNAL, 'Life at Luxe', 'slh-nb') +
+      '</nav>' +
+      link(ENQUIRE, 'Make an enquiry', 'slh-cta') +
+      '<button type="button" class="slh-mbtn slh-open" aria-expanded="false" aria-controls="slh-menu" aria-label="Menu">' + BURGER + '</button>' +
+      '<div class="slh-panel slh-dm" id="slh-panel"><div class="slh-pgrid">' +
+        '<div><p class="slh-lab">Our cities</p>' + CITIES.map(function (c, i) {
+          return '<a href="' + c.page + '" class="slh-city' + (i === h.i ? ' is-on' : '') + '" data-i="' + i + '">' + c.name + '<span aria-hidden="true">&rarr;</span></a>';
+        }).join('') + '</div>' +
+        '<div>' + CITIES.map(function (c, i) { return cityBody(c, i, i === h.i); }).join('') + '</div>' +
+      '</div><div class="slh-pfoot"><span>Not sure where to start? Tell us your dates and budget, and we will suggest apartments.</span>' +
+      '<span>' + link(FIND, 'Find an apartment', 'slh-ul') + link(ENQUIRE, 'Make an enquiry', 'slh-ul') + '</span></div></div>' +
+    '</header>';
+
+    /* ── the capsule: this page's sections, or the site's own links ── */
+    var firstHref = apts ? '#' + secs[0].id : (h.city ? h.city.page : FIND);
+    var firstWide = apts ? h.label : 'Apartments';
+    var firstPhone = apts ? (h.label.length <= 15 ? h.label : 'Apartments') : 'View apartments';
+    var toTop = function (cls) {
+      return '<button type="button" class="slh-lk slh-top' + cls + '">Back to top<span class="slh-ar" aria-hidden="true">&uarr;</span></button>';
+    };
+    var pill = '<nav class="slh-pill slh-dm' + (secs.length ? ' is-res' : '') + '" aria-label="Quick navigation">' +
+      '<a class="slh-mk" href="/" aria-label="Student Luxe home"><span class="slh-mk-s" aria-hidden="true">Student</span><span class="slh-mk-l" aria-hidden="true"></span></a>' +
+      '<a class="slh-lk slh-first' + (apts ? ' is-here' : '') + '" href="' + firstHref + '"><span class="slh-d">' + firstWide + '</span><span class="slh-p">' + firstPhone + '</span></a>';
+    if (secs.length) {
+      pill += '<span class="slh-sep slh-d"></span>' +
+        secs.filter(function (s) { return s.key !== 'apartments'; }).map(function (s) { return link('#' + s.id, s.short, 'slh-lk slh-d'); }).join('') +
+        link(HOW, 'How it works', 'slh-lk slh-d') + '<span class="slh-sep slh-d"></span>' + toTop('');
+    } else {
+      pill += link(WHY_HREF, 'Why Luxe', 'slh-lk slh-d') + link(REVIEWS, 'Reviews', 'slh-lk slh-d') + link(HOW, 'How it works', 'slh-lk slh-d') +
+        toTop(' slh-p') + link(ENQUIRE, 'Enquire', 'slh-go slh-d');
+    }
+    pill += '<button type="button" class="slh-mbtn slh-capbtn" aria-expanded="false" aria-label="Menu">' + BURGER + '</button></nav>';
+
+    var short = '<div class="slh-cmenu">';
+    if (secs.length) {
+      short += '<p class="slh-cl">On this page</p>' + secs.map(function (s) {
+        var text = s.key === 'apartments' ? (h.near || h.label) : s.long;
+        return link('#' + s.id, text, s.key === 'apartments' ? 'is-here' : '');
+      }).join('');
+    }
+    short += '<p class="slh-cl">Student Luxe</p>' +
+      (h.city ? (h.city.page !== path ? link(h.city.page, 'All ' + h.city.name + ' apartments') : '') + link(FIND, 'Other cities') : link(FIND, 'Find an apartment')) +
+      link(WHY_HREF, 'Why Luxe') + (hasReviews ? '' : link(REVIEWS, 'Reviews')) + link(HOW, 'How it works') + link(ENQUIRE, 'Make an enquiry') + '</div>';
+
+    /* ── the whole-screen menu ── */
+    var whole = '<div class="slh-menu slh-dm" id="slh-menu" role="dialog" aria-modal="true" aria-label="Menu">' +
+      '<div class="slh-mhead">' + LOCKUP + '<button type="button" class="slh-mbtn slh-close" aria-label="Close menu"><span class="slh-burger is-x" aria-hidden="true"><i></i><i></i></span></button></div>' +
+      '<div class="slh-mbody"><p class="slh-lab">Our cities</p>' +
+        CITIES.map(function (c) { return '<a class="slh-mcity" href="' + c.page + '"><b>' + c.name + '</b><span>' + c.line + '</span></a>'; }).join('') +
+        '<p class="slh-lab slh-lab2">Navigation</p><div class="slh-msite">' +
+          '<details><summary>Why Luxe<span class="slh-cv"></span></summary><div>' + links(WHY) + '</div></details>' +
+          '<details><summary>About<span class="slh-cv"></span></summary><div>' + links(ABOUT) + '</div></details>' +
+          link(REVIEWS, 'Reviews') + link(JOURNAL, 'Life at Luxe') + link(HOW, 'How it works') +
+        '</div></div>' +
+      '<div class="slh-msoc">' + SOCIAL.map(function (s) { return link(s[1], s[0], '', ' target="_blank" rel="noopener"'); }).join('') + '</div></div>';
+
+    var root = document.createElement('div');
+    root.id = 'slh';
+    root.innerHTML = bar + '<div class="slh-cap">' + pill + short + '</div>' + whole;
+    document.body.insertBefore(root, document.body.firstChild);
+
+    /* This page's own links, wherever they appear */
+    Array.prototype.forEach.call(root.querySelectorAll('a[href]'), function (a) {
+      if (a.getAttribute('href') === path && path !== '/') a.setAttribute('aria-current', 'page');
+    });
+
+    var barEl = root.querySelector('.slh-bar');
+    var cap = root.querySelector('.slh-cap');
+    var capBtn = cap.querySelector('.slh-capbtn');
+    var menuEl = root.querySelector('.slh-menu');
+    var openBtn = root.querySelector('.slh-open');
+    var openKey = null;
+    var cityOn = h.i;
+    var menuOn = false;
+    var capOn = false;
+
+    /* ── the bar: the panel and the two short lists, one at a time ── */
+    function show(key) {
+      openKey = key;
+      barEl.classList.toggle('is-apts', key === 'apts');
+      Array.prototype.forEach.call(root.querySelectorAll('[data-open]'), function (b) {
+        var on = b.getAttribute('data-open') === key;
+        b.setAttribute('aria-expanded', on);
+        if (b.parentNode.classList.contains('slh-dd')) b.parentNode.classList.toggle('is-open', on);
+      });
+      if (key === 'apts') load(cityOn);
+    }
+    function load(i) {
+      var img = barEl.querySelector('.slh-pbody[data-i="' + i + '"] img[data-src]');
+      if (!img) return;
+      img.srcset = img.getAttribute('data-srcset');
+      img.src = img.getAttribute('data-src');
+      img.removeAttribute('data-src');
+    }
+    function city(i) {
+      if (i === cityOn) return;
+      cityOn = i;
+      Array.prototype.forEach.call(barEl.querySelectorAll('.slh-city'), function (a) { a.classList.toggle('is-on', +a.getAttribute('data-i') === i); });
+      Array.prototype.forEach.call(barEl.querySelectorAll('.slh-pbody'), function (b) { b.hidden = +b.getAttribute('data-i') !== i; });
+      load(i);
+    }
+    function pickCity(e) {
+      var c = e.target.closest && e.target.closest('.slh-city');
+      if (c) city(+c.getAttribute('data-i'));
+    }
+    barEl.addEventListener('mouseover', pickCity);
+    barEl.addEventListener('focusin', pickCity);
+    /* The photograph starts loading as the pointer reaches Our apartments */
+    var trigger = barEl.querySelector('[data-open="apts"]');
+    trigger.addEventListener('mouseenter', function () { load(cityOn); });
+    trigger.addEventListener('focus', function () { load(cityOn); });
+
+    /* ── the whole-screen menu ── */
+    var site = document.getElementById('siteWrapper');
+    menuEl.inert = true;
+    function menu(on, stay) {
+      if (on === menuOn) return;
+      menuOn = on;
+      root.classList.toggle('is-menu', on);
+      document.documentElement.classList.toggle('slh-lock', on);
+      menuEl.inert = !on;
+      barEl.inert = on;
+      if (site) site.inert = on;
+      openBtn.setAttribute('aria-expanded', on);
+      if (on) menuEl.querySelector('.slh-close').focus();
+      else if (!stay) openBtn.focus();
+    }
+
+    /* ── the capsule ── */
+    cap.inert = true;
+    function capMenu(on) {
+      cap.classList.toggle('is-open', on);
+      capBtn.setAttribute('aria-expanded', on);
+      capBtn.setAttribute('aria-label', on ? 'Close menu' : 'Menu');
+    }
+    function capsule(on) {
+      if (on === capOn) return;
+      capOn = on;
+      cap.classList.toggle('is-on', on);
+      cap.inert = !on;
+      if (on && still) cap.classList.add('is-ready');
+      if (!on) { cap.classList.remove('is-ready'); capMenu(false); }
+    }
+    cap.querySelector('.slh-pill').addEventListener('transitionend', function (e) {
+      if (capOn && e.propertyName === 'transform') cap.classList.add('is-ready');
+    });
+    var last = window.scrollY;
+    var ticking = false;
+    function read() {
+      ticking = false;
+      var y = window.scrollY;
+      var up = y < last - 4;
+      var down = y > last + 4;
+      last = y;
+      if (y < SHOW_AFTER || down) capsule(false);
+      else if (up && !menuOn) capsule(true);
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(read); }
+    }, { passive: true });
+
+    /* ── one listener for every button and link in the header ── */
+    root.addEventListener('click', function (e) {
+      var t = e.target.closest('button, a');
+      if (!t) return;
+      var key = t.getAttribute('data-open');
+      if (key) { show(openKey === key ? null : key); return; }
+      if (t.classList.contains('slh-open')) { show(null); menu(true); return; }
+      if (t.classList.contains('slh-close')) { menu(false); return; }
+      if (t === capBtn) { capMenu(!cap.classList.contains('is-open')); return; }
+      if (t.classList.contains('slh-top')) {
+        capMenu(false);
+        window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' });
+        return;
+      }
+      if (t.tagName === 'A') { show(null); capMenu(false); menu(false, true); }
+    });
+    /* Anything outside the bar closes its panel, as a menu should */
+    document.addEventListener('pointerdown', function (e) {
+      if (openKey && !barEl.contains(e.target)) show(null);
+      if (cap.classList.contains('is-open') && !cap.contains(e.target)) capMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (menuOn) menu(false);
+      else if (openKey) { var b = barEl.querySelector('[data-open="' + openKey + '"]'); show(null); b.focus(); }
+      else if (cap.classList.contains('is-open')) { capMenu(false); capBtn.focus(); }
+    });
+    /* Turning a tablet to landscape, or coming back to the page, starts clean */
+    var wide = window.matchMedia('(min-width: 1024px)');
+    var reset = function () { menu(false, true); capMenu(false); show(null); };
+    if (wide.addEventListener) wide.addEventListener('change', reset);
+    window.addEventListener('pageshow', reset);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
 
 
 

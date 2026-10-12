@@ -10,7 +10,8 @@ every build follows the iOS/Safari scroll-crash rules in
 
 | Path | What it is | Where it goes in Squarespace |
 |------|------------|------------------------------|
-| `header-nav/aperture-squarespace-header.html` | **"Aperture" site header / navigation** — sticky bar, city directory mega-menu (desktop), "lens curtain" menu (mobile). The header rebuild. | Settings → Advanced → Code Injection → **Header** |
+| `header-nav/slh-squarespace-header.html` | **Live site header ("slh", since 12 Oct 2026)**: dark navy bar with the Our apartments panel, whole-screen phone menu, and the scroll-back capsule (navy pill that drops in when you scroll up past 320px). Replaces Aperture. | Settings → Advanced → Code Injection → **Header** (recorded in place in `code-injections-and-css/Header Code Injection.txt`) |
+| `header-nav/aperture-squarespace-header.html` | **"Aperture" site header / navigation (superseded by slh, kept for reference)** — sticky bar, city directory mega-menu (desktop), "lens curtain" menu (mobile). The header rebuild. | Settings → Advanced → Code Injection → **Header** |
 | `pages/atlas-cities-page.html` | **"Atlas" browse-all-cities page** — grouped, filterable, searchable city directory built to scale to 40+ cities. | A **Code Block** on the Our Cities page |
 | `docs/design-system.md` | Shared palette, type stack, tokens and interaction language. | Reference |
 | `docs/ios-safari-scroll-rules.md` | **Mandatory** rules to avoid the Safari/iOS "unexpected error" fast-scroll crash. | Reference — follow for all new site content |

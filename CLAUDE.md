@@ -5,8 +5,13 @@ design system behind them. Files here are pasted into Squarespace **Code
 Injection** (site-wide) or **Code Blocks** (per page).
 
 ## Repo layout
-- `header-nav/aperture-squarespace-header.html` — the site header/nav ("Aperture").
-  Goes in Settings → Advanced → Code Injection → **Header**.
+- `header-nav/slh-squarespace-header.html` — the live site header/nav ("slh":
+  dark bar + scroll-back capsule, live since 12 Oct 2026). Goes in Settings →
+  Advanced → Code Injection → **Header**.
+- `header-nav/aperture-squarespace-header.html` — the previous header
+  ("Aperture"), superseded by slh; kept for reference.
+- `code-injections-and-css/` — record of the live Header/Footer injections and
+  Custom CSS, kept in step with Squarespace.
 - `pages/` — one self-contained file per page build (e.g. `atlas-cities-page.html`).
   Each goes in a **Code Block** on its page.
 - `docs/design-system.md` — palette, type, motion, component patterns.
