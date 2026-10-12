@@ -246,15 +246,6 @@
         How it works is its own list (booking process, FAQs, group
         bookings, contact), Life at Luxe moves into Why Luxe, and About
         keeps the company pages. The phone menu follows the same order.
-     v2.0 (12 Oct 2026, Alex): design 3 from the canvas, the floating
-        capsule over the hero. The bar is now a navy pill floating 22px
-        down over the top of the page (12px on phones), the same pill
-        the scroll-back capsule uses, so the two read as one thing. It
-        carries the STUDENT luxe mark, the five menus and Make an
-        enquiry; on phones the mark, Enquire and the menu button. The
-        panels drop below it as rounded cards. Pages listed in
-        SOLID_PAGES (no photograph at the top) keep the pill in its own
-        space instead of over the page.
      INSTALL: Settings > Advanced > Code Injection > HEADER. Replace the
      Aperture header block (the comment that reads "CUSTOM HEADER
      (Aperture / Browse Directory edition)" plus its one <style> and one
@@ -295,15 +286,10 @@ html.slh-lock #sl-cb { display: none !important; }
   --ease:   cubic-bezier(0.16, 1, 0.3, 1);
   --damask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'><defs><symbol id='m' viewBox='-60 -60 120 120'><path vector-effect='non-scaling-stroke' d='M0-54c8 14 24 18 24 34 0 12-12 20-24 20S-24-8-24-20c0-16 16-20 24-34z'/><path vector-effect='non-scaling-stroke' d='M0 54c-8-14-24-18-24-34 0-12 12-20 24-20s24 8 24 20c0 16-16 20-24 34z'/><path vector-effect='non-scaling-stroke' d='M-54 0c14-8 18-24 34-24 12 0 20 12 20 24s-8 24-20 24c-16 0-20-16-34-24z'/><path vector-effect='non-scaling-stroke' d='M54 0c-14 8-18 24-34 24-12 0-20-12-20-24s8-24 20-24c16 0 20 16 34 24z'/><circle vector-effect='non-scaling-stroke' r='5'/></symbol></defs><g fill='none' stroke='%23D4B896' stroke-width='1'><use href='%23m' x='35' y='35' width='150' height='150'/><use href='%23m' x='-42' y='-42' width='84' height='84'/><use href='%23m' x='178' y='-42' width='84' height='84'/><use href='%23m' x='-42' y='178' width='84' height='84'/><use href='%23m' x='178' y='178' width='84' height='84'/></g></svg>");
   position: relative; z-index: 9000;
-  padding: 22px clamp(16px, 2.2vw, 32px) 22px;
   font-family: var(--sans); font-size: 16px; font-weight: 400; line-height: 1.4; color: var(--paper); text-align: left;
   -webkit-font-smoothing: antialiased;
 }
 #slh *, #slh *::before, #slh *::after { box-sizing: border-box; margin: 0; padding: 0; }
-/* Over the hero: the pill floats on the page's first section and only
-   the pill itself takes clicks */
-#slh.is-over { position: absolute; top: 0; left: 0; right: 0; padding-bottom: 0; pointer-events: none; }
-#slh.is-over .slh-bar, #slh .slh-menu { pointer-events: auto; }
 #slh a { color: inherit; text-decoration: none; border: 0; }
 #slh button { -webkit-appearance: none; appearance: none; background: none; border: 0; border-radius: 0; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: inherit; cursor: pointer; }
 #slh :focus-visible { outline: 2px solid var(--gold-l); outline-offset: 3px; }
@@ -312,29 +298,26 @@ html.slh-lock #sl-cb { display: none !important; }
 #slh .slh-dm::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0.08; background-image: var(--damask); background-size: 220px 220px; }
 
 /* ── THE BAR ── */
-#slh .slh-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1376px; margin: 0 auto; padding: 6px 6px 6px 26px; background: rgba(2,4,10,0.94); border: 1px solid rgba(212,184,150,0.35); border-radius: 999px; box-shadow: 0 18px 44px rgba(2,4,10,0.35); }
-#slh .slh-bar .slh-mk-s { font-size: 10px; }
-#slh .slh-bar .slh-mk-l { width: 50px; height: 23px; }
-#slh .slh-bar .slh-benq { display: none; }
+#slh .slh-bar { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; padding: 18px clamp(20px, 3.4vw, 48px); background: var(--ink); border-bottom: 0.5px solid rgba(184,150,110,0.28); }
 #slh .slh-lock { justify-self: start; display: inline-flex; flex-direction: column; gap: 8px; }
 #slh .slh-lock img { display: block; width: auto; height: 24px; max-width: none; }
 /* The line under the logo runs exactly its width */
 #slh .slh-tag { display: block; width: 0; min-width: 100%; font-size: 7.7px; line-height: 1; letter-spacing: 0.2em; text-transform: uppercase; white-space: nowrap; text-align: justify; text-align-last: justify; color: rgba(251,248,242,0.8); }
-#slh .slh-nav { display: flex; align-items: center; gap: clamp(18px, 2vw, 28px); }
+#slh .slh-nav { display: flex; align-items: center; gap: clamp(18px, 2vw, 28px); justify-self: center; }
 #slh .slh-nb { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #fff; white-space: nowrap; transition: color 0.15s; }
 #slh .slh-nb[aria-expanded="true"], #slh .slh-nb[aria-current="page"] { color: var(--gold-l); }
 #slh .slh-cv { display: inline-block; flex: none; width: 6px; height: 6px; border-right: 1px solid var(--gold-l); border-bottom: 1px solid var(--gold-l); transform: rotate(45deg) translateY(-2px); transition: transform 0.3s var(--ease); }
 #slh [aria-expanded="true"] > .slh-cv { transform: rotate(-135deg) translateY(-2px); }
-#slh .slh-cta { display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 999px; background: var(--gold); color: var(--ink); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; transition: background 0.2s, transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+#slh .slh-cta { justify-self: end; display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 8px; background: var(--gold); color: var(--ink); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; transition: background 0.2s, transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
 
 /* Why Luxe and About: a short list under the item */
 #slh .slh-dd { position: relative; }
-#slh .slh-drop { position: absolute; top: calc(100% + 16px); left: 50%; min-width: 230px; padding: 10px 0; background: var(--ink); border: 1px solid rgba(184,150,110,0.35); border-radius: 14px; box-shadow: 0 26px 60px rgba(2,4,10,0.4); opacity: 0; visibility: hidden; transform: translate(-50%, -6px); transition: opacity 0.25s, transform 0.3s var(--ease), visibility 0s linear 0.3s; }
+#slh .slh-drop { position: absolute; top: calc(100% + 18px); left: 50%; min-width: 230px; padding: 10px 0; background: var(--ink); border: 1px solid rgba(184,150,110,0.35); border-top: 0; box-shadow: 0 26px 60px rgba(2,4,10,0.4); opacity: 0; visibility: hidden; transform: translate(-50%, -6px); transition: opacity 0.25s, transform 0.3s var(--ease), visibility 0s linear 0.3s; }
 #slh .slh-dd.is-open .slh-drop { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
 #slh .slh-drop a { display: block; padding: 10px 22px; font-size: 13px; line-height: 1.35; color: rgba(251,248,242,0.82); white-space: nowrap; transition: color 0.15s; }
 
 /* Our apartments: the panel the width of the bar */
-#slh .slh-panel { position: absolute; left: 0; right: 0; top: calc(100% + 10px); padding: 28px 36px 22px; background: #03050c; border: 1px solid rgba(184,150,110,0.35); border-radius: 22px; box-shadow: 0 26px 60px rgba(2,4,10,0.45); opacity: 0; visibility: hidden; transition: opacity 0.28s, visibility 0s linear 0.28s; }
+#slh .slh-panel { position: absolute; left: 0; right: 0; top: 100%; padding: 28px clamp(20px, 3.4vw, 48px) 22px; background: #03050c; border-bottom: 1px solid rgba(184,150,110,0.35); box-shadow: 0 26px 60px rgba(2,4,10,0.45); opacity: 0; visibility: hidden; transition: opacity 0.28s, visibility 0s linear 0.28s; }
 #slh .slh-bar.is-apts .slh-panel { opacity: 1; visibility: visible; transition-delay: 0s; }
 #slh .slh-pgrid { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; }
 #slh .slh-lab { font-size: 9.5px; line-height: 1.4; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-l); margin-bottom: 12px; }
@@ -421,14 +404,11 @@ html.slh-lock #sl-cb { display: none !important; }
 
 /* ── PHONES AND TABLETS ── */
 @media (max-width: 1023px) {
-  #slh { padding: 12px 12px; }
-  #slh.is-over { padding-bottom: 0; }
-  #slh .slh-bar { gap: 4px; padding: 4px 6px 4px 18px; }
-  #slh .slh-bar .slh-benq { display: inline-flex; margin-left: auto; min-height: 40px; padding: 0 16px; font-size: 10px; }
+  #slh .slh-bar { display: flex; justify-content: space-between; padding: 14px 16px; }
   #slh .slh-nav, #slh .slh-cta, #slh .slh-panel { display: none; }
   #slh .slh-lock img { height: 20px; }
   #slh .slh-tag { font-size: 6.4px; }
-  #slh .slh-bar .slh-mbtn { display: flex; margin: 0; }
+  #slh .slh-bar .slh-mbtn { display: flex; }
   /* The capsule spans the screen: the luxe mark, the pair, the menu */
   #slh .slh-cap { top: 12px; left: 14px; right: 14px; }
   #slh .slh-pill, #slh .slh-pill.is-res { width: 100%; gap: 2px; padding: 4px 6px 4px 18px; }
@@ -445,14 +425,6 @@ html.slh-lock #sl-cb { display: none !important; }
   #slh .slh-cmenu a { display: flex; align-items: center; min-height: 44px; padding: 0 20px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; border-top: 1px solid rgba(251,248,242,0.1); }
   #slh .slh-cmenu .slh-cl + a { border-top: 0; }
   #slh .slh-cmenu a.is-here { color: var(--gold-l); }
-}
-
-/* Narrow desktops: the pill tightens so five menus and the button fit */
-@media (min-width: 1024px) and (max-width: 1279px) {
-  #slh .slh-bar { gap: 16px; padding-left: 20px; }
-  #slh .slh-nav { gap: 16px; }
-  #slh .slh-nb { letter-spacing: 0.12em; }
-  #slh .slh-cta { padding: 0 16px; }
 }
 
 /* Narrow desktops: each list back to one column */
@@ -560,11 +532,6 @@ html.slh-lock #sl-cb { display: none !important; }
     ['faqs', 'FAQs', 'FAQs']
   ];
   var SHOW_AFTER = 320;
-  /* The pill floats over the top of every page, so the page's first
-     section (normally its photograph) shows behind it. Pages that start
-     with text or a form instead go here, and the pill gets its own
-     space above them. */
-  var SOLID_PAGES = ['/reservations'];
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
   function link(href, text, cls, extra) {
@@ -593,8 +560,6 @@ html.slh-lock #sl-cb { display: none !important; }
   var LOCKUP = '<a class="slh-lock" href="/" aria-label="Student Luxe home">' +
     '<img src="' + LOGO + '?format=500w" srcset="' + LOGO + '?format=300w 300w, ' + LOGO + '?format=500w 500w" sizes="(max-width: 1023px) 131px, 157px" width="1500" height="230" alt="">' +
     '<span class="slh-tag" aria-hidden="true">Luxury student apartments</span></a>';
-  /* STUDENT beside the luxe script: the floating bar and the capsule */
-  var MARK = '<a class="slh-mk" href="/" aria-label="Student Luxe home"><span class="slh-mk-s" aria-hidden="true">Student</span><span class="slh-mk-l" aria-hidden="true"></span></a>';
   var BURGER = '<span class="slh-burger" aria-hidden="true"><i></i><i></i></span>';
 
   function dropdown(key, label, items) {
@@ -639,13 +604,13 @@ html.slh-lock #sl-cb { display: none !important; }
     var hasReviews = secs.some(function (s) { return s.key === 'reviews'; });
 
     /* ── the bar and its panel ── */
-    var bar = '<header class="slh-bar slh-dm">' + MARK +
+    var bar = '<header class="slh-bar slh-dm">' + LOCKUP +
       '<nav class="slh-nav" aria-label="Main">' +
         '<button type="button" class="slh-nb" data-open="apts" aria-expanded="false" aria-controls="slh-panel">Our apartments<span class="slh-cv"></span></button>' +
         dropdown('how', 'How it works', HOW_LIST) + dropdown('why', 'Why Luxe', WHY) +
         link(REVIEWS, 'Reviews', 'slh-nb') + dropdown('about', 'About', ABOUT) +
       '</nav>' +
-      link(ENQUIRE, 'Make an enquiry', 'slh-cta') + link(ENQUIRE, 'Enquire', 'slh-go slh-benq') +
+      link(ENQUIRE, 'Make an enquiry', 'slh-cta') +
       '<button type="button" class="slh-mbtn slh-open" aria-expanded="false" aria-controls="slh-menu" aria-label="Menu">' + BURGER + '</button>' +
       '<div class="slh-panel slh-dm" id="slh-panel"><div class="slh-pgrid">' +
         '<div><p class="slh-lab">Our cities</p>' + CITIES.map(function (c, i) {
@@ -664,7 +629,7 @@ html.slh-lock #sl-cb { display: none !important; }
       return '<button type="button" class="slh-lk slh-top' + cls + '">Back to top<span class="slh-ar" aria-hidden="true">&uarr;</span></button>';
     };
     var pill = '<nav class="slh-pill slh-dm' + (secs.length ? ' is-res' : '') + '" aria-label="Quick navigation">' +
-      MARK +
+      '<a class="slh-mk" href="/" aria-label="Student Luxe home"><span class="slh-mk-s" aria-hidden="true">Student</span><span class="slh-mk-l" aria-hidden="true"></span></a>' +
       '<a class="slh-lk slh-first' + (apts ? ' is-here' : '') + '" href="' + firstHref + '"><span class="slh-d">' + firstWide + '</span><span class="slh-p">' + firstPhone + '</span></a>';
     if (secs.length) {
       pill += '<span class="slh-sep slh-d"></span>' +
@@ -702,7 +667,6 @@ html.slh-lock #sl-cb { display: none !important; }
 
     var root = document.createElement('div');
     root.id = 'slh';
-    if (SOLID_PAGES.indexOf(path) === -1) root.className = 'is-over';
     root.innerHTML = bar + '<div class="slh-cap">' + pill + short + '</div>' + whole;
     document.body.insertBefore(root, document.body.firstChild);
 
